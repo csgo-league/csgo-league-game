@@ -137,7 +137,6 @@ public Action delay(Handle timer)
 	}
 
 	SQL_ExecuteTransaction(db, txn);
-
 }
 
 public void onSuccess(Database database, any data, int numQueries, Handle[] results, any[] bufferData)
