@@ -7,6 +7,14 @@
 
 Handle db;
 
+public Plugin myinfo = {
+	name = "[League] Matches",
+	author = "B3none",
+	description = "Save the scoreboard.",
+	version = "1.0.0",
+	url = "https://github.com/b3none"
+};
+
 public void OnPluginStart()
 {
 	char buffer[1024];
