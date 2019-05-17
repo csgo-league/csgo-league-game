@@ -11,7 +11,7 @@ public Plugin myinfo = {
 	name = "[League] Matches",
 	author = "B3none",
 	description = "Save the scoreboard.",
-	version = "1.0.0",
+	version = "1.0.1",
 	url = "https://github.com/b3none"
 };
 
@@ -46,7 +46,7 @@ public void OnPluginStart()
 	Format(buffer, sizeof(buffer), "CREATE TABLE IF NOT EXISTS sql_matches (");
 	Format(buffer, sizeof(buffer), "%s match_id bigint(20) NOT NULL,", buffer);
 	Format(buffer, sizeof(buffer), "%s name varchar(65) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s steamid64 varchar(64) NOT NULL,", buffer);
+	Format(buffer, sizeof(buffer), "%s steam64 varchar(64) NOT NULL,", buffer);
 	Format(buffer, sizeof(buffer), "%s team int(11) NOT NULL,", buffer);
 	Format(buffer, sizeof(buffer), "%s alive int(11) NOT NULL,", buffer);
 	Format(buffer, sizeof(buffer), "%s ping int(11) NOT NULL,", buffer);
@@ -138,7 +138,7 @@ public Action delay(Handle timer)
 			}
 
 			Format(buffer, sizeof(buffer), "INSERT INTO sql_matches");
-			Format(buffer, sizeof(buffer), "%s (match_id, team, alive, ping, name, account, kills, assists, deaths, mvps, score, steamid64)", buffer);
+			Format(buffer, sizeof(buffer), "%s (match_id, team, alive, ping, name, account, kills, assists, deaths, mvps, score, steam64)", buffer);
 			Format(buffer, sizeof(buffer), "%s VALUES (LAST_INSERT_ID(), '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%s');", buffer, m_iTeam, m_bAlive, m_iPing, name, m_iAccount, m_iKills, m_iAssists, m_iDeaths, m_iMVPs, m_iScore, steamid64);
 			SQL_AddQuery(txn, buffer);
 		}
