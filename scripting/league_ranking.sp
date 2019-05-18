@@ -1,6 +1,6 @@
 #include <sourcemod>
 #include <adminmenu>
-#include <kento_csgocolors>
+#include <league_ranking/colours>
 #include <league_ranking/rankme>
 #include <geoip>
 #include <sdktools>
