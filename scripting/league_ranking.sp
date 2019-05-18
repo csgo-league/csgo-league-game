@@ -1,7 +1,7 @@
 #include <sourcemod>
 #include <adminmenu>
 #include <kento_csgocolors>
-#include <vrg_rankme/rankme>
+#include <league_ranking/rankme>
 #include <geoip>
 #include <sdktools>
 #include <cstrike>
@@ -249,7 +249,7 @@ int g_PointsNS;
 ConVar g_cvarNSAllSnipers;
 bool g_bNSAllSnipers;
 
-#include <vrg_rankme/cmds>
+#include <league_ranking/cmds>
 
 public void OnPluginStart() {
 
