@@ -12,7 +12,7 @@ public Plugin myinfo = {
 	author = "B3none",
 	description = "Save the scoreboard.",
 	version = "1.0.1",
-	url = "https://github.com/b3none"
+	url = "https://github.com/b3none/csgo-league-game"
 };
 
 public void OnPluginStart()
