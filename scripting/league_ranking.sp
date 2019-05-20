@@ -27,27 +27,17 @@ public Plugin myinfo = {
 	url = "https://github.com/b3none/csgo-league-game"
 };
 
-static const char g_sSqliteCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, lastip TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
-static const char g_sMysqlCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, lastip TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
-static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (NULL,'%s','%s','%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+static const char g_sSqliteCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
+static const char g_sMysqlCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
+static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (NULL,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 
 /* SM1.9 Fix */
-static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',lastip='%s',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
-static const char g_sSqlSaveName[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',lastip='%s',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE name = '%s';";
-static const char g_sSqlSaveIp[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',lastip='%s',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE lastip = '%s';";
+static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
 static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
-static const char g_sSqlSaveName2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE name = '%s';";
-static const char g_sSqlSaveIp2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE lastip = '%s';";
 
 static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
-static const char g_sSqlRetrieveClientName[] = "SELECT * FROM `%s` WHERE name='%s';";
-static const char g_sSqlRetrieveClientIp[] = "SELECT * FROM `%s` WHERE lastip='%s';";
 static const char g_sSqlRemoveDuplicateSQLite[] = "delete from `%s` where `%s`.id > (SELECT min(id) from `%s` as t2 WHERE t2.steam=`%s`.steam);";
-static const char g_sSqlRemoveDuplicateNameSQLite[] = "delete from `%s` where `%s`.id > (SELECT min(id) from `%s` as t2 WHERE t2.name=`%s`.name);";
-static const char g_sSqlRemoveDuplicateIpSQLite[] = "delete from `%s` where `%s`.id > (SELECT min(id) from `%s` as t2 WHERE t2.lastip=`%s`.lastip);";
 static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.steam=vtable.steam);";
-static const char g_sSqlRemoveDuplicateNameMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.name=vtable.name);";
-static const char g_sSqlRemoveDuplicateIpMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.ip=vtable.ip);";
 stock const char g_sWeaponsNamesGame[42][] =  { "knife", "glock", "hkp2000", "usp_silencer", "p250", "deagle", "elite", "fiveseven", "tec9", "cz75a", "revolver", "nova", "xm1014", "mag7", "sawedoff", "bizon", "mac10", "mp9", "mp7", "ump45", "p90", "galilar", "ak47", "scar20", "famas", "m4a1", "m4a1_silencer", "aug", "ssg08", "sg556", "awp", "g3sg1", "m249", "negev", "hegrenade", "flashbang", "smokegrenade", "inferno", "decoy", "taser", "mp5sd", "breachcharge"};
 stock const char g_sWeaponsNamesFull[42][] =  { "Knife", "Glock", "P2000", "USP-S", "P250", "Desert Eagle", "Dual Berettas", "Five-Seven", "Tec 9", "CZ75-Auto", "R8 Revolver", "Nova", "XM1014", "Mag 7", "Sawed-off", "PP-Bizon", "MAC-10", "MP9", "MP7", "UMP45", "P90", "Galil AR", "AK-47", "SCAR-20", "Famas", "M4A4", "M4A1-S", "AUG", "SSG 08", "SG 553", "AWP", "G3SG1", "M249", "Negev", "HE Grenade", "Flashbang", "Smoke Grenade", "Inferno", "Decoy", "Zeus x27", "MP5-SD", "Breach Charges"};
 
@@ -122,7 +112,6 @@ bool g_bChatTriggers;
 
 float g_fRankAllTimer;
 
-int g_RankBy;
 int g_PointsBombDefusedTeam;
 int g_PointsBombDefusedPlayer;
 int g_PointsBombPlantedTeam;
@@ -184,8 +173,6 @@ char g_sC4PlantedByName[MAX_NAME_LENGTH];
 
 // Preventing duplicates
 char g_aClientSteam[MAXPLAYERS + 1][64];
-char g_aClientName[MAXPLAYERS + 1][MAX_NAME_LENGTH];
-char g_aClientIp[MAXPLAYERS + 1][64];
 
 /* Rank cache */
 ConVar g_cvarRankCache;
@@ -254,79 +241,78 @@ bool g_bNSAllSnipers;
 public void OnPluginStart() {
 
 	// CREATE CVARS
-	g_cvarEnabled = CreateConVar("rankme_enabled", "1", "Is RankMe enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarRankbots = CreateConVar("rankme_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarAutopurge = CreateConVar("rankme_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
-	g_cvarPointsBombDefusedTeam = CreateConVar("rankme_points_bomb_defused_team", "2", "How many points CTs got for defusing the C4?", _, true, 0.0);
-	g_cvarPointsBombDefusedPlayer = CreateConVar("rankme_points_bomb_defused_player", "2", "How many points the CT who defused got additional?", _, true, 0.0);
-	g_cvarPointsBombPlantedTeam = CreateConVar("rankme_points_bomb_planted_team", "2", "How many points TRs got for planting the C4?", _, true, 0.0);
-	g_cvarPointsBombPlantedPlayer = CreateConVar("rankme_points_bomb_planted_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
-	g_cvarPointsBombExplodeTeam = CreateConVar("rankme_points_bomb_exploded_team", "2", "How many points TRs got for exploding the C4?", _, true, 0.0);
-	g_cvarPointsBombExplodePlayer = CreateConVar("rankme_points_bomb_exploded_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
-	g_cvarPointsHostageRescTeam = CreateConVar("rankme_points_hostage_rescued_team", "2", "How many points CTs got for rescuing the hostage?", _, true, 0.0);
-	g_cvarPointsHostageRescPlayer = CreateConVar("rankme_points_hostage_rescued_player", "2", "How many points the CT who rescued got additional?", _, true, 0.0);
-	g_cvarPointsHs = CreateConVar("rankme_points_hs", "1", "How many additional points a player got for a HeadShot?", _, true, 0.0);
-	g_cvarPointsKillCt = CreateConVar("rankme_points_kill_ct", "2", "How many points a CT got for killing?", _, true, 0.0);
-	g_cvarPointsKillTr = CreateConVar("rankme_points_kill_tr", "2", "How many points a TR got for killing?", _, true, 0.0);
-	g_cvarPointsKillBonusCt = CreateConVar("rankme_points_kill_bonus_ct", "1", "How many points a CT got for killing additional by the diffrence of points?", _, true, 0.0);
-	g_cvarPointsKillBonusTr = CreateConVar("rankme_points_kill_bonus_tr", "1", "How many points a TR got for killing additional by the diffrence of points?", _, true, 0.0);
-	g_cvarPointsKillBonusDifCt = CreateConVar("rankme_points_kill_bonus_dif_ct", "100", "How many points of diffrence is needed for a CT to got the bonus?", _, true, 0.0);
-	g_cvarPointsKillBonusDifTr = CreateConVar("rankme_points_kill_bonus_dif_tr", "100", "How many points of diffrence is needed for a TR to got the bonus?", _, true, 0.0);
-	g_cvarPointsCtRoundWin = CreateConVar("rankme_points_ct_round_win", "0", "How many points CT got for winning the round?", _, true, 0.0);
-	g_cvarPointsTrRoundWin = CreateConVar("rankme_points_tr_round_win", "0", "How many points TR got for winning the round?", _, true, 0.0);
-	g_cvarPointsCtRoundLose = CreateConVar("rankme_points_ct_round_lose", "0", "How many points CT lost for losing the round?", _, true, 0.0);
-	g_cvarPointsTrRoundLose = CreateConVar("rankme_points_tr_round_lose", "0", "How many points TR lost for losing the round?", _, true, 0.0);
-	g_cvarPointsKnifeMultiplier = CreateConVar("rankme_points_knife_multiplier", "2.0", "Multiplier of points by knife", _, true, 0.0);
-	g_cvarPointsTaserMultiplier = CreateConVar("rankme_points_taser_multiplier", "2.0", "Multiplier of points by taser", _, true, 0.0);
-	g_cvarPointsStart = CreateConVar("rankme_points_start", "1000", "Starting points", _, true, 0.0);
-	g_cvarMinimalKills = CreateConVar("rankme_minimal_kills", "0", "Minimal kills for entering the rank", _, true, 0.0);
-	g_cvarPercentPointsLose = CreateConVar("rankme_percent_points_lose", "1.0", "Multiplier of losing points. (WARNING: MAKE SURE TO INPUT IT AS FLOAT) 1.0 equals lose same amount as won by the killer, 0.0 equals no lose", _, true, 0.0);
-	g_cvarPointsLoseRoundCeil = CreateConVar("rankme_points_lose_round_ceil", "1", "If the points is f1oat, round it to next the highest or lowest? 1 = highest 0 = lowest", _, true, 0.0, true, 1.0);
-	g_cvarChatChange = CreateConVar("rankme_changes_chat", "1", "Show points changes on chat? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarShowRankAll = CreateConVar("rankme_show_rank_all", "0", "When rank command is used, show for all the rank of the player? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarRankAllTimer = CreateConVar("rankme_rank_all_timer", "30.0", "Cooldown timer to prevent rank command spam.\n0.0 = disabled", _, true, 0.0);
-	g_cvarShowBotsOnRank = CreateConVar("rankme_show_bots_on_rank", "0", "Show bots on rank/top/etc? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarResetOwnRank = CreateConVar("rankme_resetownrank", "0", "Allow player to reset his own rank? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarMinimumPlayers = CreateConVar("rankme_minimumplayers", "2", "Minimum players to start giving points", _, true, 0.0);
-	g_cvarVipEnabled = CreateConVar("rankme_vip_enabled", "0", "Show AS_ maps statiscs (VIP mod) on statsme and session?", _, true, 0.0, true, 1.0);
-	g_cvarPointsVipEscapedTeam = CreateConVar("rankme_points_vip_escaped_team", "2", "How many points CTs got helping the VIP to escaping?", _, true, 0.0);
-	g_cvarPointsVipEscapedPlayer = CreateConVar("rankme_points_vip_escaped_player", "2", "How many points the VIP got for escaping?", _, true, 0.0);
-	g_cvarPointsVipKilledTeam = CreateConVar("rankme_points_vip_killed_team", "2", "How many points TRs got for killing the VIP?", _, true, 0.0);
-	g_cvarPointsVipKilledPlayer = CreateConVar("rankme_points_vip_killed_player", "2", "How many points the TR who killed the VIP got additional?", _, true, 0.0);
-	g_cvarPointsLoseTk = CreateConVar("rankme_points_lose_tk", "0", "How many points a player lose for Team Killing?", _, true, 0.0);
-	g_cvarPointsLoseSuicide = CreateConVar("rankme_points_lose_suicide", "0", "How many points a player lose for Suiciding?", _, true, 0.0);
-	g_cvarPointsFb = CreateConVar("rankme_points_fb", "1", "How many additional points a player got for a First Blood?", _, true, 0.0);
-	g_cvarPointsNS = CreateConVar("rankme_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
-	g_cvarNSAllSnipers = CreateConVar("rankme_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
-	g_cvarRankBy = CreateConVar("rankme_rank_by", "0", "Rank players by? 0 = STEAM:ID 1 = Name 2 = IP", _, true, 0.0, true, 2.0);
-	g_cvarFfa = CreateConVar("rankme_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarMysql = CreateConVar("rankme_mysql", "0", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
-	g_cvarDumpDB = CreateConVar("rankme_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarGatherStats = CreateConVar("rankme_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarDaysToNotShowOnRank = CreateConVar("rankme_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
-	g_cvarRankMode = CreateConVar("rankme_rank_mode", "1", "Rank by what? 1 = by points 2 = by KDR ", _, true, 1.0, true, 2.0);
-	g_cvarSQLTable = CreateConVar("rankme_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
-	g_cvarChatTriggers = CreateConVar("rankme_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarPointsMvpCt = CreateConVar("rankme_points_mvp_ct", "1", "How many points a CT got for being the MVP?", _, true, 0.0);
-	g_cvarPointsMvpTr = CreateConVar("rankme_points_mvp_tr", "1", "How many points a TR got for being the MVP?", _, true, 0.0);
-	g_cvarPointsBombPickup = CreateConVar("rankme_points_bomb_pickup", "0", "How many points a player gets for picking up the bomb?", _, true, 0.0);
-	g_cvarPointsBombDropped = CreateConVar("rankme_points_bomb_dropped", "0", "How many points a player loess for dropping the bomb?", _, true, 0.0);
-	g_cvarPointsMatchWin = CreateConVar("rankme_points_match_win", "2", "How many points a player win for winning the match?", _, true, 0.0);
-	g_cvarPointsMatchLose = CreateConVar("rankme_points_match_lose", "2", "How many points a player loess for losing the match?", _, true, 0.0);
-	g_cvarPointsMatchDraw = CreateConVar("rankme_points_match_draw", "0", "How many points a player win when match draw?", _, true, 0.0);
+	g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is RankMe enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarRankbots = CreateConVar("league_ranking_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarAutopurge = CreateConVar("league_ranking_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
+	g_cvarPointsBombDefusedTeam = CreateConVar("league_ranking_points_bomb_defused_team", "2", "How many points CTs got for defusing the C4?", _, true, 0.0);
+	g_cvarPointsBombDefusedPlayer = CreateConVar("league_ranking_points_bomb_defused_player", "2", "How many points the CT who defused got additional?", _, true, 0.0);
+	g_cvarPointsBombPlantedTeam = CreateConVar("league_ranking_points_bomb_planted_team", "2", "How many points TRs got for planting the C4?", _, true, 0.0);
+	g_cvarPointsBombPlantedPlayer = CreateConVar("league_ranking_points_bomb_planted_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
+	g_cvarPointsBombExplodeTeam = CreateConVar("league_ranking_points_bomb_exploded_team", "2", "How many points TRs got for exploding the C4?", _, true, 0.0);
+	g_cvarPointsBombExplodePlayer = CreateConVar("league_ranking_points_bomb_exploded_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
+	g_cvarPointsHostageRescTeam = CreateConVar("league_ranking_points_hostage_rescued_team", "2", "How many points CTs got for rescuing the hostage?", _, true, 0.0);
+	g_cvarPointsHostageRescPlayer = CreateConVar("league_ranking_points_hostage_rescued_player", "2", "How many points the CT who rescued got additional?", _, true, 0.0);
+	g_cvarPointsHs = CreateConVar("league_ranking_points_hs", "1", "How many additional points a player got for a HeadShot?", _, true, 0.0);
+	g_cvarPointsKillCt = CreateConVar("league_ranking_points_kill_ct", "2", "How many points a CT got for killing?", _, true, 0.0);
+	g_cvarPointsKillTr = CreateConVar("league_ranking_points_kill_tr", "2", "How many points a TR got for killing?", _, true, 0.0);
+	g_cvarPointsKillBonusCt = CreateConVar("league_ranking_points_kill_bonus_ct", "1", "How many points a CT got for killing additional by the diffrence of points?", _, true, 0.0);
+	g_cvarPointsKillBonusTr = CreateConVar("league_ranking_points_kill_bonus_tr", "1", "How many points a TR got for killing additional by the diffrence of points?", _, true, 0.0);
+	g_cvarPointsKillBonusDifCt = CreateConVar("league_ranking_points_kill_bonus_dif_ct", "100", "How many points of diffrence is needed for a CT to got the bonus?", _, true, 0.0);
+	g_cvarPointsKillBonusDifTr = CreateConVar("league_ranking_points_kill_bonus_dif_tr", "100", "How many points of diffrence is needed for a TR to got the bonus?", _, true, 0.0);
+	g_cvarPointsCtRoundWin = CreateConVar("league_ranking_points_ct_round_win", "0", "How many points CT got for winning the round?", _, true, 0.0);
+	g_cvarPointsTrRoundWin = CreateConVar("league_ranking_points_tr_round_win", "0", "How many points TR got for winning the round?", _, true, 0.0);
+	g_cvarPointsCtRoundLose = CreateConVar("league_ranking_points_ct_round_lose", "0", "How many points CT lost for losing the round?", _, true, 0.0);
+	g_cvarPointsTrRoundLose = CreateConVar("league_ranking_points_tr_round_lose", "0", "How many points TR lost for losing the round?", _, true, 0.0);
+	g_cvarPointsKnifeMultiplier = CreateConVar("league_ranking_points_knife_multiplier", "2.0", "Multiplier of points by knife", _, true, 0.0);
+	g_cvarPointsTaserMultiplier = CreateConVar("league_ranking_points_taser_multiplier", "2.0", "Multiplier of points by taser", _, true, 0.0);
+	g_cvarPointsStart = CreateConVar("league_ranking_points_start", "1000", "Starting points", _, true, 0.0);
+	g_cvarMinimalKills = CreateConVar("league_ranking_minimal_kills", "0", "Minimal kills for entering the rank", _, true, 0.0);
+	g_cvarPercentPointsLose = CreateConVar("league_ranking_percent_points_lose", "1.0", "Multiplier of losing points. (WARNING: MAKE SURE TO INPUT IT AS FLOAT) 1.0 equals lose same amount as won by the killer, 0.0 equals no lose", _, true, 0.0);
+	g_cvarPointsLoseRoundCeil = CreateConVar("league_ranking_points_lose_round_ceil", "1", "If the points is f1oat, round it to next the highest or lowest? 1 = highest 0 = lowest", _, true, 0.0, true, 1.0);
+	g_cvarChatChange = CreateConVar("league_ranking_changes_chat", "1", "Show points changes on chat? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarShowRankAll = CreateConVar("league_ranking_show_rank_all", "0", "When rank command is used, show for all the rank of the player? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarRankAllTimer = CreateConVar("league_ranking_rank_all_timer", "30.0", "Cooldown timer to prevent rank command spam.\n0.0 = disabled", _, true, 0.0);
+	g_cvarShowBotsOnRank = CreateConVar("league_ranking_show_bots_on_rank", "0", "Show bots on rank/top/etc? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarResetOwnRank = CreateConVar("league_ranking_resetownrank", "0", "Allow player to reset his own rank? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarMinimumPlayers = CreateConVar("league_ranking_minimumplayers", "2", "Minimum players to start giving points", _, true, 0.0);
+	g_cvarVipEnabled = CreateConVar("league_ranking_vip_enabled", "0", "Show AS_ maps statiscs (VIP mod) on statsme and session?", _, true, 0.0, true, 1.0);
+	g_cvarPointsVipEscapedTeam = CreateConVar("league_ranking_points_vip_escaped_team", "2", "How many points CTs got helping the VIP to escaping?", _, true, 0.0);
+	g_cvarPointsVipEscapedPlayer = CreateConVar("league_ranking_points_vip_escaped_player", "2", "How many points the VIP got for escaping?", _, true, 0.0);
+	g_cvarPointsVipKilledTeam = CreateConVar("league_ranking_points_vip_killed_team", "2", "How many points TRs got for killing the VIP?", _, true, 0.0);
+	g_cvarPointsVipKilledPlayer = CreateConVar("league_ranking_points_vip_killed_player", "2", "How many points the TR who killed the VIP got additional?", _, true, 0.0);
+	g_cvarPointsLoseTk = CreateConVar("league_ranking_points_lose_tk", "0", "How many points a player lose for Team Killing?", _, true, 0.0);
+	g_cvarPointsLoseSuicide = CreateConVar("league_ranking_points_lose_suicide", "0", "How many points a player lose for Suiciding?", _, true, 0.0);
+	g_cvarPointsFb = CreateConVar("league_ranking_points_fb", "1", "How many additional points a player got for a First Blood?", _, true, 0.0);
+	g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
+	g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
+	g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarMysql = CreateConVar("league_ranking_mysql", "0", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
+	g_cvarDumpDB = CreateConVar("league_ranking_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
+	g_cvarRankMode = CreateConVar("league_ranking_rank_mode", "1", "Rank by what? 1 = by points 2 = by KDR ", _, true, 1.0, true, 2.0);
+	g_cvarSQLTable = CreateConVar("league_ranking_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
+	g_cvarChatTriggers = CreateConVar("league_ranking_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarPointsMvpCt = CreateConVar("league_ranking_points_mvp_ct", "1", "How many points a CT got for being the MVP?", _, true, 0.0);
+	g_cvarPointsMvpTr = CreateConVar("league_ranking_points_mvp_tr", "1", "How many points a TR got for being the MVP?", _, true, 0.0);
+	g_cvarPointsBombPickup = CreateConVar("league_ranking_points_bomb_pickup", "0", "How many points a player gets for picking up the bomb?", _, true, 0.0);
+	g_cvarPointsBombDropped = CreateConVar("league_ranking_points_bomb_dropped", "0", "How many points a player loess for dropping the bomb?", _, true, 0.0);
+	g_cvarPointsMatchWin = CreateConVar("league_ranking_points_match_win", "2", "How many points a player win for winning the match?", _, true, 0.0);
+	g_cvarPointsMatchLose = CreateConVar("league_ranking_points_match_lose", "2", "How many points a player loess for losing the match?", _, true, 0.0);
+	g_cvarPointsMatchDraw = CreateConVar("league_ranking_points_match_draw", "0", "How many points a player win when match draw?", _, true, 0.0);
 
 	/* Assist */
-	g_cvarPointsAssistKill = CreateConVar("rankme_points_assiist_kill","1","How many points a player gets for assist kill?",_,true,0.0);
+	g_cvarPointsAssistKill = CreateConVar("league_ranking_points_assiist_kill","1","How many points a player gets for assist kill?",_,true,0.0);
 
 	/* Enable Or Disable Points In Warmup */
-	g_cvarGatherStatsWarmup = CreateConVar("rankme_gather_stats_warmup","1","Gather Statistics In Warmup?", _, true, 0.0, true, 1.0);
+	g_cvarGatherStatsWarmup = CreateConVar("league_ranking_gather_stats_warmup","0","Gather Statistics In Warmup?", _, true, 0.0, true, 1.0);
 
 	/* Min points */
-	g_cvarPointsMinEnabled = CreateConVar("rankme_points_min_enabled", "1", "Is minimum points enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarPointsMin = CreateConVar("rankme_points_min", "0", "Minimum points", _, true, 0.0);
+	g_cvarPointsMinEnabled = CreateConVar("league_ranking_points_min_enabled", "1", "Is minimum points enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarPointsMin = CreateConVar("league_ranking_points_min", "0", "Minimum points", _, true, 0.0);
 
 	/* Rank cache */
-	g_cvarRankCache = CreateConVar("rankme_rank_cache", "0", "Get player rank via cache, auto build cache on every OnMapStart.", _, true, 0.0, true, 1.0);
+	g_cvarRankCache = CreateConVar("league_ranking_rank_cache", "0", "Get player rank via cache, auto build cache on every OnMapStart.", _, true, 0.0, true, 1.0);
 	g_arrayRankCache[0] = CreateArray(ByteCountToCells(128));
 	g_arrayRankCache[1] = CreateArray(ByteCountToCells(128));
 	g_arrayRankCache[2] = CreateArray(ByteCountToCells(128));
@@ -426,7 +412,7 @@ public void OnPluginStart() {
 
 	// ADMNIN COMMANDS
 	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "RankMe: Resets the rank of a player");
-	RegAdminCmd("sm_rankme_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "RankMe: Removes the duplicated rows on the database");
+	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "RankMe: Removes the duplicated rows on the database");
 	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "RankMe: Purges from the rank players that didn't connected for X days");
 	RegAdminCmd("sm_resetrank_all", CMD_ResetRankAll, ADMFLAG_ROOT, "RankMe: Resets the rank of all players");
 
@@ -454,14 +440,14 @@ public void OnPluginStart() {
 	RegConsoleCmd("sm_topdamage", CMD_TopDamage, "RankMe: Shows the TOP ordered by damage");
 
 	/*RankMe Connect Announcer*/
-	g_cvarAnnounceConnect = CreateConVar("rankme_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
-	g_cvarAnnounceConnectChat = CreateConVar("rankme_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
-	g_cvarAnnounceConnectHint = CreateConVar("rankme_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
-	g_cvarAnnounceDisconnect = CreateConVar("rankme_announcer_player_disconnect","1","Announce when a player disconnect with position and points?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopConnect = CreateConVar("rankme_announcer_top_player_connect","1","Announce when a top player connect?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopPosConnect = CreateConVar("rankme_announcer_top_pos_player_connect","10","Max position to announce that a top player connect?",_,true,0.0);
-	g_cvarAnnounceTopConnectChat = CreateConVar("rankme_announcer_top_player_connect_chat","1","Announce when a top player connect at chat?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopConnectHint = CreateConVar("rankme_announcer_top_player_connect_hint","0","Announce when a top player connect at hintbox?",_,true,0.0,true,1.0);
+	g_cvarAnnounceConnect = CreateConVar("league_ranking_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
+	g_cvarAnnounceConnectChat = CreateConVar("league_ranking_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
+	g_cvarAnnounceConnectHint = CreateConVar("league_ranking_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
+	g_cvarAnnounceDisconnect = CreateConVar("league_ranking_announcer_player_disconnect","1","Announce when a player disconnect with position and points?",_,true,0.0,true,1.0);
+	g_cvarAnnounceTopConnect = CreateConVar("league_ranking_announcer_top_player_connect","1","Announce when a top player connect?",_,true,0.0,true,1.0);
+	g_cvarAnnounceTopPosConnect = CreateConVar("league_ranking_announcer_top_pos_player_connect","10","Max position to announce that a top player connect?",_,true,0.0);
+	g_cvarAnnounceTopConnectChat = CreateConVar("league_ranking_announcer_top_player_connect_chat","1","Announce when a top player connect at chat?",_,true,0.0,true,1.0);
+	g_cvarAnnounceTopConnectHint = CreateConVar("league_ranking_announcer_top_player_connect_hint","0","Announce when a top player connect at hintbox?",_,true,0.0,true,1.0);
 
 	g_cvarAnnounceConnect.AddChangeHook(OnConVarChanged);
 	g_cvarAnnounceConnectChat.AddChangeHook(OnConVarChanged);
@@ -482,7 +468,7 @@ public void OnPluginStart() {
 	AddCommandListener(OnSayText, "say");
 	AddCommandListener(OnSayText, "say_team");
 
-	ConVar cvarVersion = CreateConVar("rankme_version", PLUGIN_VERSION, "RankMe Version", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+	ConVar cvarVersion = CreateConVar("league_ranking_version", PLUGIN_VERSION, "RankMe Version", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	// UPDATE THE CVAR IF NEEDED
 	char sVersionOnCvar[10];
 	cvarVersion.GetString(sVersionOnCvar, sizeof(sVersionOnCvar));
@@ -490,12 +476,12 @@ public void OnPluginStart() {
 		cvarVersion.SetString(PLUGIN_VERSION, true, true);
 
 	// Create the forwards
-	g_fwdOnPlayerLoaded = CreateGlobalForward("RankMe_OnPlayerLoaded", ET_Hook, Param_Cell);
-	g_fwdOnPlayerSaved = CreateGlobalForward("RankMe_OnPlayerSaved", ET_Hook, Param_Cell);
+	g_fwdOnPlayerLoaded = CreateGlobalForward("LeagueRanking_OnPlayerLoaded", ET_Hook, Param_Cell);
+	g_fwdOnPlayerSaved = CreateGlobalForward("LeagueRanking_OnPlayerSaved", ET_Hook, Param_Cell);
 
 	/* Hide chat */
 	RegConsoleCmd("sm_rankmechat", CMD_HideChat, "Disable rankme chat messages");
-	hidechatcookie = RegClientCookie("rankme_hidechat", "Hide rankme chat messages", CookieAccess_Private);
+	hidechatcookie = RegClientCookie("league_ranking_hidechat", "Hide rankme chat messages", CookieAccess_Private);
 }
 
 public void OnConVarChanged_SQLTable(Handle convar, const char[] oldValue, const char[] newValue) {
@@ -586,7 +572,6 @@ public void OnConfigsExecuted() {
 	}
 
 	g_bShowBotsOnRank = g_cvarShowBotsOnRank.BoolValue;
-	g_RankBy = g_cvarRankBy.IntValue;
 	g_bEnabled = g_cvarEnabled.BoolValue;
 	g_bChatChange = g_cvarChatChange.BoolValue;
 	g_bShowRankAll = g_cvarShowRankAll.BoolValue;
@@ -727,26 +712,10 @@ public Action CMD_Duplicate(int client, int args) {
 
 	if (g_bMysql) {
 
-		if (g_RankBy == 0)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
-		else if (g_RankBy == 1)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateNameMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
-		else if (g_RankBy == 2)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateIpMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
+        FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
 
 	} else {
-
-		if (g_RankBy == 0)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateSQLite, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
-		else if (g_RankBy == 1)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateNameSQLite, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
-		else if (g_RankBy == 2)
-			FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateIpSQLite, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
+        FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateSQLite, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
 	}
 
 	SQL_TQuery(g_hStatsDb, SQL_DuplicateCallback, sQuery, client);
@@ -772,14 +741,14 @@ public void SQL_DuplicateCallback(Handle owner, Handle hndl, const char[] error,
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	CreateNative("RankMe_GivePoint", Native_GivePoint);
-	CreateNative("RankMe_GetRank", Native_GetRank);
-	CreateNative("RankMe_GetPoints", Native_GetPoints);
-	CreateNative("RankMe_GetStats", Native_GetStats);
-	CreateNative("RankMe_GetSession", Native_GetSession);
-	CreateNative("RankMe_GetWeaponStats", Native_GetWeaponStats);
-	CreateNative("RankMe_IsPlayerLoaded", Native_IsPlayerLoaded);
-	CreateNative("RankMe_GetHitbox", Native_GetHitbox);
+	CreateNative("LeagueRanking_GivePoint", Native_GivePoint);
+	CreateNative("LeagueRanking_GetRank", Native_GetRank);
+	CreateNative("LeagueRanking_GetPoints", Native_GetPoints);
+	CreateNative("LeagueRanking_GetStats", Native_GetStats);
+	CreateNative("LeagueRanking_GetSession", Native_GetSession);
+	CreateNative("LeagueRanking_GetWeaponStats", Native_GetWeaponStats);
+	CreateNative("LeagueRanking_IsPlayerLoaded", Native_IsPlayerLoaded);
+	CreateNative("LeagueRanking_GetHitbox", Native_GetHitbox);
 
 	RegPluginLibrary("rankme");
 
@@ -862,27 +831,9 @@ void GetClientRank(Handle pack)
 	CloseHandle(pack);
 
 	int rank;
-	switch(g_RankBy)
-	{
-		case 0:
-		{
-			char steamid[32];
-			GetClientAuthId(client, AuthId_Steam2, steamid, 32, true);
-			rank = FindStringInArray(g_arrayRankCache[0], steamid);
-		}
-		case 1:
-		{
-			char name[128];
-			GetClientName(client, name, 128);
-			rank = FindStringInArray(g_arrayRankCache[1], name);
-		}
-		case 2:
-		{
-			char ip[128];
-			GetClientIP(client, ip, 128);
-			rank = FindStringInArray(g_arrayRankCache[2], ip);
-		}
-	}
+    char steamid[32];
+    GetClientAuthId(client, AuthId_Steam2, steamid, 32, true);
+    rank = FindStringInArray(g_arrayRankCache[0], steamid);
 
 	if(rank > 0)
 		CallRankCallback(client, rank, callback, args, plugin);
@@ -914,29 +865,12 @@ public void SQL_GetRankCallback(Handle owner, Handle hndl, const char[] error, a
 	while (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
 	{
 		i++;
-
-		if (g_RankBy == 0) {
-			SQL_FetchString(hndl, 1, Receive, sizeof(Receive));
-			if (StrEqual(Receive, g_aClientSteam[client], false))
-			{
-				CallRankCallback(client, i, callback, args, plugin);
-				break;
-			}
-		} else if (g_RankBy == 1) {
-			SQL_FetchString(hndl, 2, Receive, sizeof(Receive));
-			if (StrEqual(Receive, g_aClientName[client], false))
-			{
-				CallRankCallback(client, i, callback, args, plugin);
-				break;
-			}
-		} else if (g_RankBy == 2) {
-			SQL_FetchString(hndl, 3, Receive, sizeof(Receive));
-			if (StrEqual(Receive, g_aClientIp[client], false))
-			{
-				CallRankCallback(client, i, callback, args, plugin);
-				break;
-			}
-		}
+        SQL_FetchString(hndl, 1, Receive, sizeof(Receive));
+        if (StrEqual(Receive, g_aClientSteam[client], false))
+        {
+            CallRankCallback(client, i, callback, args, plugin);
+            break;
+        }
 	}
 }
 
@@ -1028,36 +962,10 @@ public Action OnClientChangeName(Handle event, const char[] name, bool dontBroad
 
 		//ReplaceString(clientnewname, sizeof(clientnewname), "'", "");
 		char query[10000];
-		if (g_RankBy == 1) {
-			OnDB[client] = false;
-			for (int i = 0; i <= 19; i++) {
-				g_aSession[client][i] = 0;
-				g_aStats[client][i] = 0;
-			}
-			g_aStats[client][SCORE] = g_PointsStart;
-			for (int i = 0; i < 42; i++) {
-				g_aWeapons[client][i] = 0;
-			}
-			g_aSession[client][CONNECTED] = GetTime();
 
-			strcopy(g_aClientName[client], MAX_NAME_LENGTH, clientnewname);
+        Format(query, sizeof(query), "UPDATE `%s` SET name='%s' WHERE steam = '%s';", g_sSQLTable, Eclientnewname, g_aClientSteam[client]);
 
-			Format(query, sizeof(query), g_sSqlRetrieveClientName, g_sSQLTable, Eclientnewname);
-			if (DEBUGGING) {
-				PrintToServer(query);
-				LogError("%s", query);
-			}
-			SQL_TQuery(g_hStatsDb, SQL_LoadPlayerCallback, query, client);
-
-		} else {
-
-			if (g_RankBy == 0)
-				Format(query, sizeof(query), "UPDATE `%s` SET name='%s' WHERE steam = '%s';", g_sSQLTable, Eclientnewname, g_aClientSteam[client]);
-			else
-				Format(query, sizeof(query), "UPDATE `%s` SET name='%s' WHERE lastip = '%s';", g_sSQLTable, Eclientnewname, g_aClientIp[client]);
-
-			SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
-		}
+        SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
 	}
 	return Plugin_Continue;
 }
@@ -1234,14 +1142,6 @@ public void OnPluginEnd() {
 		if (IsClientInGame(client)) {
 			if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client)))
 				return;
-			char name[MAX_NAME_LENGTH];
-			GetClientName(client, name, sizeof(name));
-			char sEscapeName[MAX_NAME_LENGTH * 2 + 1];
-			SQL_EscapeString(g_hStatsDb, name, sEscapeName, sizeof(sEscapeName));
-
-			// Make SQL-safe
-			//ReplaceString(name, sizeof(name), "'", "");
-
 
 			char weapons_query[2000] = "";
 			for (int i = 0; i < 42; i++) {
@@ -1252,35 +1152,12 @@ public void OnPluginEnd() {
 			char query[4000];
 			char query2[4000];
 
-			if (g_RankBy == 0)
-			{
-				Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-					g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-					g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
+            Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
+                g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query,
+                g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
 
-				Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-					g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
-			}
-
-			else if (g_RankBy == 1)
-			{
-				Format(query, sizeof(query), g_sSqlSaveName, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-					g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-					g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], sEscapeName);
-
-				Format(query2, sizeof(query2), g_sSqlSaveName2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-					g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], sEscapeName);
-			}
-
-			else if (g_RankBy == 2)
-			{
-				Format(query, sizeof(query), g_sSqlSaveIp, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-					g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-					g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientIp[client]);
-
-				Format(query2, sizeof(query2), g_sSqlSaveIp2,  g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-					g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientIp[client]);
-			}
+            Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
+                g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
 
 			LogMessage(query);
 			LogMessage(query2);
@@ -2017,13 +1894,6 @@ public void SalvarPlayer(int client) {
 	if (!OnDB[client])
 		return;
 
-	char sEscapeName[MAX_NAME_LENGTH * 2 + 1];
-	SQL_EscapeString(g_hStatsDb, g_aClientName[client], sEscapeName, sizeof(sEscapeName));
-	//SQL_EscapeString(g_hStatsDb,name,name,sizeof(name));
-
-	// Make SQL-safe
-	//ReplaceString(name, sizeof(name), "'", "");
-
 	char weapons_query[1000] = "";
 	for (int i = 0; i < 42; i++) {
 		Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], g_aWeapons[client][i]);
@@ -2033,35 +1903,13 @@ public void SalvarPlayer(int client) {
 	char query[4000];
 	char query2[4000];
 
-	if (g_RankBy == 0)
-	{
-		Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-			g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-			g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
+    Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
+        g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query,
+        g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
 
-		Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-			g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
-	}
+    Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
+        g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
 
-	else if (g_RankBy == 1)
-	{
-		Format(query, sizeof(query), g_sSqlSaveName, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-			g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-			g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], sEscapeName);
-
-		Format(query2, sizeof(query2), g_sSqlSaveName2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-			g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], sEscapeName);
-	}
-
-	else if (g_RankBy == 2)
-	{
-		Format(query, sizeof(query), g_sSqlSaveIp, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-			g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], g_aClientIp[client], sEscapeName, weapons_query,
-			g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientIp[client]);
-
-		Format(query2, sizeof(query2), g_sSqlSaveIp2,  g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-			g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientIp[client]);
-	}
 
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query, client, DBPrio_High);
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query2, client, DBPrio_High);
@@ -2126,25 +1974,13 @@ public void LoadPlayer(int client) {
 	}
 	g_aSession[client][CONNECTED] = GetTime();
 
-	char name[MAX_NAME_LENGTH];
-	GetClientName(client, name, sizeof(name));
-	strcopy(g_aClientName[client], MAX_NAME_LENGTH, name);
-	char sEscapeName[MAX_NAME_LENGTH * 2 + 1];
-	SQL_EscapeString(g_hStatsDb, name, sEscapeName, sizeof(sEscapeName));
 	//ReplaceString(name, sizeof(name), "'", "");
 	char auth[32];
 	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
 	strcopy(g_aClientSteam[client], sizeof(g_aClientSteam[]), auth);
-	char ip[32];
-	GetClientIP(client, ip, sizeof(ip));
-	strcopy(g_aClientIp[client], sizeof(g_aClientIp[]), ip);
 	char query[10000];
-	if (g_RankBy == 1)
-		FormatEx(query, sizeof(query), g_sSqlRetrieveClientName, g_sSQLTable, sEscapeName);
-	else if (g_RankBy == 0)
-		FormatEx(query, sizeof(query), g_sSqlRetrieveClient, g_sSQLTable, auth);
-	else if (g_RankBy == 2)
-		FormatEx(query, sizeof(query), g_sSqlRetrieveClientIp, g_sSQLTable, ip);
+
+    FormatEx(query, sizeof(query), g_sSqlRetrieveClient, g_sSQLTable, auth);
 
 	if (DEBUGGING) {
 		PrintToServer(query);
@@ -2152,7 +1988,6 @@ public void LoadPlayer(int client) {
 	}
 	if (g_hStatsDb != INVALID_HANDLE)
 		SQL_TQuery(g_hStatsDb, SQL_LoadPlayerCallback, query, client);
-
 }
 
 public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error, any client)
@@ -2168,25 +2003,14 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 	if (!IsClientInGame(client))
 		return;
 
-	if (g_RankBy == 1) {
-		char name[MAX_NAME_LENGTH];
-		GetClientName(client, name, sizeof(name));
-		if (!StrEqual(name, g_aClientName[client]))
-			return;
-	} else if (g_RankBy == 0) {
-		char auth[64];
-		GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
-		if (!StrEqual(auth, g_aClientSteam[client]))
-			return;
-	} else if (g_RankBy == 2) {
-		char ip[64];
-		GetClientIP(client, ip, sizeof(ip));
-		if (!StrEqual(ip, g_aClientIp[client]))
-			return;
-	}
+    char auth[64];
+    GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+    if (!StrEqual(auth, g_aClientSteam[client]))
+        return;
+
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
 	{
-		//Player infos
+		//Player info
 		for (int i = 0; i <= 11; i++) {
 			g_aStats[client][i] = SQL_FetchInt(hndl, 4 + i);
 		}
@@ -2220,12 +2044,8 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 		g_aStats[client][NSD] = SQL_FetchInt(hndl, 82);
 	} else {
 		char query[10000];
-		char sEscapeName[MAX_NAME_LENGTH * 2 + 1];
-		SQL_EscapeString(g_hStatsDb, g_aClientName[client], sEscapeName, sizeof(sEscapeName));
-		//SQL_EscapeString(g_hStatsDb,name,name,sizeof(name));
-		//ReplaceString(name, sizeof(name), "'", "");
 
-		Format(query, sizeof(query), g_sSqlInsert, g_sSQLTable, g_aClientSteam[client], sEscapeName, g_aClientIp[client], g_PointsStart);
+		Format(query, sizeof(query), g_sSqlInsert, g_sSQLTable, g_aClientSteam[client], g_PointsStart);
 		SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query, _, DBPrio_High);
 
 		if (DEBUGGING) {
@@ -2352,9 +2172,6 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 	if (convar == g_cvarShowBotsOnRank) {
 		g_bShowBotsOnRank = g_cvarShowBotsOnRank.BoolValue;
 		g_bQueryPlayerCount = true;
-	}
-	else if (convar == g_cvarRankBy) {
-		g_RankBy = g_cvarRankBy.IntValue;
 	}
 	else if (convar == g_cvarEnabled) {
 		g_bEnabled = g_cvarEnabled.BoolValue;
