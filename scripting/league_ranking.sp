@@ -29,7 +29,7 @@ public Plugin myinfo = {
 
 static const char g_sSqliteCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
 static const char g_sMysqlCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
-static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (NULL,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 
 /* SM1.9 Fix */
 static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
@@ -180,7 +180,7 @@ Handle g_arrayRankCache[3];
 bool g_bRankCache;
 
 /* Cooldown Timer */
-Handle hRankTimer[MAXPLAYERS + 1] = INVALID_HANDLE;
+Handle hRankTimer[MAXPLAYERS + 1] = null;
 
 /*RankMe Connect Announcer*/
 ConVar g_cvarAnnounceConnect;
@@ -505,7 +505,7 @@ public void DB_Connect(bool firstload) {
 		} else {
 			g_hStatsDb = SQLite_UseDatabase("rankme", sError, sizeof(sError));
 		}
-		if (g_hStatsDb == INVALID_HANDLE)
+		if (g_hStatsDb == null)
 		{
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
@@ -559,7 +559,7 @@ public void DB_Connect(bool firstload) {
 
 public void OnConfigsExecuted() {
 
-	if (g_hStatsDb == INVALID_HANDLE)
+	if (g_hStatsDb == null)
 		DB_Connect(true);
 	else
 		DB_Connect(false);
@@ -684,7 +684,7 @@ void BuildRankCache()
 
 public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, any unuse)
 {
-	if (hndl == INVALID_HANDLE)
+	if (hndl == null)
 	{
 		LogError("[LeagueRanking] : build rank cache failed", error);
 		return;
@@ -725,7 +725,7 @@ public Action CMD_Duplicate(int client, int args) {
 
 public void SQL_DuplicateCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == INVALID_HANDLE)
+	if (hndl == null)
 	{
 		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
@@ -851,7 +851,7 @@ public void SQL_GetRankCallback(Handle owner, Handle hndl, const char[] error, a
 	Handle plugin = ReadPackCell(pack);
 	CloseHandle(pack);
 
-	if (hndl == INVALID_HANDLE)
+	if (hndl == null)
 	{
 		LogError("[LeagueRanking] Query Fail: %s", error);
 		CallRankCallback(0, 0, callback, 0, plugin);
@@ -1419,7 +1419,7 @@ public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast
 	firstblood = false;
 
 	int i;
-	for(i=1;i<=MaxClients;i++)
+	for (i=1;i<=MaxClients;i++)
 	{
 		if (IsClientInGame(i) && GetClientTeam(i) == TR)
 		{
@@ -1925,7 +1925,7 @@ public void SalvarPlayer(int client) {
 
 public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == INVALID_HANDLE)
+	if (hndl == null)
 	{
 		LogError("[LeagueRanking] Save Player Fail: %s", error);
 		return;
@@ -1949,7 +1949,7 @@ public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any 
 public void OnClientPutInServer(int client) 
 {
 	// If the database isn't connected, you can't run SQL_EscapeString.
-	if (g_hStatsDb != INVALID_HANDLE)
+	if (g_hStatsDb != null)
 		LoadPlayer(client);
 
 	// Cookie
@@ -1986,7 +1986,7 @@ public void LoadPlayer(int client) {
 		PrintToServer(query);
 		LogError("%s", query);
 	}
-	if (g_hStatsDb != INVALID_HANDLE)
+	if (g_hStatsDb != null)
 		SQL_TQuery(g_hStatsDb, SQL_LoadPlayerCallback, query, client);
 }
 
@@ -1995,7 +1995,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client)))
 		return;
 
-	if (hndl == INVALID_HANDLE)
+	if (hndl == null)
 	{
 		LogError("[LeagueRanking] Load Player Fail: %s", error);
 		return;
@@ -2071,8 +2071,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 
 public void SQL_PurgeCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == INVALID_HANDLE)
-	{
+	if (hndl == null) {
 		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
 	}
@@ -2087,8 +2086,7 @@ public void SQL_PurgeCallback(Handle owner, Handle hndl, const char[] error, any
 
 public void SQL_NothingCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == INVALID_HANDLE)
-	{
+	if (hndl == null) {
 		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
 	}
@@ -2106,9 +2104,7 @@ public void OnClientDisconnect(int client) {
 }
 
 public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any Datapack) {
-
-	if (hndl == INVALID_HANDLE)
-	{
+	if (hndl == null) {
 		LogError("[LeagueRanking] Query Fail: %s", error);
 		PrintToServer(error);
 		return;
@@ -2122,7 +2118,7 @@ public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any 
 	fields_values[0] = 0;
 
 	File1 = OpenFile("rank.sql", "w");
-	if (File1 == INVALID_HANDLE) {
+	if (File1 == null) {
 
 		LogError("[LeagueRanking] Unable to open dump file.");
 
@@ -2149,8 +2145,7 @@ public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any 
 		first = true;
 		for (int i = 0; i <= fields - 1; i++) {
 			SQL_FetchString(hndl, i, field, sizeof(field));
-			// ReplaceString(field, sizeof(field), "\\","\\\\",false);
-			// ReplaceString(field,sizeof(field),"\"", "\\\"", false);
+			
 			SQL_EscapeString(g_hStatsDb, field, prepared_field, sizeof(prepared_field));
 
 			if (first) {
@@ -2399,7 +2394,7 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		g_bNSAllSnipers = g_cvarNSAllSnipers.BoolValue;
 	}
 
-	if (g_bQueryPlayerCount && g_hStatsDb != INVALID_HANDLE) {
+	if (g_bQueryPlayerCount && g_hStatsDb != null) {
 		char query[10000];
 		MakeSelectQuery(query, sizeof(query));
 		SQL_TQuery(g_hStatsDb, SQL_GetPlayersCallback, query);
@@ -2444,7 +2439,6 @@ public Action LeagueRanking_OnPlayerLoaded(int client) {
 
 public Action RankConnectCallback(int client, int rank, any data)
 {
-
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client)))
 		return;
 
@@ -2460,26 +2454,23 @@ public Action RankConnectCallback(int client, int rank, any data)
 	GetClientIP(client, s_ip, 32);
 	Format(s_Country, sizeof(s_Country), "Unknown");
 	GeoipCountry(s_ip, s_Country, sizeof(s_Country));
-	// if (!strcmp(s_Country, NULL_STRING))
-	if (s_Country[0] == 0)
+
+	if (s_Country[0] == 0) {
 		Format(s_Country, sizeof(s_Country), "Unknown", s_Country);
-	else
-		if (StrContains(s_Country, "United", false) != -1 ||
-			StrContains(s_Country, "Republic", false) != -1 ||
-			StrContains(s_Country, "Federation", false) != -1 ||
-			StrContains(s_Country, "Island", false) != -1 ||
-			StrContains(s_Country, "Netherlands", false) != -1 ||
-			StrContains(s_Country, "Isle", false) != -1 ||
-			StrContains(s_Country, "Bahamas", false) != -1 ||
-			StrContains(s_Country, "Maldives", false) != -1 ||
-			StrContains(s_Country, "Philippines", false) != -1 ||
-			StrContains(s_Country, "Vatican", false) != -1 )
-		{
-			Format(s_Country, sizeof(s_Country), "The %s", s_Country);
-		}
+	} else if (StrContains(s_Country, "United", false) != -1 ||
+        StrContains(s_Country, "Republic", false) != -1 ||
+        StrContains(s_Country, "Federation", false) != -1 ||
+        StrContains(s_Country, "Island", false) != -1 ||
+        StrContains(s_Country, "Netherlands", false) != -1 ||
+        StrContains(s_Country, "Isle", false) != -1 ||
+        StrContains(s_Country, "Bahamas", false) != -1 ||
+        StrContains(s_Country, "Maldives", false) != -1 ||
+        StrContains(s_Country, "Philippines", false) != -1 ||
+        StrContains(s_Country, "Vatican", false) != -1 ) {
+        Format(s_Country, sizeof(s_Country), "The %s", s_Country);
+    }
 
 	if (g_bAnnounceConnect) {
-
 		if (g_bAnnounceConnectChat) {
 			CPrintToChatAll("%s %t",MSG,"PlayerJoinedChat",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
 		}
@@ -2487,11 +2478,9 @@ public Action RankConnectCallback(int client, int rank, any data)
 		if (g_bAnnounceConnectHint) {
 			PrintHintTextToAll("%t","PlayerJoinedHint",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
 		}
-
 	}
 
 	if (g_bAnnounceTopConnect && rank <= g_AnnounceTopPosConnect) {
-
 		if (g_bAnnounceTopConnectChat) {
 			CPrintToChatAll("%s %t",MSG,"TopPlayerJoinedChat",g_AnnounceTopPosConnect,sClientName,g_aRankOnConnect[client],s_Country);
 		}
@@ -2502,8 +2491,7 @@ public Action RankConnectCallback(int client, int rank, any data)
 	}
 }
 
-public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)
-{
+public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast) {
 	if (!g_bAnnounceDisconnect)
 		return;
 
@@ -2525,8 +2513,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 }
 
 /* Enable Or Disable Points In Warmup */
-public void OnGameFrame()
-{
+public void OnGameFrame() {
 	if (!g_bGatherStatsWarmup) {
 		if (GameRules_GetProp("m_bWarmupPeriod") == 1) {
 		    //In Warmup
@@ -2553,49 +2540,32 @@ public Action CMD_HideChat(int client, int args) {
 }
 
 public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroadcast) {
-	if (CS_GetTeamScore(CT) > CS_GetTeamScore(TR))
-	{
-		for(int i=1;i<=MaxClients;i++)
-		{
-			if (IsClientInGame(i))
-			{
-				if (GetClientTeam(i) == TR)
-				{
+	if (CS_GetTeamScore(CT) > CS_GetTeamScore(TR)) {
+		for (int i = 1; i <= MaxClients; i++) {
+			if (IsClientInGame(i)) {
+				if (GetClientTeam(i) == TR) {
 					g_aStats[i][MATCH_LOSE]++;
 					g_aStats[i][SCORE] -= g_PointsMatchLose;
-				}
-				else if (GetClientTeam(i) == CT)
-				{
+				} else if (GetClientTeam(i) == CT) {
 					g_aStats[i][MATCH_WIN]++;
 					g_aStats[i][SCORE] += g_PointsMatchWin;
 				}
 			}
 		}
-	}
-	else if (CS_GetTeamScore(CT) == CS_GetTeamScore(TR))
-	{
-		for(int i=1;i<=MaxClients;i++)
-		{
-			if (IsClientInGame(i) && (GetClientTeam(i) == TR || GetClientTeam(i) == CT))
-			{
+	} else if (CS_GetTeamScore(CT) == CS_GetTeamScore(TR)) {
+		for (int i = 1; i <= MaxClients; i++) {
+			if (IsClientInGame(i) && (GetClientTeam(i) == TR || GetClientTeam(i) == CT)) {
 				g_aStats[i][MATCH_DRAW]++;
 				g_aStats[i][SCORE] += g_PointsMatchDraw;
 			}
 		}
-	}
-	else if (CS_GetTeamScore(CT) < CS_GetTeamScore(TR))
-	{
-		for(int i=1;i<=MaxClients;i++)
-		{
-			if (IsClientInGame(i))
-			{
-				if (GetClientTeam(i) == TR)
-				{
+	} else if (CS_GetTeamScore(CT) < CS_GetTeamScore(TR)) {
+		for (int i = 1; i <= MaxClients; i++) {
+			if (IsClientInGame(i)) {
+				if (GetClientTeam(i) == TR) {
 					g_aStats[i][MATCH_WIN]++;
 					g_aStats[i][SCORE] += g_PointsMatchWin;
-				}
-				else if (GetClientTeam(i) == CT)
-				{
+				} else if (GetClientTeam(i) == CT) {
 					g_aStats[i][MATCH_LOSE]++;
 					g_aStats[i][SCORE] -= g_PointsMatchLose;
 				}
