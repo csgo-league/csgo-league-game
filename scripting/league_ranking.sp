@@ -2011,7 +2011,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
 	{
 		//Player info
-		for (int i = 0; i <= 11; i++) {
+		for (int i = 0; i <= 9; i++) {
 			g_aStats[client][i] = SQL_FetchInt(hndl, 4 + i);
 		}
 
