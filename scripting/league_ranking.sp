@@ -507,7 +507,7 @@ public void DB_Connect(bool firstload) {
 		}
 		if (g_hStatsDb == INVALID_HANDLE)
 		{
-			SetFailState("[RankMe] Unable to connect to the database (%s)", sError);
+			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
 		SQL_LockDatabase(g_hStatsDb);
 		char sQuery[9999];
@@ -686,7 +686,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 {
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] : build rank cache failed", error);
+		LogError("[LeagueRanking] : build rank cache failed", error);
 		return;
 	}
 
@@ -704,7 +704,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 		}
 	}
 	else
-		LogMessage("[RankMe] :  No mork rank");
+		LogMessage("[LeagueRanking] :  No mork rank");
 }
 
 public Action CMD_Duplicate(int client, int args) {
@@ -727,15 +727,15 @@ public void SQL_DuplicateCallback(Handle owner, Handle hndl, const char[] error,
 {
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Query Fail: %s", error);
+		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
 	}
 
-	PrintToServer("[RankMe]: %d duplicated rows removed", SQL_GetAffectedRows(owner));
+	PrintToServer("[LeagueRanking] %d duplicated rows removed", SQL_GetAffectedRows(owner));
 	if (client != 0) {
-		PrintToChat(client, "[RankMe]: %d duplicated rows removed", SQL_GetAffectedRows(owner));
+		PrintToChat(client, "[LeagueRanking] %d duplicated rows removed", SQL_GetAffectedRows(owner));
 	}
-	//LogAction(-1,-1,"[RankMe]: %d players purged by inactivity",SQL_GetAffectedRows(owner));
+	//LogAction(-1,-1,"[LeagueRanking] %d players purged by inactivity",SQL_GetAffectedRows(owner));
 
 }
 
@@ -853,7 +853,7 @@ public void SQL_GetRankCallback(Handle owner, Handle hndl, const char[] error, a
 
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Query Fail: %s", error);
+		LogError("[LeagueRanking] Query Fail: %s", error);
 		CallRankCallback(0, 0, callback, 0, plugin);
 		return;
 	}
@@ -1927,7 +1927,7 @@ public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any 
 {
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Save Player Fail: %s", error);
+		LogError("[LeagueRanking] Save Player Fail: %s", error);
 		return;
 	}
 
@@ -1997,7 +1997,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Load Player Fail: %s", error);
+		LogError("[LeagueRanking] Load Player Fail: %s", error);
 		return;
 	}
 	if (!IsClientInGame(client))
@@ -2073,15 +2073,15 @@ public void SQL_PurgeCallback(Handle owner, Handle hndl, const char[] error, any
 {
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Query Fail: %s", error);
+		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
 	}
 
-	PrintToServer("[RankMe]: %d players purged by inactivity", SQL_GetAffectedRows(owner));
+	PrintToServer("[LeagueRanking] %d players purged by inactivity", SQL_GetAffectedRows(owner));
 	if (client != 0) {
-		PrintToChat(client, "[RankMe]: %d players purged by inactivity", SQL_GetAffectedRows(owner));
+		PrintToChat(client, "[LeagueRanking] %d players purged by inactivity", SQL_GetAffectedRows(owner));
 	}
-	//LogAction(-1,-1,"[RankMe]: %d players purged by inactivity",SQL_GetAffectedRows(owner));
+	//LogAction(-1,-1,"[LeagueRanking] %d players purged by inactivity",SQL_GetAffectedRows(owner));
 
 }
 
@@ -2089,7 +2089,7 @@ public void SQL_NothingCallback(Handle owner, Handle hndl, const char[] error, a
 {
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Query Fail: %s", error);
+		LogError("[LeagueRanking] Query Fail: %s", error);
 		return;
 	}
 
@@ -2109,7 +2109,7 @@ public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any 
 
 	if (hndl == INVALID_HANDLE)
 	{
-		LogError("[RankMe] Query Fail: %s", error);
+		LogError("[LeagueRanking] Query Fail: %s", error);
 		PrintToServer(error);
 		return;
 	}
@@ -2124,7 +2124,7 @@ public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any 
 	File1 = OpenFile("rank.sql", "w");
 	if (File1 == INVALID_HANDLE) {
 
-		LogError("[RankMe] Unable to open dump file.");
+		LogError("[LeagueRanking] Unable to open dump file.");
 
 	}
 	int fields = SQL_GetFieldCount(hndl);
@@ -2455,15 +2455,14 @@ public Action RankConnectCallback(int client, int rank, any data)
 	char sClientName[MAX_NAME_LENGTH];
 	GetClientName(client,sClientName,sizeof(sClientName));
 
-	/* Geoip, code from cksurf */
 	char s_Country[32];
-	char s_address[32];
-	GetClientIP(client, s_address, 32);
+	char s_ip[32];
+	GetClientIP(client, s_ip, 32);
 	Format(s_Country, sizeof(s_Country), "Unknown");
-	GeoipCountry(s_address, s_Country, sizeof(s_Country));
+	GeoipCountry(s_ip, s_Country, sizeof(s_Country));
 	// if (!strcmp(s_Country, NULL_STRING))
 	if (s_Country[0] == 0)
-		Format( s_Country, sizeof(s_Country), "Unknown", s_Country );
+		Format(s_Country, sizeof(s_Country), "Unknown", s_Country);
 	else
 		if (StrContains(s_Country, "United", false) != -1 ||
 			StrContains(s_Country, "Republic", false) != -1 ||
