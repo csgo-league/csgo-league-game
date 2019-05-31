@@ -1,7 +1,6 @@
 # CS:GO League Game
 Repository containing the server plugins for CS:GO league.
 
-
 # Author
 Alex Blackham - Developer and Maintainer - [B3none](https://github.com/b3none/)
 
