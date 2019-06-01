@@ -59,41 +59,17 @@ public Action CMD_ResetRank(int client, int args){
 	//ReplaceString(arg1,sizeof(arg1)," ","");
 	//ReplaceString(arg1,sizeof(arg1),"\"","");
 	char query[2000];
-	if(g_RankBy == 1){
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE name='%s'",g_sSQLTable,sEscapeArg1);
-	} else if (g_RankBy == 0){
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,sEscapeArg1);
-	} else if (g_RankBy == 2){
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE lastip='%s'",g_sSQLTable,sEscapeArg1);
-	}
+	
+	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,sEscapeArg1);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
 	LogAction(client,-1,"[RankMe]: Rank has been reset (%s)",arg1);
 	char auth[64];
-	char name[MAX_NAME_LENGTH];
-	char ip[64];
 	for(int i=1;i<=MaxClients;i++){
 		if(IsClientInGame(i)){
+			GetClientAuthId(i,AuthId_Steam2,auth,sizeof(auth));
 
-			if(g_RankBy == 1){
-
-				GetClientName(i,name,sizeof(name));
-
-				if(StrEqual(name,arg1,false))
-					OnClientPutInServer(i);
-
-			} else if(g_RankBy == 0){
-				GetClientAuthId(i,AuthId_Steam2,auth,sizeof(auth));
-
-				if(StrEqual(auth,arg1,false))
-					OnClientPutInServer(i);
-			} else if(g_RankBy == 2){
-
-				GetClientIP(i,ip,sizeof(ip));
-
-				if(StrEqual(ip,arg1,false))
-					OnClientPutInServer(i);
-
-			}
+			if(StrEqual(auth,arg1,false))
+				OnClientPutInServer(i);
 		}
 	}
 	CPrintToChat(client, "%s %T", MSG, "The rank has been reset",client);
@@ -1083,8 +1059,8 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 		SQL_FetchString(hndl,2,Name_receive,MAX_NAME_LENGTH*2+1);
 		SQL_FetchString(hndl,1,Auth_receive,64);
 		SQL_FetchString(hndl,3,Ip_receive,64);
-	//	PrintToServer("%d %s %s",i, Name_receive, Auth_receive);
-		if((g_RankBy == 1 && StrEqual(Name_receive,g_aClientName[client],false)) || (g_RankBy == 0 && StrEqual(Auth_receive,g_aClientSteam[client],false)) || (g_RankBy == 2 && StrEqual(Ip_receive,g_aClientIp[client],false))){
+
+		if(StrEqual(Auth_receive, g_aClientSteam[client], false)) {
 
 			if(g_bShowRankAll)
 			{
@@ -1093,14 +1069,14 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 					if(IsClientInGame(j))
 					{
 						if(client == j || !hidechat[j])
-							CPrintToChat(j,"%s %T",MSG,"IsRankedAt",j,g_aClientName[client],i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+							PrintToChat(j,"%s %T",MSG,"IsRankedAt",j,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
 						if(g_fRankAllTimer > 0.0)	hRankTimer[j] = CreateTimer(g_fRankAllTimer, KillRankAllTimer, j);
 					}
 				}
 			}
 			else
 			{
-				CPrintToChat(client,"%s %T",MSG,"IsRankedAt",client,g_aClientName[client],i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+				PrintToChat(client,"%s %T",MSG,"IsRankedAt",client,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
 			}
 			break;
 		}
@@ -1368,7 +1344,7 @@ public Action CMD_StatsMe2(int client, int args){
 
 		WritePackCell(hDatapack,StringToInt(arg1[1]));
 
-	} else if(g_RankBy == 0 && StrContains(arg1,"STEAM_") == 0) {
+	} else if(StrContains(arg1,"STEAM_") == 0) {
 
 		WritePackCell(hDatapack,2);
 
@@ -1444,7 +1420,7 @@ public void SQL_StatsMe2Callback(Handle owner, Handle hndl, const char[] error, 
 
 			SQL_FetchString(hndl,2,Name_receive,MAX_NAME_LENGTH);
 
-			if((g_RankBy == 1 && StrEqual(name,Name_receive)) || (g_RankBy == 0 && StrEqual(Auth_receive,auth,false)))
+			if(StrEqual(Auth_receive,auth,false))
 				break;
 		}
 
@@ -1588,7 +1564,7 @@ public void SQL_StatsMeCallback(Handle owner, Handle hndl, const char[] error, a
 
 			SQL_FetchString(hndl,3,Ip_receive,64);
 
-			if((g_RankBy == 1 && StrEqual(g_aClientName[client],Name_receive)) || (g_RankBy == 0 && StrEqual(Auth_receive,g_aClientSteam[client],false)) || (g_RankBy == 2 && StrEqual(Ip_receive,g_aClientIp[client],false)))
+			if(StrEqual(Auth_receive,g_aClientSteam[client],false))
 				break;
 		}
 	} else {
@@ -1747,7 +1723,7 @@ public void SQL_NextCallback(Handle owner, Handle hndl, const char[] error, any 
 		SQL_FetchString(hndl,2,Name_receive,MAX_NAME_LENGTH);
 		SQL_FetchString(hndl,3,Ip_receive,64);
 
-		if((g_RankBy == 1 && StrEqual(g_aClientName[client],Name_receive)) || (g_RankBy == 0 && StrEqual(Auth_receive,g_aClientSteam[client],false)) || (g_RankBy == 2 && StrEqual(Ip_receive,g_aClientIp[client],false))){
+		if(StrEqual(Auth_receive,g_aClientSteam[client],false)){
 
 			dobreak=true;
 
@@ -1801,18 +1777,10 @@ public Action CMD_ResetOwnRank(int client, int args){
 	if(!g_bEnabled || !g_bResetOwnRank || client == 0 || !IsClientInGame(client))
 		return Plugin_Handled;
 	char query[2000];
-	if(g_RankBy == 1){
-
-		char sEscape[MAX_NAME_LENGTH*2+1];
-		SQL_EscapeString(g_hStatsDb,g_aClientName[client],sEscape,sizeof(sEscape));
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE name='%s'",g_sSQLTable,sEscape);
-	} else if(g_RankBy == 0){
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,g_aClientSteam[client]);
-	} else if(g_RankBy == 2){
-		Format(query,sizeof(query),"DELETE FROM `%s` WHERE lastip='%s'",g_sSQLTable,g_aClientIp[client]);
-	}
+	
+	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,g_aClientSteam[client]);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
-	LogAction(client,-1,"[RankMe]: Reseted own rank (%s - %s - %s)",g_aClientName[client],g_aClientSteam[client],g_aClientIp[client]);
+	LogAction(client,-1,"[League]: Reseted own rank (%s)",g_aClientSteam[client]);
 	OnClientPutInServer(client);
 	CPrintToChat(client,"%s %T",MSG,"ResetMyRank", client);
 	return Plugin_Handled;
@@ -2032,16 +2000,7 @@ public int MenuHandler_TargetResetRank(Menu menu, MenuAction action, int client,
 		menu.GetItem(param2, temp, sizeof(temp));
 		int target = GetClientOfUserId(StringToInt(temp));
 
-		if(g_RankBy == 1){
-
-			ClientCommand(client,"sm_resetrank \"%s\"",g_aClientName[target]);
-		} else if(g_RankBy == 0){
-
-			ClientCommand(client,"sm_resetrank \"%s\"",g_aClientSteam[target]);
-		} else if(g_RankBy == 2){
-
-			ClientCommand(client,"sm_resetrank \"%s\"",g_aClientIp[target]);
-		}
+		ClientCommand(client,"sm_resetrank \"%s\"",g_aClientSteam[target]);
 	}
 	if (action == MenuAction_End)
 	{
@@ -2059,13 +2018,7 @@ public int MenuHandler_TargetStatsMe2(Menu menu, MenuAction action, int client, 
 		menu.GetItem(param2, temp, sizeof(temp));
 		int target = GetClientOfUserId(StringToInt(temp));
 
-		if(g_RankBy == 0 || g_RankBy == 2){
-
-			ClientCommand(client,"sm_statsme2 \"%s\"",g_aClientName[target]);
-		} else {
-
-			ClientCommand(client,"sm_statsme2 \"%s\"",g_aClientSteam[target]);
-		}
+		ClientCommand(client,"sm_statsme2 \"%s\"",g_aClientSteam[target]);
 	}
 	if (action == MenuAction_End)
 	{

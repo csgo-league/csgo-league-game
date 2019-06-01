@@ -1,7 +1,7 @@
-#if defined _rankme_included
+#if defined _LeagueRanking_included
   #endinput
 #endif
-#define _rankme_included
+#define _LeagueRanking_included
 
 enum WEAPONS_ENUM{
 	KNIFE,
@@ -92,10 +92,10 @@ enum HITBOXES{
 }
 
 
-public SharedPlugin __pl_rankme=
+public SharedPlugin __pl_LeagueRanking=
 {
-	name = "rankme",
-	file = "kento_rankme.smx",
+	name = "LeagueRanking",
+	file = "kento_LeagueRanking.smx",
 	#if defined REQUIRE_PLUGIN
 	required = 1
 	#else
@@ -105,16 +105,16 @@ public SharedPlugin __pl_rankme=
 
 typedef RankCallback = function Action(int client, int rank, any data);
 
-public void __pl_rankme_SetNTVOptional()
+public void __pl_LeagueRanking_SetNTVOptional()
 {
-	MarkNativeAsOptional("RankMe_GivePoint");
-	MarkNativeAsOptional("RankMe_GetRank");
-	MarkNativeAsOptional("RankMe_GetPoints");
-	MarkNativeAsOptional("RankMe_GetStats");
-	MarkNativeAsOptional("RankMe_GetSession");
-	MarkNativeAsOptional("RankMe_GetWeaponStats");
-	MarkNativeAsOptional("RankMe_GetHitbox");
-	MarkNativeAsOptional("RankMe_IsPlayerLoaded");
+	MarkNativeAsOptional("LeagueRanking_GivePoint");
+	MarkNativeAsOptional("LeagueRanking_GetRank");
+	MarkNativeAsOptional("LeagueRanking_GetPoints");
+	MarkNativeAsOptional("LeagueRanking_GetStats");
+	MarkNativeAsOptional("LeagueRanking_GetSession");
+	MarkNativeAsOptional("LeagueRanking_GetWeaponStats");
+	MarkNativeAsOptional("LeagueRanking_GetHitbox");
+	MarkNativeAsOptional("LeagueRanking_IsPlayerLoaded");
 }
 
 /*********************************************************
@@ -127,7 +127,7 @@ public void __pl_rankme_SetNTVOptional()
  * @param printtoall	Print the change to the everyone
  * @noreturn
  *********************************************************/
-native void RankMe_GivePoint(int client, int points, char[] reason, int printtoplayer, int printtoall);
+native void LeagueRanking_GivePoint(int client, int points, char[] reason, int printtoplayer, int printtoall);
 
 /*********************************************************
  * Get rank of a player on the server
@@ -137,7 +137,7 @@ native void RankMe_GivePoint(int client, int points, char[] reason, int printtop
  * @param data	Any data you would like that return on the callback
  * @noreturn
  *********************************************************/
-native void RankMe_GetRank(int client, RankCallback callback, any data = 0);
+native void LeagueRanking_GetRank(int client, RankCallback callback, any data = 0);
 
 /*********************************************************
  * Get the score (points) of a player on the server
@@ -146,7 +146,7 @@ native void RankMe_GetRank(int client, RankCallback callback, any data = 0);
  * @param data	Any data you would like that return on the callback
  * @return		The score of the client
  *********************************************************/
-native int RankMe_GetPoints(int client);
+native int LeagueRanking_GetPoints(int client);
 
 /*********************************************************
  * Get stats of a player on the server
@@ -155,7 +155,7 @@ native int RankMe_GetPoints(int client);
  * @param stats_return	The array that will return the data following the ENUM STATS_NAME;
  * @noreturn
  *********************************************************/
-native void RankMe_GetStats(int client, int[] stats_return);
+native void LeagueRanking_GetStats(int client, int[] stats_return);
 
 /*********************************************************
  * Get session of a player on the server
@@ -164,7 +164,7 @@ native void RankMe_GetStats(int client, int[] stats_return);
  * @param session_return	The array that will return the data following the ENUM STATS_NAME;
  * @noreturn
  *********************************************************/
-native void RankMe_GetSession(int client,int[] session_return);
+native void LeagueRanking_GetSession(int client,int[] session_return);
 
 /*********************************************************
  * Get weapon stats of a player on the server
@@ -173,7 +173,7 @@ native void RankMe_GetSession(int client,int[] session_return);
  * @param session_return	The array that will return the data following the ENUM WEAPONS_ENUM;
  * @noreturn
  *********************************************************/
-native void RankMe_GetWeaponStats(int client, int[] weapons_return);
+native void LeagueRanking_GetWeaponStats(int client, int[] weapons_return);
 
 /*********************************************************
  * Get hitbox stats of a player on the server
@@ -182,7 +182,7 @@ native void RankMe_GetWeaponStats(int client, int[] weapons_return);
  * @param session_return	The array that will return the data following the ENUM HITBOXES;
  * @noreturn
  *********************************************************/
-native void RankMe_GetHitbox(int client, int[] hitbox_return);
+native void LeagueRanking_GetHitbox(int client, int[] hitbox_return);
 
 /*********************************************************
  * Get if player is loaded
@@ -190,7 +190,7 @@ native void RankMe_GetHitbox(int client, int[] hitbox_return);
  * @param client	Client index
  * @return			If the client is loaded
  *********************************************************/
-native void RankMe_IsPlayerLoaded(int client);
+native void LeagueRanking_IsPlayerLoaded(int client);
 
 /**********************************************************************
  * When a player has been loaded
@@ -198,7 +198,7 @@ native void RankMe_IsPlayerLoaded(int client);
  * @param         client        The client index of the player that has been loaded
  * @noreturn
  **********************************************************************/
-forward Action RankMe_OnPlayerLoaded(int client);
+forward Action LeagueRanking_OnPlayerLoaded(int client);
 
 /**********************************************************************
  * When a player has been saved
@@ -206,4 +206,4 @@ forward Action RankMe_OnPlayerLoaded(int client);
  * @param         client        The client index of the player that has been saved
  * @noreturn
  **********************************************************************/
-forward Action RankMe_OnPlayerSaved(int client);
+forward Action LeagueRanking_OnPlayerSaved(int client);

@@ -1219,7 +1219,7 @@ public Action Event_VipEscaped(Handle event, const char[] name, bool dontBroadca
 	if (client != 0 && (g_bRankBots && !IsFakeClient(client)))
 		for (int i = 1; i <= MaxClients; i++)
 	if (IsClientInGame(i))
-		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "VIPEscaped", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsVipEscapedTeam + g_PointsVipEscapedPlayer);
+		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "VIPEscaped", i, g_aStats[client][SCORE], g_PointsVipEscapedTeam + g_PointsVipEscapedPlayer);
 }
 
 public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcast) {
@@ -1252,7 +1252,7 @@ public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcas
 	if (client != 0 && (g_bRankBots && !IsFakeClient(client)))
 		for (int i = 1; i <= MaxClients; i++)
 	if (IsClientInGame(i))
-		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "VIPKilled", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsVipKilledTeam + g_PointsVipKilledPlayer);
+		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "VIPKilled", i, g_aStats[client][SCORE], g_PointsVipKilledTeam + g_PointsVipKilledPlayer);
 }
 
 public Action Event_HostageRescued(Handle event, const char[] name, bool dontBroadcast) {
@@ -1285,7 +1285,7 @@ public Action Event_HostageRescued(Handle event, const char[] name, bool dontBro
 	if (g_PointsHostageRescPlayer > 0 && client != 0 && (g_bRankBots && !IsFakeClient(client)))
 		for (int i = 1; i <= MaxClients; i++)
 	if (IsClientInGame(i))
-		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Hostage", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsHostageRescPlayer + g_PointsHostageRescTeam);
+		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Hostage", i, g_aStats[client][SCORE], g_PointsHostageRescPlayer + g_PointsHostageRescTeam);
 
 }
 
@@ -1306,7 +1306,7 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 			g_aSession[client][SCORE] += g_PointsMvpTr;
 			for (int i = 1; i <= MaxClients; i++)
 			if (IsClientInGame(i))
-				if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "MVP", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsMvpTr);
+				if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "MVP", i, g_aStats[client][SCORE], g_PointsMvpTr);
 
 		} else {
 
@@ -1314,7 +1314,7 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 			g_aSession[client][SCORE] += g_PointsMvpCt;
 			for (int i = 1; i <= MaxClients; i++)
 			if (IsClientInGame(i))
-				if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "MVP", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsMvpCt);
+				if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "MVP", i, g_aStats[client][SCORE], g_PointsMvpCt);
 		}
 	}
 	g_aStats[client][MVP]++;
@@ -1457,7 +1457,6 @@ public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadc
 	g_aStats[client][SCORE] += g_PointsBombPlantedPlayer;
 	g_aSession[client][SCORE] += g_PointsBombPlantedPlayer;
 
-	strcopy(g_sC4PlantedByName, sizeof(g_sC4PlantedByName), g_aClientName[client]);
 	if (!g_bChatChange)
 		return;
 	if (g_PointsBombPlantedTeam > 0)
@@ -1467,7 +1466,7 @@ public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadc
 	if (g_PointsBombPlantedPlayer > 0 && client != 0 && (g_bRankBots || !IsFakeClient(client)))
 		for (int i = 1; i <= MaxClients; i++)
 	if (IsClientInGame(i))
-		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Planting", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsBombPlantedTeam + g_PointsBombPlantedPlayer);
+		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Planting", i, g_aStats[client][SCORE], g_PointsBombPlantedTeam + g_PointsBombPlantedPlayer);
 
 }
 
@@ -1500,7 +1499,7 @@ public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadc
 	if (g_PointsBombDefusedPlayer > 0 && client != 0 && (g_bRankBots || !IsFakeClient(client)))
 		for (int i = 1; i <= MaxClients; i++)
 	if (IsClientInGame(i))
-		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Defusing", i, g_aClientName[client], g_aStats[client][SCORE], g_PointsBombDefusedTeam + g_PointsBombDefusedPlayer);
+		if (!hidechat[i]) CPrintToChat(i, "%s %T", MSG, "Defusing", i, g_aStats[client][SCORE], g_PointsBombDefusedTeam + g_PointsBombDefusedPlayer);
 }
 
 public Action Event_BombExploded(Handle event, const char[] name, bool dontBroadcast)
@@ -1552,7 +1551,7 @@ public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadca
 	if (!g_bChatChange)
 		return;
 	if (g_PointsBombPickup > 0)
-		if (!hidechat[client])	CPrintToChat(client, "%s %T", MSG, "BombPickup", client, g_aClientName[client], g_aStats[client][SCORE], g_PointsBombPickup);
+		if (!hidechat[client])	CPrintToChat(client, "%s %T", MSG, "BombPickup", client, g_aStats[client][SCORE], g_PointsBombPickup);
 
 }
 
@@ -1569,7 +1568,7 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 	if (!g_bChatChange)
 		return;
 	if (g_PointsBombDropped > 0 && client == 0)
-		if (!hidechat[client])	CPrintToChat(client, "%s %T", MSG, "BombDropped", client, g_aClientName[client], g_aStats[client][SCORE], g_PointsBombDropped);
+		if (!hidechat[client])	CPrintToChat(client, "%s %T", MSG, "BombDropped", client, g_aStats[client][SCORE], g_PointsBombDropped);
 
 }
 
@@ -1606,7 +1605,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 
 		if (g_PointsLoseSuicide > 0 && g_bChatChange) {
-			if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "LostSuicide", victim, g_aClientName[victim], g_aStats[victim][SCORE], g_PointsLoseSuicide);
+			if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "LostSuicide", victim, g_aStats[victim][SCORE], g_PointsLoseSuicide);
 		}
 
 	} else if (!g_bFfa && (GetClientTeam(victim) == GetClientTeam(attacker))) {
@@ -1626,8 +1625,8 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			}
 
 			if (g_PointsLoseTk > 0 && g_bChatChange) {
-				if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "LostTK", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], g_PointsLoseTk, g_aClientName[victim]);
-				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "LostTK", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], g_PointsLoseTk, g_aClientName[victim]);
+				if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "LostTK", victim, g_aStats[attacker][SCORE], g_PointsLoseTk);
+				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "LostTK", attacker, g_aStats[attacker][SCORE], g_PointsLoseTk);
 			}
 		}
 	} else {
@@ -1722,34 +1721,34 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 				//PrintToServer("%s %T",MSG,"Killing",g_aClientName[attacker],g_aStats[attacker][SCORE],score_dif,g_aClientName[victim],g_aStats[victim][SCORE]);
 				if (!hidechat[victim])
 				{
-					CPrintToChat(victim, "%s %T", MSG, "Killing", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE]);
+					CPrintToChat(victim, "%s %T", MSG, "Killing", victim, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE]);
 				}
 				if (attacker < MAXPLAYERS)
 				{
 					if (!hidechat[attacker])
 					{
-						CPrintToChat(attacker, "%s %T", MSG, "Killing", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE]);
+						CPrintToChat(attacker, "%s %T", MSG, "Killing", attacker, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE]);
 					}
 				}
 			}
 		} else {
 			if (g_aStats[victim][KILLS] < g_MinimalKills && g_aStats[attacker][KILLS] < g_MinimalKills) {
 				if (g_bChatChange) {
-					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingBothNotRanked", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills, g_aStats[victim][KILLS], g_MinimalKills);
+					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingBothNotRanked", victim, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills, g_aStats[victim][KILLS], g_MinimalKills);
 					if (attacker < MAXPLAYERS)
-						if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "KillingBothNotRanked", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills, g_aStats[victim][KILLS], g_MinimalKills);
+						if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "KillingBothNotRanked", attacker, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills, g_aStats[victim][KILLS], g_MinimalKills);
 				}
 			} else if (g_aStats[victim][KILLS] < g_MinimalKills) {
 				if (g_bChatChange) {
-					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingVictimNotRanked", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[victim][KILLS], g_MinimalKills);
+					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingVictimNotRanked", victim, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[victim][KILLS], g_MinimalKills);
 					if (attacker < MAXPLAYERS)
-						if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingVictimNotRanked", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[victim][KILLS], g_MinimalKills);
+						if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingVictimNotRanked", victim, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[victim][KILLS], g_MinimalKills);
 				}
 			} else {
 				if (g_bChatChange) {
-					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingKillerNotRanked", victim, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills);
+					if (!hidechat[victim])	CPrintToChat(victim, "%s %T", MSG, "KillingKillerNotRanked", victim, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills);
 					if (attacker < MAXPLAYERS)
-						if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "KillingKillerNotRanked", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], score_dif, g_aClientName[victim], g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills);
+						if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "KillingKillerNotRanked", attacker, g_aStats[attacker][SCORE], score_dif, g_aStats[victim][SCORE], g_aStats[attacker][KILLS], g_MinimalKills);
 				}
 			}
 		}
@@ -1758,7 +1757,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			g_aStats[attacker][SCORE] += g_PointsHs;
 			g_aSession[attacker][SCORE] += g_PointsHs;
 			if (g_bChatChange && g_PointsHs > 0)
-				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "Headshot", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], g_PointsHs);
+				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "Headshot", attacker, g_aStats[attacker][SCORE], g_PointsHs);
 		}
 		/* First blood */
 		if (!firstblood && attacker < MAXPLAYERS) {
@@ -1769,7 +1768,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			g_aStats[attacker][FB] ++;
 			g_aSession[attacker][FB] ++;
 			if (g_bChatChange && g_PointsFb > 0)
-				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "First Blood", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], g_PointsFb);
+				if (!hidechat[attacker])	CPrintToChat(attacker, "%s %T", MSG, "First Blood", attacker, g_aStats[attacker][SCORE], g_PointsFb);
 		}
 
 		/* No scope */
@@ -1790,7 +1789,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			if (g_bChatChange && g_PointsNS > 0) {
 				if (!hidechat[attacker])
 				{
-					CPrintToChat(attacker, "%s %T", MSG, "No Scope", attacker, g_aClientName[attacker], g_aStats[attacker][SCORE], g_PointsNS, g_aClientName[victim], weapon, fNSD);
+					CPrintToChat(attacker, "%s %T", MSG, "No Scope", attacker, g_aStats[attacker][SCORE], g_PointsNS, weapon, fNSD);
 				}
 			}
 		}
@@ -1809,7 +1808,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			g_aSession[assist][ASSISTS]++;
 
 			if (g_bChatChange && g_PointsAssistKill > 0) {
-				if (!hidechat[assist])	CPrintToChat(assist, "%s %T", MSG, "AssistKill", assist, g_aClientName[assist], g_aStats[assist][SCORE], g_PointsAssistKill, g_aClientName[attacker], g_aClientName[victim]);
+				if (!hidechat[assist]) CPrintToChat(assist, "%s %T", MSG, "AssistKill", assist, g_aStats[assist][SCORE], g_PointsAssistKill);
 			}
 		}
 	}
