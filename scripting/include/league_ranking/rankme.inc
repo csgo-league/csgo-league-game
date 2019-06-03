@@ -95,7 +95,7 @@ enum HITBOXES{
 public SharedPlugin __pl_LeagueRanking=
 {
 	name = "LeagueRanking",
-	file = "kento_LeagueRanking.smx",
+	file = "league_ranking.smx",
 	#if defined REQUIRE_PLUGIN
 	required = 1
 	#else
