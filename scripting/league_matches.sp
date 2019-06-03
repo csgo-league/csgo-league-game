@@ -1,3 +1,6 @@
+// Modified version of:
+// https://github.com/DistrictNineHost/Sourcemod-SQLMatches/blob/master/game%20server/sqlmatch.sp
+
 #include <sourcemod>
 #include <sdkhooks>
 #include <sdktools>
