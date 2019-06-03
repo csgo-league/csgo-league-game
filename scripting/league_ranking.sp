@@ -238,10 +238,10 @@ bool g_bNSAllSnipers;
 
 #include <league_ranking/cmds>
 
-public void OnPluginStart() {
-
+public void OnPluginStart()
+{
 	// CREATE CVARS
-	g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is RankMe enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+	g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is ranking enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
 	g_cvarRankbots = CreateConVar("league_ranking_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
 	g_cvarAutopurge = CreateConVar("league_ranking_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
 	g_cvarPointsBombDefusedTeam = CreateConVar("league_ranking_points_bomb_defused_team", "2", "How many points CTs got for defusing the C4?", _, true, 0.0);
@@ -411,35 +411,35 @@ public void OnPluginStart() {
 	HookEventEx("cs_win_panel_match", Event_WinPanelMatch);
 
 	// ADMNIN COMMANDS
-	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "RankMe: Resets the rank of a player");
-	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "RankMe: Removes the duplicated rows on the database");
-	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "RankMe: Purges from the rank players that didn't connected for X days");
-	RegAdminCmd("sm_resetrank_all", CMD_ResetRankAll, ADMFLAG_ROOT, "RankMe: Resets the rank of all players");
+	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of a player");
+	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "LeagueRanking: Removes the duplicated rows on the database");
+	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "LeagueRanking: Purges from the rank players that didn't connected for X days");
+	RegAdminCmd("sm_resetrank_all", CMD_ResetRankAll, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of all players");
 
 	// PLAYER COMMANDS
-	RegConsoleCmd("sm_session", CMD_Session, "RankMe: Shows the stats of your current session");
-	RegConsoleCmd("sm_rank", CMD_Rank, "RankMe: Shows your rank");
-	RegConsoleCmd("sm_top", CMD_Top, "RankMe: Shows the TOP");
-	RegConsoleCmd("sm_topweapon", CMD_TopWeapon, "RankMe: Shows the TOP ordered by kills with a specific weapon");
-	RegConsoleCmd("sm_topacc", CMD_TopAcc, "RankMe: Shows the TOP ordered by accuracy");
-	RegConsoleCmd("sm_tophs", CMD_TopHS, "RankMe: Shows the TOP ordered by HeadShots");
-	RegConsoleCmd("sm_toptime", CMD_TopTime, "RankMe: Shows the TOP ordered by Connected Time");
-	RegConsoleCmd("sm_topkills", CMD_TopKills, "RankMe: Shows the TOP ordered by kills");
-	RegConsoleCmd("sm_topdeaths", CMD_TopDeaths, "RankMe: Shows the TOP ordered by deaths");
-	RegConsoleCmd("sm_hitboxme", CMD_HitBox, "RankMe: Shows the HitBox stats");
-	RegConsoleCmd("sm_weaponme", CMD_WeaponMe, "RankMe: Shows the kills with each weapon");
-	RegConsoleCmd("sm_resetmyrank", CMD_ResetOwnRank, "RankMe: Resets your own rank");
-	RegConsoleCmd("sm_statsme", CMD_StatsMe, "RankMe: Shows your stats");
-	RegConsoleCmd("sm_next", CMD_Next, "RankMe: Shows the next 9 players above you on the TOP");
-	RegConsoleCmd("sm_statsme2", CMD_StatsMe2, "RankMe: Shows the stats from a player");
-	RegConsoleCmd("sm_rankme", CMD_RankMe, "RankMe: Shows a menu with the basic commands");
+	RegConsoleCmd("sm_session", CMD_Session, "LeagueRanking: Shows the stats of your current session");
+	RegConsoleCmd("sm_rank", CMD_Rank, "LeagueRanking: Shows your rank");
+	RegConsoleCmd("sm_top", CMD_Top, "LeagueRanking: Shows the TOP");
+	RegConsoleCmd("sm_topweapon", CMD_TopWeapon, "LeagueRanking: Shows the TOP ordered by kills with a specific weapon");
+	RegConsoleCmd("sm_topacc", CMD_TopAcc, "LeagueRanking: Shows the TOP ordered by accuracy");
+	RegConsoleCmd("sm_tophs", CMD_TopHS, "LeagueRanking: Shows the TOP ordered by HeadShots");
+	RegConsoleCmd("sm_toptime", CMD_TopTime, "LeagueRanking: Shows the TOP ordered by Connected Time");
+	RegConsoleCmd("sm_topkills", CMD_TopKills, "LeagueRanking: Shows the TOP ordered by kills");
+	RegConsoleCmd("sm_topdeaths", CMD_TopDeaths, "LeagueRanking: Shows the TOP ordered by deaths");
+	RegConsoleCmd("sm_hitboxme", CMD_HitBox, "LeagueRanking: Shows the HitBox stats");
+	RegConsoleCmd("sm_weaponme", CMD_WeaponMe, "LeagueRanking: Shows the kills with each weapon");
+	RegConsoleCmd("sm_resetmyrank", CMD_ResetOwnRank, "LeagueRanking: Resets your own rank");
+	RegConsoleCmd("sm_statsme", CMD_StatsMe, "LeagueRanking: Shows your stats");
+	RegConsoleCmd("sm_next", CMD_Next, "LeagueRanking: Shows the next 9 players above you on the TOP");
+	RegConsoleCmd("sm_statsme2", CMD_StatsMe2, "LeagueRanking: Shows the stats from a player");
+	RegConsoleCmd("sm_rankme", CMD_RankMe, "LeagueRanking: Shows a menu with the basic commands");
 
-	RegConsoleCmd("sm_topassists", CMD_TopAssists, "RankMe: Shows the TOP ordered by Assists");
-	RegConsoleCmd("sm_toptk", CMD_TopTK, "RankMe: Shows the TOP ordered by TKs");
-	RegConsoleCmd("sm_topmvp", CMD_TopMVP, "RankMe: Shows the TOP ordered by MVPs");
-	RegConsoleCmd("sm_topdamage", CMD_TopDamage, "RankMe: Shows the TOP ordered by damage");
+	RegConsoleCmd("sm_topassists", CMD_TopAssists, "LeagueRanking: Shows the TOP ordered by Assists");
+	RegConsoleCmd("sm_toptk", CMD_TopTK, "LeagueRanking: Shows the TOP ordered by TKs");
+	RegConsoleCmd("sm_topmvp", CMD_TopMVP, "LeagueRanking: Shows the TOP ordered by MVPs");
+	RegConsoleCmd("sm_topdamage", CMD_TopDamage, "LeagueRanking: Shows the TOP ordered by damage");
 
-	/*RankMe Connect Announcer*/
+	/*Connect Announcer*/
 	g_cvarAnnounceConnect = CreateConVar("league_ranking_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
 	g_cvarAnnounceConnectChat = CreateConVar("league_ranking_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
 	g_cvarAnnounceConnectHint = CreateConVar("league_ranking_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
@@ -458,17 +458,17 @@ public void OnPluginStart() {
 	g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
 	g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
 
-	// LOAD RANKME.CFG
+	// Load league.ranking.cfg
 	AutoExecConfig(true, "league.ranking");
 
-	// LOAD TRANSLATIONS
+	// Load Translations
 	LoadTranslations("league.ranking.phrases");
 
 	//	Hook the say and say_team for chat triggers
 	AddCommandListener(OnSayText, "say");
 	AddCommandListener(OnSayText, "say_team");
 
-	ConVar cvarVersion = CreateConVar("league_ranking_version", PLUGIN_VERSION, "RankMe Version", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
+	ConVar cvarVersion = CreateConVar("league_ranking_version", PLUGIN_VERSION, "LeagueRanking Version", FCVAR_REPLICATED | FCVAR_NOTIFY | FCVAR_DONTRECORD);
 	// UPDATE THE CVAR IF NEEDED
 	char sVersionOnCvar[10];
 	cvarVersion.GetString(sVersionOnCvar, sizeof(sVersionOnCvar));
@@ -480,12 +480,11 @@ public void OnPluginStart() {
 	g_fwdOnPlayerSaved = CreateGlobalForward("LeagueRanking_OnPlayerSaved", ET_Hook, Param_Cell);
 
 	/* Hide chat */
-	RegConsoleCmd("sm_rankmechat", CMD_HideChat, "Disable rankme chat messages");
-	hidechatcookie = RegClientCookie("league_ranking_hidechat", "Hide rankme chat messages", CookieAccess_Private);
+	RegConsoleCmd("sm_ranking_chat", CMD_HideChat, "Disable ranking chat messages");
+	hidechatcookie = RegClientCookie("league_ranking_hidechat", "Hide ranking chat messages", CookieAccess_Private);
 }
 
 public void OnConVarChanged_SQLTable(Handle convar, const char[] oldValue, const char[] newValue) {
-
 	g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
 	DB_Connect(true); // Force reloading the stats
 }
@@ -495,7 +494,6 @@ public void OnConVarChanged_MySQL(Handle convar, const char[] oldValue, const ch
 }
 
 public void DB_Connect(bool firstload) {
-
 	if (g_bMysql != g_cvarMysql.BoolValue || firstload) {  // NEEDS TO CONNECT IF CHANGED MYSQL CVAR OR NEVER CONNECTED
 		g_bMysql = g_cvarMysql.BoolValue;
 		g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
@@ -638,7 +636,7 @@ public void OnConfigsExecuted() {
 	g_PointsMin = g_cvarPointsMin.IntValue;
 	g_bPointsMinEnabled = g_cvarPointsMin.BoolValue;
 
-	/*RankMe Connect Announcer*/
+	/*Connect Announcer*/
 	g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
 	g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
 	g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
@@ -2312,7 +2310,7 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		g_PointsBombDropped = g_cvarPointsBombDropped.IntValue;
 	}
 
-	/*RankMe Connect Announcer*/
+	/*Connect Announcer*/
 	else if (convar == g_cvarAnnounceConnect) {
 		g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
 	}
@@ -2422,7 +2420,7 @@ stock void MakeSelectQuery(char[] sQuery, int strsize) {
 }
 
 public Action LeagueRanking_OnPlayerLoaded(int client) {
-	/*RankMe Connect Announcer*/
+	/*Connect Announcer*/
 	if (!g_bAnnounceConnect && !g_bAnnounceTopConnect) {
 		return Plugin_Handled;
     }
@@ -2528,12 +2526,12 @@ public void OnGameFrame() {
 public Action CMD_HideChat(int client, int args) {
 	if (!hidechat[client]) {
 		SetClientCookie(client, hidechatcookie, "1");
-		CPrintToChat(client, "%s %T", MSG, "Hide Rankme Chat", client);
+		CPrintToChat(client, "%s %T", MSG, "Hide Ranking Chat", client);
 		hidechat[client] = true;
 	}
 	else if (hidechat[client]) {
 		SetClientCookie(client, hidechatcookie, "0");
-		CPrintToChat(client, "%s %T", MSG, "Show Rankme Chat", client);
+		CPrintToChat(client, "%s %T", MSG, "Show Ranking Chat", client);
 		hidechat[client] = false;
 	}
 }
