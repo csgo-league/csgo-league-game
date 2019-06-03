@@ -1,6 +1,8 @@
 # CS:GO League Game
 Repository containing the server plugins for CS:GO league.
 
+The `League Ranking` plugin is a modified version of Kento's RankMe which can be found here: https://github.com/rogeraabbccdd/Kento-Rankme
+
 # Author
 Alex Blackham - Developer and Maintainer - [B3none](https://github.com/b3none/)
 
