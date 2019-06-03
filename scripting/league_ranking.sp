@@ -1,3 +1,6 @@
+// This is a modified version of Kento's RankMe
+// https://github.com/rogeraabbccdd/Kento-Rankme
+
 #include <sourcemod>
 #include <adminmenu>
 #include <league_ranking/colours>
