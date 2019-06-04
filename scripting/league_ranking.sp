@@ -702,7 +702,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 		}
 	}
 	else
-		LogMessage("[LeagueRanking] :  No mork rank");
+		LogMessage("[LeagueRanking] No mork rank");
 }
 
 public Action CMD_Duplicate(int client, int args) {
@@ -748,7 +748,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("LeagueRanking_IsPlayerLoaded", Native_IsPlayerLoaded);
 	CreateNative("LeagueRanking_GetHitbox", Native_GetHitbox);
 
-	RegPluginLibrary("rankme");
+	RegPluginLibrary("LeagueRanking");
 
 	return APLRes_Success;
 }
