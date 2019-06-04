@@ -1,7 +1,7 @@
-#if defined _LeagueRanking_included
+#if defined _league_ranking_included
   #endinput
 #endif
-#define _LeagueRanking_included
+#define _league_ranking_included
 
 enum WEAPONS_ENUM{
 	KNIFE,
