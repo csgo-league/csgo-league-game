@@ -24,7 +24,7 @@
 
 public Plugin myinfo = {
 	name = "[League] Ranking",
-	author = "B3none",
+	author = "B3none, Kento",
 	description = "CSGO ranking and statistics",
 	version = PLUGIN_VERSION,
 	url = "https://github.com/csgo-league"
