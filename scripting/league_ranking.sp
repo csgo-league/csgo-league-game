@@ -432,10 +432,10 @@ public void OnPluginStart() {
 	g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
 
 	// Load league.ranking.cfg
-	AutoExecConfig(true, "league.ranking");
+	AutoExecConfig(true, "league_ranking");
 
 	// Load Translations
-	LoadTranslations("league.ranking.phrases");
+	LoadTranslations("league_ranking.phrases");
 
 	//	Hook the say and say_team for chat triggers
 	AddCommandListener(OnSayText, "say");
