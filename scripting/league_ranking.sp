@@ -90,7 +90,6 @@ ConVar g_cvarVipEnabled;
 ConVar g_cvarPointsLoseTk;
 ConVar g_cvarPointsLoseSuicide;
 ConVar g_cvarShowBotsOnRank;
-ConVar g_cvarRankBy;
 ConVar g_cvarFfa;
 ConVar g_cvarMysql;
 ConVar g_cvarGatherStats;
@@ -362,7 +361,6 @@ public void OnPluginStart()
 	g_cvarPointsVipKilledPlayer.AddChangeHook(OnConVarChanged);
 	g_cvarPointsLoseTk.AddChangeHook(OnConVarChanged);
 	g_cvarPointsLoseSuicide.AddChangeHook(OnConVarChanged);
-	g_cvarRankBy.AddChangeHook(OnConVarChanged);
 	g_cvarFfa.AddChangeHook(OnConVarChanged);
 	g_cvarDumpDB.AddChangeHook(OnConVarChanged);
 	g_cvarGatherStats.AddChangeHook(OnConVarChanged);
