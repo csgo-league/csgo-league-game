@@ -2,9 +2,9 @@
 Repository containing the server plugins for CS:GO league.
 
 # Authors
-Developer and Maintainer - [B3none](https://github.com/b3none/)
+[B3none](https://github.com/b3none/) - Developer and Maintainer
 
-Developer - [Kento](https://github.com/rogeraabbccdd)
+[Kento](https://github.com/rogeraabbccdd) - Developer
 
 ## Watch for releases
 
