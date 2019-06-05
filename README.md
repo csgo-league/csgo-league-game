@@ -1,6 +1,9 @@
 # CS:GO League Game
 Repository containing the server plugins for CS:GO league.
 
+*WHILST I AM WOKRING ON THE RANKING SYSTEM PLEASE USE UNMODIFIED RANKME*
+([It can be found here](https://github.com/rogeraabbccdd/Kento-Rankme))
+
 # Authors
 [B3none](https://github.com/b3none/) - Developer and Maintainer
 
