@@ -1,8 +1,9 @@
 # CS:GO League Game
 Repository containing the server plugins for CS:GO league.
 
-# Author
+# Authors
 Alex Blackham - Developer and Maintainer - [B3none](https://github.com/b3none/)
+Kento - Developer - [Kento](https://github.com/rogeraabbccdd)
 
 ## Watch for releases
 
