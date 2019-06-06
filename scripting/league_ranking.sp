@@ -445,8 +445,10 @@ public void OnPluginStart() {
 	// UPDATE THE CVAR IF NEEDED
 	char sVersionOnCvar[10];
 	cvarVersion.GetString(sVersionOnCvar, sizeof(sVersionOnCvar));
-	if (!StrEqual(PLUGIN_VERSION, sVersionOnCvar))
+
+	if (!StrEqual(PLUGIN_VERSION, sVersionOnCvar)) {
 		cvarVersion.SetString(PLUGIN_VERSION, true, true);
+    }
 
 	// Create the forwards
 	g_fwdOnPlayerLoaded = CreateGlobalForward("LeagueRanking_OnPlayerLoaded", ET_Hook, Param_Cell);
