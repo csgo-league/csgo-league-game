@@ -474,10 +474,11 @@ public void DB_Connect(bool firstload) {
 		} else {
 			g_hStatsDb = SQLite_UseDatabase("league_ranking", sError, sizeof(sError));
 		}
-		if (g_hStatsDb == null)
-		{
+
+		if (g_hStatsDb == null) {
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
+
 		SQL_LockDatabase(g_hStatsDb);
 		char sQuery[9999];
 
