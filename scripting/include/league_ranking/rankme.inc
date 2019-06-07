@@ -158,15 +158,6 @@ native int LeagueRanking_GetPoints(int client);
 native void LeagueRanking_GetStats(int client, int[] stats_return);
 
 /*********************************************************
- * Get session of a player on the server
- *
- * @param client	The client index of the player to get the session
- * @param session_return	The array that will return the data following the ENUM STATS_NAME;
- * @noreturn
- *********************************************************/
-native void LeagueRanking_GetSession(int client,int[] session_return);
-
-/*********************************************************
  * Get weapon stats of a player on the server
  *
  * @param client	The client index of the player to get the session
