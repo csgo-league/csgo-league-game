@@ -8,7 +8,7 @@
 #include <cstrike>
 #include <clientprefs>
 #include <league_ranking/rankme>
-#include <league_ranking/colours>
+#include <league_ranking/colours.sp>
 #include <league_ranking/globals.sp>
 #include <league_ranking/cmds.sp>
 
