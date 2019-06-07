@@ -766,9 +766,9 @@ void GetClientRank(Handle pack) {
 	CloseHandle(pack);
 
 	int rank;
-    char steamid[32];
-    GetClientAuthId(client, AuthId_Steam2, steamid, 32, true);
-    rank = FindStringInArray(g_arrayRankCache[0], steamid);
+	char steamid[32];
+	GetClientAuthId(client, AuthId_Steam2, steamid, 32, true);
+	rank = FindStringInArray(g_arrayRankCache[0], steamid);
 
 	if (rank > 0) {
 		CallRankCallback(client, rank, callback, args, plugin);
@@ -799,11 +799,11 @@ public void SQL_GetRankCallback(Handle owner, Handle hndl, const char[] error, a
 
 	while (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		i++;
-        SQL_FetchString(hndl, 1, Receive, sizeof(Receive));
+		SQL_FetchString(hndl, 1, Receive, sizeof(Receive));
 
-        if (StrEqual(Receive, g_aClientSteam[client], false)) {
-            CallRankCallback(client, i, callback, args, plugin);
-            break;
+		if (StrEqual(Receive, g_aClientSteam[client], false)) {
+			CallRankCallback(client, i, callback, args, plugin);
+			break;
         }
 	}
 }
@@ -965,11 +965,11 @@ public void OnPluginEnd() {
 			char query[4000];
 			char query2[4000];
 
-            Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
+			Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
                 g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query,
                 g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
 
-            Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
+			Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
                 g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
 
 			LogMessage(query);
@@ -1536,12 +1536,9 @@ public void SalvarPlayer(int client) {
 	char query[4000];
 	char query2[4000];
 
-    Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-        g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query,
-        g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
+	Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK], g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query, g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
 
-    Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-        g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
+	Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN], g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - g_aSession[client][CONNECTED], g_aClientSteam[client]);
 
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query, client, DBPrio_High);
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query2, client, DBPrio_High);
@@ -1602,7 +1599,7 @@ public void LoadPlayer(int client) {
 	strcopy(g_aClientSteam[client], sizeof(g_aClientSteam[]), auth);
 	char query[10000];
 
-    FormatEx(query, sizeof(query), g_sSqlRetrieveClient, g_sSQLTable, auth);
+	FormatEx(query, sizeof(query), g_sSqlRetrieveClient, g_sSQLTable, auth);
 
 	if (DEBUGGING) {
 		PrintToServer(query);
@@ -1628,9 +1625,9 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 		return;
 	}
 
-    char auth[64];
-    GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
-    if (!StrEqual(auth, g_aClientSteam[client])) {
+	char auth[64];
+	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	if (!StrEqual(auth, g_aClientSteam[client])) {
         return;
     }
 
