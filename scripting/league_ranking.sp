@@ -1136,7 +1136,7 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 				}
 			}
 
-			SalvarPlayer(i);
+			SavePlayer(i);
 		}
 	}
 
@@ -1515,7 +1515,7 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 	g_aSession[client][SHOTS]++;
 }
 
-public void SalvarPlayer(int client) {
+public void SavePlayer(int client) {
 	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
@@ -1719,7 +1719,7 @@ public void OnClientDisconnect(int client) {
 		return;
 	}
 
-	SalvarPlayer(client);
+	SavePlayer(client);
 	OnDB[client] = false;
 }
 
