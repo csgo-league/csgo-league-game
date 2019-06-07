@@ -310,7 +310,6 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 	g_TotalPlayers =SQL_GetRowCount(hndl);
 	char Name_receive[MAX_NAME_LENGTH];
 	char Auth_receive[64];
-	char Ip_receive[64];
 
 	int ikills = g_aStats[client][KILLS];
 	int ideaths=g_aStats[client][DEATHS];
@@ -323,15 +322,16 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 
 	float kills = IntToFloat(ikills);
 
+    char name[MAX_NAME_LENGTH];
+    GetClientName(client, name, sizeof(name));
+
 	while(SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
 	{
 		i++;
 		SQL_FetchString(hndl,2,Name_receive,MAX_NAME_LENGTH*2+1);
 		SQL_FetchString(hndl,1,Auth_receive,64);
-		SQL_FetchString(hndl,3,Ip_receive,64);
 
 		if(StrEqual(Auth_receive, g_aClientSteam[client], false)) {
-
 			if(g_bShowRankAll)
 			{
 				for(int j = 1; j <= MaxClients;j++)
@@ -339,14 +339,14 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 					if(IsClientInGame(j))
 					{
 						if(client == j)
-							PrintToChat(j,"%s %T",MSG,"IsRankedAt",j,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+							CPrintToChat(j,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
 						if(g_fRankAllTimer > 0.0) hRankTimer[j] = CreateTimer(g_fRankAllTimer, KillRankAllTimer, j);
 					}
 				}
 			}
 			else
 			{
-				PrintToChat(client,"%s %T",MSG,"IsRankedAt",client,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+				CPrintToChat(client,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
 			}
 			break;
 		}
