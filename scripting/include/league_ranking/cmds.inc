@@ -120,7 +120,7 @@ public Action CMD_Purge(int client, int args){
 }
 
 public void SQL_GetPlayersCallback(Handle owner, Handle hndl, const char[] error, any Datapack){
-	if(hndl == INVALID_HANDLE)
+	if(hndl == null)
 	{
 		LogError("[RankMe] Query Fail: %s", error);
 		PrintToServer(error);
@@ -172,7 +172,7 @@ void ShowTOP(int client, int at){
 }
 
 public void SQL_TopCallback(Handle owner, Handle hndl, const char[] error, any Datapack){
-	if(hndl == INVALID_HANDLE)
+	if(hndl == null)
 	{
 		LogError("[RankMe] Query Fail: %s", error);
 		PrintToServer(error);
@@ -274,7 +274,7 @@ public Action CMD_Rank(int client, int args){
 	}
 
 	// check cooldown
-	if(g_bShowRankAll && hRankTimer[client] != INVALID_HANDLE)
+	if(g_bShowRankAll && hRankTimer[client] != null)
 	{
 		CPrintToChat(client,"%s %T",MSG,"RankCooldown",client);
 		return Plugin_Handled;
@@ -297,7 +297,7 @@ public Action CMD_Rank(int client, int args){
 }
 
 public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any client){
-	if(hndl == INVALID_HANDLE)
+	if(hndl == null)
 	{
 		LogError("[RankMe] Query Fail: %s", error);
 		return;
@@ -340,7 +340,7 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 					{
 						if(client == j)
 							PrintToChat(j,"%s %T",MSG,"IsRankedAt",j,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
-						if(g_fRankAllTimer > 0.0)	hRankTimer[j] = CreateTimer(g_fRankAllTimer, KillRankAllTimer, j);
+						if(g_fRankAllTimer > 0.0) hRankTimer[j] = CreateTimer(g_fRankAllTimer, KillRankAllTimer, j);
 					}
 				}
 			}
@@ -355,9 +355,9 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 
 public Action KillRankAllTimer(Handle timer, int client)
 {
-	if(hRankTimer[client] != INVALID_HANDLE)
+	if(hRankTimer[client] != null)
 	{
-		hRankTimer[client] = INVALID_HANDLE;
+		hRankTimer[client] = null;
 	}
 }
 
