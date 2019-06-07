@@ -1633,7 +1633,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		//Player info
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 10; i++) {
 			g_aStats[client][i] = SQL_FetchInt(hndl, 2 + i);
 		}
 
