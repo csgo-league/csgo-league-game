@@ -3,7 +3,7 @@
 #endif
 #define _league_ranking_included
 
-enum WEAPONS_ENUM{
+enum WEAPONS_ENUM {
 	KNIFE,
 	GLOCK,
 	HKP2000,
@@ -48,7 +48,7 @@ enum WEAPONS_ENUM{
 	BREACHCHARGE
 }
 
-enum STATS_NAMES{
+enum STATS_NAMES {
 	SCORE,
 	KILLS,
 	DEATHS,
@@ -80,7 +80,7 @@ enum STATS_NAMES{
 	NSD
 }
 
-enum HITBOXES{
+enum HITBOXES {
 	NULL_HITBOX,
 	HEAD,
 	CHEST,
@@ -91,9 +91,7 @@ enum HITBOXES{
 	RIGHT_LEG
 }
 
-
-public SharedPlugin __pl_LeagueRanking=
-{
+public SharedPlugin __pl_LeagueRanking= {
 	name = "league_ranking",
 	file = "league_ranking.smx",
 	#if defined REQUIRE_PLUGIN
@@ -105,8 +103,7 @@ public SharedPlugin __pl_LeagueRanking=
 
 typedef RankCallback = function Action(int client, int rank, any data);
 
-public void __pl_LeagueRanking_SetNTVOptional()
-{
+public void __pl_LeagueRanking_SetNTVOptional() {
 	MarkNativeAsOptional("LeagueRanking_GivePoint");
 	MarkNativeAsOptional("LeagueRanking_GetRank");
 	MarkNativeAsOptional("LeagueRanking_GetPoints");

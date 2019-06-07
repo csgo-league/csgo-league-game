@@ -7,20 +7,23 @@
 #include <sdktools>
 #include <cstrike>
 #include <clientprefs>
-#include <league_ranking/globals.sp>
-#include <league_ranking/colours>
 #include <league_ranking/rankme>
+#include <league_ranking/colours>
+#include <league_ranking/globals.sp>
 #include <league_ranking/cmds.sp>
 
 #pragma semicolon 1
 #pragma newdecls required
 
-#define MSG "[\x04League\x01]"
-#define SPEC 1
-#define TR 2
-#define CT 3
-#define SENDER_WORLD 0
-#define MAX_LENGTH_MENU 470
+// SQL Queries
+static const char g_sSqliteCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
+static const char g_sMysqlCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
+static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
+static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
+static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
+static const char g_sSqlRemoveDuplicateSQLite[] = "delete from `%s` where `%s`.id > (SELECT min(id) from `%s` as t2 WHERE t2.steam=`%s`.steam);";
+static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.steam=vtable.steam);";
 
 public Plugin myinfo = {
 	name = "[League] Ranking",
@@ -31,7 +34,7 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
-	// CREATE CVARS
+	// CVARs
 	g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is ranking enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
 	g_cvarRankbots = CreateConVar("league_ranking_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
 	g_cvarAutopurge = CreateConVar("league_ranking_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
@@ -91,15 +94,9 @@ public void OnPluginStart() {
 	g_cvarPointsMatchWin = CreateConVar("league_ranking_points_match_win", "2", "How many points a player win for winning the match?", _, true, 0.0);
 	g_cvarPointsMatchLose = CreateConVar("league_ranking_points_match_lose", "2", "How many points a player loess for losing the match?", _, true, 0.0);
 	g_cvarPointsMatchDraw = CreateConVar("league_ranking_points_match_draw", "0", "How many points a player win when match draw?", _, true, 0.0);
-
-	/* Assist */
 	g_cvarPointsAssistKill = CreateConVar("league_ranking_points_assist_kill","1","How many points a player gets for assist kill?",_,true,0.0);
-
-	/* Min points */
 	g_cvarPointsMinEnabled = CreateConVar("league_ranking_points_min_enabled", "1", "Is minimum points enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
 	g_cvarPointsMin = CreateConVar("league_ranking_points_min", "0", "Minimum points", _, true, 0.0);
-
-	/* Rank cache */
 	g_cvarRankCache = CreateConVar("league_ranking_rank_cache", "0", "Get player rank via cache, auto build cache on every OnMapStart.", _, true, 0.0, true, 1.0);
 	g_arrayRankCache[0] = CreateArray(ByteCountToCells(128));
 	g_arrayRankCache[1] = CreateArray(ByteCountToCells(128));
@@ -165,11 +162,7 @@ public void OnPluginStart() {
 	g_cvarPointsFb.AddChangeHook(OnConVarChanged);
 	g_cvarPointsNS.AddChangeHook(OnConVarChanged);
 	g_cvarNSAllSnipers.AddChangeHook(OnConVarChanged);
-
-	/* Assist */
 	g_cvarPointsAssistKill.AddChangeHook(OnConVarChanged);
-
-	/* Min points */
 	g_cvarPointsMinEnabled.AddChangeHook(OnConVarChanged);
 	g_cvarPointsMin.AddChangeHook(OnConVarChanged);
 
@@ -192,7 +185,7 @@ public void OnPluginStart() {
 	HookEventEx("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
 	HookEventEx("cs_win_panel_match", Event_WinPanelMatch);
 
-	// ADMNIN COMMANDS
+	// ADMIN COMMANDS
 	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of a player");
 	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "LeagueRanking: Removes the duplicated rows on the database");
 	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "LeagueRanking: Purges from the rank players that didn't connected for X days");
@@ -202,7 +195,7 @@ public void OnPluginStart() {
 	RegConsoleCmd("sm_rank", CMD_Rank, "LeagueRanking: Shows your rank");
 	RegConsoleCmd("sm_top", CMD_Top, "LeagueRanking: Shows the TOP");
 
-	/*Connect Announcer*/
+	// Connect Announcer
 	g_cvarAnnounceConnect = CreateConVar("league_ranking_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
 	g_cvarAnnounceConnectChat = CreateConVar("league_ranking_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
 	g_cvarAnnounceConnectHint = CreateConVar("league_ranking_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
