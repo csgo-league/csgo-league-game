@@ -34,137 +34,13 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
-	// CVARs
-	g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is ranking enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarRankbots = CreateConVar("league_ranking_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarAutopurge = CreateConVar("league_ranking_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
-	g_cvarPointsBombDefusedTeam = CreateConVar("league_ranking_points_bomb_defused_team", "2", "How many points CTs got for defusing the C4?", _, true, 0.0);
-	g_cvarPointsBombDefusedPlayer = CreateConVar("league_ranking_points_bomb_defused_player", "2", "How many points the CT who defused got additional?", _, true, 0.0);
-	g_cvarPointsBombPlantedTeam = CreateConVar("league_ranking_points_bomb_planted_team", "2", "How many points TRs got for planting the C4?", _, true, 0.0);
-	g_cvarPointsBombPlantedPlayer = CreateConVar("league_ranking_points_bomb_planted_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
-	g_cvarPointsBombExplodeTeam = CreateConVar("league_ranking_points_bomb_exploded_team", "2", "How many points TRs got for exploding the C4?", _, true, 0.0);
-	g_cvarPointsBombExplodePlayer = CreateConVar("league_ranking_points_bomb_exploded_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
-	g_cvarPointsHostageRescTeam = CreateConVar("league_ranking_points_hostage_rescued_team", "2", "How many points CTs got for rescuing the hostage?", _, true, 0.0);
-	g_cvarPointsHostageRescPlayer = CreateConVar("league_ranking_points_hostage_rescued_player", "2", "How many points the CT who rescued got additional?", _, true, 0.0);
-	g_cvarPointsHs = CreateConVar("league_ranking_points_hs", "1", "How many additional points a player got for a HeadShot?", _, true, 0.0);
-	g_cvarPointsKillCt = CreateConVar("league_ranking_points_kill_ct", "2", "How many points a CT got for killing?", _, true, 0.0);
-	g_cvarPointsKillTr = CreateConVar("league_ranking_points_kill_tr", "2", "How many points a TR got for killing?", _, true, 0.0);
-	g_cvarPointsKillBonusCt = CreateConVar("league_ranking_points_kill_bonus_ct", "1", "How many points a CT got for killing additional by the diffrence of points?", _, true, 0.0);
-	g_cvarPointsKillBonusTr = CreateConVar("league_ranking_points_kill_bonus_tr", "1", "How many points a TR got for killing additional by the diffrence of points?", _, true, 0.0);
-	g_cvarPointsKillBonusDifCt = CreateConVar("league_ranking_points_kill_bonus_dif_ct", "100", "How many points of diffrence is needed for a CT to got the bonus?", _, true, 0.0);
-	g_cvarPointsKillBonusDifTr = CreateConVar("league_ranking_points_kill_bonus_dif_tr", "100", "How many points of diffrence is needed for a TR to got the bonus?", _, true, 0.0);
-	g_cvarPointsCtRoundWin = CreateConVar("league_ranking_points_ct_round_win", "0", "How many points CT got for winning the round?", _, true, 0.0);
-	g_cvarPointsTrRoundWin = CreateConVar("league_ranking_points_tr_round_win", "0", "How many points TR got for winning the round?", _, true, 0.0);
-	g_cvarPointsCtRoundLose = CreateConVar("league_ranking_points_ct_round_lose", "0", "How many points CT lost for losing the round?", _, true, 0.0);
-	g_cvarPointsTrRoundLose = CreateConVar("league_ranking_points_tr_round_lose", "0", "How many points TR lost for losing the round?", _, true, 0.0);
-	g_cvarPointsKnifeMultiplier = CreateConVar("league_ranking_points_knife_multiplier", "2.0", "Multiplier of points by knife", _, true, 0.0);
-	g_cvarPointsTaserMultiplier = CreateConVar("league_ranking_points_taser_multiplier", "2.0", "Multiplier of points by taser", _, true, 0.0);
-	g_cvarPointsStart = CreateConVar("league_ranking_points_start", "1000", "Starting points", _, true, 0.0);
-	g_cvarMinimalKills = CreateConVar("league_ranking_minimal_kills", "0", "Minimal kills for entering the rank", _, true, 0.0);
-	g_cvarPercentPointsLose = CreateConVar("league_ranking_percent_points_lose", "1.0", "Multiplier of losing points. (WARNING: MAKE SURE TO INPUT IT AS FLOAT) 1.0 equals lose same amount as won by the killer, 0.0 equals no lose", _, true, 0.0);
-	g_cvarPointsLoseRoundCeil = CreateConVar("league_ranking_points_lose_round_ceil", "1", "If the points is f1oat, round it to next the highest or lowest? 1 = highest 0 = lowest", _, true, 0.0, true, 1.0);
-	g_cvarChatChange = CreateConVar("league_ranking_changes_chat", "1", "Show points changes on chat? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarShowRankAll = CreateConVar("league_ranking_show_rank_all", "0", "When rank command is used, show for all the rank of the player? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarRankAllTimer = CreateConVar("league_ranking_rank_all_timer", "30.0", "Cooldown timer to prevent rank command spam.\n0.0 = disabled", _, true, 0.0);
-	g_cvarShowBotsOnRank = CreateConVar("league_ranking_show_bots_on_rank", "0", "Show bots on rank/top/etc? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarResetOwnRank = CreateConVar("league_ranking_resetownrank", "0", "Allow player to reset his own rank? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarMinimumPlayers = CreateConVar("league_ranking_minimumplayers", "2", "Minimum players to start giving points", _, true, 0.0);
-	g_cvarVipEnabled = CreateConVar("league_ranking_vip_enabled", "0", "Show AS_ maps statiscs (VIP mod) on statsme and session?", _, true, 0.0, true, 1.0);
-	g_cvarPointsVipEscapedTeam = CreateConVar("league_ranking_points_vip_escaped_team", "2", "How many points CTs got helping the VIP to escaping?", _, true, 0.0);
-	g_cvarPointsVipEscapedPlayer = CreateConVar("league_ranking_points_vip_escaped_player", "2", "How many points the VIP got for escaping?", _, true, 0.0);
-	g_cvarPointsVipKilledTeam = CreateConVar("league_ranking_points_vip_killed_team", "2", "How many points TRs got for killing the VIP?", _, true, 0.0);
-	g_cvarPointsVipKilledPlayer = CreateConVar("league_ranking_points_vip_killed_player", "2", "How many points the TR who killed the VIP got additional?", _, true, 0.0);
-	g_cvarPointsLoseTk = CreateConVar("league_ranking_points_lose_tk", "0", "How many points a player lose for Team Killing?", _, true, 0.0);
-	g_cvarPointsLoseSuicide = CreateConVar("league_ranking_points_lose_suicide", "0", "How many points a player lose for Suiciding?", _, true, 0.0);
-	g_cvarPointsFb = CreateConVar("league_ranking_points_fb", "1", "How many additional points a player got for a First Blood?", _, true, 0.0);
-	g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
-	g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
-	g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarMysql = CreateConVar("league_ranking_mysql", "0", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
-	g_cvarDumpDB = CreateConVar("league_ranking_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
-	g_cvarRankMode = CreateConVar("league_ranking_rank_mode", "1", "Rank by what? 1 = by points 2 = by KDR ", _, true, 1.0, true, 2.0);
-	g_cvarSQLTable = CreateConVar("league_ranking_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
-	g_cvarChatTriggers = CreateConVar("league_ranking_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarPointsMvpCt = CreateConVar("league_ranking_points_mvp_ct", "1", "How many points a CT got for being the MVP?", _, true, 0.0);
-	g_cvarPointsMvpTr = CreateConVar("league_ranking_points_mvp_tr", "1", "How many points a TR got for being the MVP?", _, true, 0.0);
-	g_cvarPointsBombPickup = CreateConVar("league_ranking_points_bomb_pickup", "0", "How many points a player gets for picking up the bomb?", _, true, 0.0);
-	g_cvarPointsBombDropped = CreateConVar("league_ranking_points_bomb_dropped", "0", "How many points a player loess for dropping the bomb?", _, true, 0.0);
-	g_cvarPointsMatchWin = CreateConVar("league_ranking_points_match_win", "2", "How many points a player win for winning the match?", _, true, 0.0);
-	g_cvarPointsMatchLose = CreateConVar("league_ranking_points_match_lose", "2", "How many points a player loess for losing the match?", _, true, 0.0);
-	g_cvarPointsMatchDraw = CreateConVar("league_ranking_points_match_draw", "0", "How many points a player win when match draw?", _, true, 0.0);
-	g_cvarPointsAssistKill = CreateConVar("league_ranking_points_assist_kill","1","How many points a player gets for assist kill?",_,true,0.0);
-	g_cvarPointsMinEnabled = CreateConVar("league_ranking_points_min_enabled", "1", "Is minimum points enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-	g_cvarPointsMin = CreateConVar("league_ranking_points_min", "0", "Minimum points", _, true, 0.0);
-	g_cvarRankCache = CreateConVar("league_ranking_rank_cache", "0", "Get player rank via cache, auto build cache on every OnMapStart.", _, true, 0.0, true, 1.0);
+	CreateCvars();
+
 	g_arrayRankCache[0] = CreateArray(ByteCountToCells(128));
 	g_arrayRankCache[1] = CreateArray(ByteCountToCells(128));
 	g_arrayRankCache[2] = CreateArray(ByteCountToCells(128));
 
-	// CVAR HOOK
-	g_cvarEnabled.AddChangeHook(OnConVarChanged);
-	g_cvarChatChange.AddChangeHook(OnConVarChanged);
-	g_cvarShowBotsOnRank.AddChangeHook(OnConVarChanged);
-	g_cvarShowRankAll.AddChangeHook(OnConVarChanged);
-	g_cvarRankAllTimer.AddChangeHook(OnConVarChanged);
-	g_cvarResetOwnRank.AddChangeHook(OnConVarChanged);
-	g_cvarMinimumPlayers.AddChangeHook(OnConVarChanged);
-	g_cvarRankbots.AddChangeHook(OnConVarChanged);
-	g_cvarAutopurge.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombDefusedTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombDefusedPlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombPlantedTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombPlantedPlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombExplodeTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombExplodePlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsHostageRescTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsHostageRescPlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsHs.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillCt.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillTr.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillBonusCt.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillBonusTr.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillBonusDifCt.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKillBonusDifTr.AddChangeHook(OnConVarChanged);
-	g_cvarPointsCtRoundWin.AddChangeHook(OnConVarChanged);
-	g_cvarPointsTrRoundWin.AddChangeHook(OnConVarChanged);
-	g_cvarPointsCtRoundLose.AddChangeHook(OnConVarChanged);
-	g_cvarPointsTrRoundLose.AddChangeHook(OnConVarChanged);
-	g_cvarPointsKnifeMultiplier.AddChangeHook(OnConVarChanged);
-	g_cvarPointsTaserMultiplier.AddChangeHook(OnConVarChanged);
-	g_cvarPointsStart.AddChangeHook(OnConVarChanged);
-	g_cvarMinimalKills.AddChangeHook(OnConVarChanged);
-	g_cvarPercentPointsLose.AddChangeHook(OnConVarChanged);
-	g_cvarPointsLoseRoundCeil.AddChangeHook(OnConVarChanged);
-	g_cvarVipEnabled.AddChangeHook(OnConVarChanged);
-	g_cvarPointsVipEscapedTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsVipEscapedPlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsVipKilledTeam.AddChangeHook(OnConVarChanged);
-	g_cvarPointsVipKilledPlayer.AddChangeHook(OnConVarChanged);
-	g_cvarPointsLoseTk.AddChangeHook(OnConVarChanged);
-	g_cvarPointsLoseSuicide.AddChangeHook(OnConVarChanged);
-	g_cvarFfa.AddChangeHook(OnConVarChanged);
-	g_cvarDumpDB.AddChangeHook(OnConVarChanged);
-	g_cvarGatherStats.AddChangeHook(OnConVarChanged);
-	g_cvarDaysToNotShowOnRank.AddChangeHook(OnConVarChanged);
-	g_cvarRankMode.AddChangeHook(OnConVarChanged);
-	g_cvarMysql.AddChangeHook(OnConVarChanged_MySQL);
-	g_cvarSQLTable.AddChangeHook(OnConVarChanged_SQLTable);
-	g_cvarChatTriggers.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMvpCt.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMvpTr.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombPickup.AddChangeHook(OnConVarChanged);
-	g_cvarPointsBombDropped.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMatchWin.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMatchDraw.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMatchLose.AddChangeHook(OnConVarChanged);
-	g_cvarPointsFb.AddChangeHook(OnConVarChanged);
-	g_cvarPointsNS.AddChangeHook(OnConVarChanged);
-	g_cvarNSAllSnipers.AddChangeHook(OnConVarChanged);
-	g_cvarPointsAssistKill.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMinEnabled.AddChangeHook(OnConVarChanged);
-	g_cvarPointsMin.AddChangeHook(OnConVarChanged);
+	AddCvarListeners();
 
 	// EVENTS
 	HookEventEx("player_death", EventPlayerDeath);
@@ -185,34 +61,15 @@ public void OnPluginStart() {
 	HookEventEx("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
 	HookEventEx("cs_win_panel_match", Event_WinPanelMatch);
 
-	// ADMIN COMMANDS
+	// Admin commands
 	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of a player");
 	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "LeagueRanking: Removes the duplicated rows on the database");
 	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "LeagueRanking: Purges from the rank players that didn't connected for X days");
 	RegAdminCmd("sm_resetrank_all", CMD_ResetRankAll, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of all players");
 
-	// PLAYER COMMANDS
+	// Player commands
 	RegConsoleCmd("sm_rank", CMD_Rank, "LeagueRanking: Shows your rank");
 	RegConsoleCmd("sm_top", CMD_Top, "LeagueRanking: Shows the TOP");
-
-	// Connect Announcer
-	g_cvarAnnounceConnect = CreateConVar("league_ranking_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
-	g_cvarAnnounceConnectChat = CreateConVar("league_ranking_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
-	g_cvarAnnounceConnectHint = CreateConVar("league_ranking_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
-	g_cvarAnnounceDisconnect = CreateConVar("league_ranking_announcer_player_disconnect","1","Announce when a player disconnect with position and points?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopConnect = CreateConVar("league_ranking_announcer_top_player_connect","1","Announce when a top player connect?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopPosConnect = CreateConVar("league_ranking_announcer_top_pos_player_connect","10","Max position to announce that a top player connect?",_,true,0.0);
-	g_cvarAnnounceTopConnectChat = CreateConVar("league_ranking_announcer_top_player_connect_chat","1","Announce when a top player connect at chat?",_,true,0.0,true,1.0);
-	g_cvarAnnounceTopConnectHint = CreateConVar("league_ranking_announcer_top_player_connect_hint","0","Announce when a top player connect at hintbox?",_,true,0.0,true,1.0);
-
-	g_cvarAnnounceConnect.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceConnectChat.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceConnectHint.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceDisconnect.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceTopConnect.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceTopPosConnect.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
-	g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
 
 	// Load league.ranking.cfg
 	AutoExecConfig(true, "league_ranking");
@@ -363,15 +220,9 @@ public void OnConfigsExecuted() {
 	g_PointsFb = g_cvarPointsFb.IntValue;
 	g_PointsNS = g_cvarPointsNS.IntValue;
 	g_bNSAllSnipers = g_cvarNSAllSnipers.BoolValue;
-
-	/* Assist */
 	g_PointsAssistKill = g_cvarPointsAssistKill.IntValue;
-
-	/* Min points */
 	g_PointsMin = g_cvarPointsMin.IntValue;
 	g_bPointsMinEnabled = g_cvarPointsMin.BoolValue;
-
-	/*Connect Announcer*/
 	g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
 	g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
 	g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
@@ -1769,4 +1620,155 @@ public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroa
 			}
 		}
 	}
+}
+
+void CreateCvars()
+{
+    // CVARs
+    g_cvarEnabled = CreateConVar("league_ranking_enabled", "1", "Is ranking enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarRankbots = CreateConVar("league_ranking_rankbots", "0", "Rank bots? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarAutopurge = CreateConVar("league_ranking_autopurge", "0", "Auto-Purge inactive players? X = Days  0 = Off", _, true, 0.0);
+    g_cvarPointsBombDefusedTeam = CreateConVar("league_ranking_points_bomb_defused_team", "2", "How many points CTs got for defusing the C4?", _, true, 0.0);
+    g_cvarPointsBombDefusedPlayer = CreateConVar("league_ranking_points_bomb_defused_player", "2", "How many points the CT who defused got additional?", _, true, 0.0);
+    g_cvarPointsBombPlantedTeam = CreateConVar("league_ranking_points_bomb_planted_team", "2", "How many points TRs got for planting the C4?", _, true, 0.0);
+    g_cvarPointsBombPlantedPlayer = CreateConVar("league_ranking_points_bomb_planted_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
+    g_cvarPointsBombExplodeTeam = CreateConVar("league_ranking_points_bomb_exploded_team", "2", "How many points TRs got for exploding the C4?", _, true, 0.0);
+    g_cvarPointsBombExplodePlayer = CreateConVar("league_ranking_points_bomb_exploded_player", "2", "How many points the TR who planted got additional?", _, true, 0.0);
+    g_cvarPointsHostageRescTeam = CreateConVar("league_ranking_points_hostage_rescued_team", "2", "How many points CTs got for rescuing the hostage?", _, true, 0.0);
+    g_cvarPointsHostageRescPlayer = CreateConVar("league_ranking_points_hostage_rescued_player", "2", "How many points the CT who rescued got additional?", _, true, 0.0);
+    g_cvarPointsHs = CreateConVar("league_ranking_points_hs", "1", "How many additional points a player got for a HeadShot?", _, true, 0.0);
+    g_cvarPointsKillCt = CreateConVar("league_ranking_points_kill_ct", "2", "How many points a CT got for killing?", _, true, 0.0);
+    g_cvarPointsKillTr = CreateConVar("league_ranking_points_kill_tr", "2", "How many points a TR got for killing?", _, true, 0.0);
+    g_cvarPointsKillBonusCt = CreateConVar("league_ranking_points_kill_bonus_ct", "1", "How many points a CT got for killing additional by the difference of points?", _, true, 0.0);
+    g_cvarPointsKillBonusTr = CreateConVar("league_ranking_points_kill_bonus_tr", "1", "How many points a TR got for killing additional by the difference of points?", _, true, 0.0);
+    g_cvarPointsKillBonusDifCt = CreateConVar("league_ranking_points_kill_bonus_dif_ct", "100", "How many points of difference is needed for a CT to got the bonus?", _, true, 0.0);
+    g_cvarPointsKillBonusDifTr = CreateConVar("league_ranking_points_kill_bonus_dif_tr", "100", "How many points of difference is needed for a TR to got the bonus?", _, true, 0.0);
+    g_cvarPointsCtRoundWin = CreateConVar("league_ranking_points_ct_round_win", "0", "How many points CT got for winning the round?", _, true, 0.0);
+    g_cvarPointsTrRoundWin = CreateConVar("league_ranking_points_tr_round_win", "0", "How many points TR got for winning the round?", _, true, 0.0);
+    g_cvarPointsCtRoundLose = CreateConVar("league_ranking_points_ct_round_lose", "0", "How many points CT lost for losing the round?", _, true, 0.0);
+    g_cvarPointsTrRoundLose = CreateConVar("league_ranking_points_tr_round_lose", "0", "How many points TR lost for losing the round?", _, true, 0.0);
+    g_cvarPointsKnifeMultiplier = CreateConVar("league_ranking_points_knife_multiplier", "2.0", "Multiplier of points by knife", _, true, 0.0);
+    g_cvarPointsTaserMultiplier = CreateConVar("league_ranking_points_taser_multiplier", "2.0", "Multiplier of points by taser", _, true, 0.0);
+    g_cvarPointsStart = CreateConVar("league_ranking_points_start", "1000", "Starting points", _, true, 0.0);
+    g_cvarMinimalKills = CreateConVar("league_ranking_minimal_kills", "0", "Minimal kills for entering the rank", _, true, 0.0);
+    g_cvarPercentPointsLose = CreateConVar("league_ranking_percent_points_lose", "1.0", "Multiplier of losing points. (WARNING: MAKE SURE TO INPUT IT AS FLOAT) 1.0 equals lose same amount as won by the killer, 0.0 equals no lose", _, true, 0.0);
+    g_cvarPointsLoseRoundCeil = CreateConVar("league_ranking_points_lose_round_ceil", "1", "If the points is f1oat, round it to next the highest or lowest? 1 = highest 0 = lowest", _, true, 0.0, true, 1.0);
+    g_cvarChatChange = CreateConVar("league_ranking_changes_chat", "1", "Show points changes on chat? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarShowRankAll = CreateConVar("league_ranking_show_rank_all", "0", "When rank command is used, show for all the rank of the player? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarRankAllTimer = CreateConVar("league_ranking_rank_all_timer", "30.0", "Cooldown timer to prevent rank command spam.\n0.0 = disabled", _, true, 0.0);
+    g_cvarShowBotsOnRank = CreateConVar("league_ranking_show_bots_on_rank", "0", "Show bots on rank/top/etc? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarResetOwnRank = CreateConVar("league_ranking_resetownrank", "0", "Allow player to reset his own rank? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarMinimumPlayers = CreateConVar("league_ranking_minimumplayers", "2", "Minimum players to start giving points", _, true, 0.0);
+    g_cvarVipEnabled = CreateConVar("league_ranking_vip_enabled", "0", "Show AS_ maps statistics (VIP mod) on statsme and session?", _, true, 0.0, true, 1.0);
+    g_cvarPointsVipEscapedTeam = CreateConVar("league_ranking_points_vip_escaped_team", "2", "How many points CTs got helping the VIP to escaping?", _, true, 0.0);
+    g_cvarPointsVipEscapedPlayer = CreateConVar("league_ranking_points_vip_escaped_player", "2", "How many points the VIP got for escaping?", _, true, 0.0);
+    g_cvarPointsVipKilledTeam = CreateConVar("league_ranking_points_vip_killed_team", "2", "How many points TRs got for killing the VIP?", _, true, 0.0);
+    g_cvarPointsVipKilledPlayer = CreateConVar("league_ranking_points_vip_killed_player", "2", "How many points the TR who killed the VIP got additional?", _, true, 0.0);
+    g_cvarPointsLoseTk = CreateConVar("league_ranking_points_lose_tk", "0", "How many points a player lose for Team Killing?", _, true, 0.0);
+    g_cvarPointsLoseSuicide = CreateConVar("league_ranking_points_lose_suicide", "0", "How many points a player lose for Suiciding?", _, true, 0.0);
+    g_cvarPointsFb = CreateConVar("league_ranking_points_fb", "1", "How many additional points a player got for a First Blood?", _, true, 0.0);
+    g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
+    g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
+    g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarMysql = CreateConVar("league_ranking_mysql", "0", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
+    g_cvarDumpDB = CreateConVar("league_ranking_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
+    g_cvarRankMode = CreateConVar("league_ranking_rank_mode", "1", "Rank by what? 1 = by points 2 = by KDR ", _, true, 1.0, true, 2.0);
+    g_cvarSQLTable = CreateConVar("league_ranking_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
+    g_cvarChatTriggers = CreateConVar("league_ranking_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarPointsMvpCt = CreateConVar("league_ranking_points_mvp_ct", "1", "How many points a CT got for being the MVP?", _, true, 0.0);
+    g_cvarPointsMvpTr = CreateConVar("league_ranking_points_mvp_tr", "1", "How many points a TR got for being the MVP?", _, true, 0.0);
+    g_cvarPointsBombPickup = CreateConVar("league_ranking_points_bomb_pickup", "0", "How many points a player gets for picking up the bomb?", _, true, 0.0);
+    g_cvarPointsBombDropped = CreateConVar("league_ranking_points_bomb_dropped", "0", "How many points a player loess for dropping the bomb?", _, true, 0.0);
+    g_cvarPointsMatchWin = CreateConVar("league_ranking_points_match_win", "2", "How many points a player win for winning the match?", _, true, 0.0);
+    g_cvarPointsMatchLose = CreateConVar("league_ranking_points_match_lose", "2", "How many points a player loess for losing the match?", _, true, 0.0);
+    g_cvarPointsMatchDraw = CreateConVar("league_ranking_points_match_draw", "0", "How many points a player win when match draw?", _, true, 0.0);
+    g_cvarPointsAssistKill = CreateConVar("league_ranking_points_assist_kill","1","How many points a player gets for assist kill?",_,true,0.0);
+    g_cvarPointsMinEnabled = CreateConVar("league_ranking_points_min_enabled", "1", "Is minimum points enabled? 1 = true 0 = false", _, true, 0.0, true, 1.0);
+    g_cvarPointsMin = CreateConVar("league_ranking_points_min", "0", "Minimum points", _, true, 0.0);
+    g_cvarRankCache = CreateConVar("league_ranking_rank_cache", "0", "Get player rank via cache, auto build cache on every OnMapStart.", _, true, 0.0, true, 1.0);
+    g_cvarAnnounceConnect = CreateConVar("league_ranking_announcer_player_connect","1","Announce when a player connect with position and points?",_,true,0.0,true,1.0);
+    g_cvarAnnounceConnectChat = CreateConVar("league_ranking_announcer_player_connect_chat","1","Announce when a player connect at chat?",_,true,0.0,true,1.0);
+    g_cvarAnnounceConnectHint = CreateConVar("league_ranking_announcer_player_connect_hint","0","Announce when a player connect at hintbox?",_,true,0.0,true,1.0);
+    g_cvarAnnounceDisconnect = CreateConVar("league_ranking_announcer_player_disconnect","1","Announce when a player disconnect with position and points?",_,true,0.0,true,1.0);
+    g_cvarAnnounceTopConnect = CreateConVar("league_ranking_announcer_top_player_connect","1","Announce when a top player connect?",_,true,0.0,true,1.0);
+    g_cvarAnnounceTopPosConnect = CreateConVar("league_ranking_announcer_top_pos_player_connect","10","Max position to announce that a top player connect?",_,true,0.0);
+    g_cvarAnnounceTopConnectChat = CreateConVar("league_ranking_announcer_top_player_connect_chat","1","Announce when a top player connect at chat?",_,true,0.0,true,1.0);
+    g_cvarAnnounceTopConnectHint = CreateConVar("league_ranking_announcer_top_player_connect_hint","0","Announce when a top player connect at hintbox?",_,true,0.0,true,1.0);
+}
+
+void AddCvarListeners()
+{
+    // CVAR HOOK
+	g_cvarEnabled.AddChangeHook(OnConVarChanged);
+	g_cvarChatChange.AddChangeHook(OnConVarChanged);
+	g_cvarShowBotsOnRank.AddChangeHook(OnConVarChanged);
+	g_cvarShowRankAll.AddChangeHook(OnConVarChanged);
+	g_cvarRankAllTimer.AddChangeHook(OnConVarChanged);
+	g_cvarResetOwnRank.AddChangeHook(OnConVarChanged);
+	g_cvarMinimumPlayers.AddChangeHook(OnConVarChanged);
+	g_cvarRankbots.AddChangeHook(OnConVarChanged);
+	g_cvarAutopurge.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombDefusedTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombDefusedPlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombPlantedTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombPlantedPlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombExplodeTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombExplodePlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsHostageRescTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsHostageRescPlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsHs.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillCt.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillTr.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillBonusCt.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillBonusTr.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillBonusDifCt.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKillBonusDifTr.AddChangeHook(OnConVarChanged);
+	g_cvarPointsCtRoundWin.AddChangeHook(OnConVarChanged);
+	g_cvarPointsTrRoundWin.AddChangeHook(OnConVarChanged);
+	g_cvarPointsCtRoundLose.AddChangeHook(OnConVarChanged);
+	g_cvarPointsTrRoundLose.AddChangeHook(OnConVarChanged);
+	g_cvarPointsKnifeMultiplier.AddChangeHook(OnConVarChanged);
+	g_cvarPointsTaserMultiplier.AddChangeHook(OnConVarChanged);
+	g_cvarPointsStart.AddChangeHook(OnConVarChanged);
+	g_cvarMinimalKills.AddChangeHook(OnConVarChanged);
+	g_cvarPercentPointsLose.AddChangeHook(OnConVarChanged);
+	g_cvarPointsLoseRoundCeil.AddChangeHook(OnConVarChanged);
+	g_cvarVipEnabled.AddChangeHook(OnConVarChanged);
+	g_cvarPointsVipEscapedTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsVipEscapedPlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsVipKilledTeam.AddChangeHook(OnConVarChanged);
+	g_cvarPointsVipKilledPlayer.AddChangeHook(OnConVarChanged);
+	g_cvarPointsLoseTk.AddChangeHook(OnConVarChanged);
+	g_cvarPointsLoseSuicide.AddChangeHook(OnConVarChanged);
+	g_cvarFfa.AddChangeHook(OnConVarChanged);
+	g_cvarDumpDB.AddChangeHook(OnConVarChanged);
+	g_cvarGatherStats.AddChangeHook(OnConVarChanged);
+	g_cvarDaysToNotShowOnRank.AddChangeHook(OnConVarChanged);
+	g_cvarRankMode.AddChangeHook(OnConVarChanged);
+	g_cvarMysql.AddChangeHook(OnConVarChanged_MySQL);
+	g_cvarSQLTable.AddChangeHook(OnConVarChanged_SQLTable);
+	g_cvarChatTriggers.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMvpCt.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMvpTr.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombPickup.AddChangeHook(OnConVarChanged);
+	g_cvarPointsBombDropped.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMatchWin.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMatchDraw.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMatchLose.AddChangeHook(OnConVarChanged);
+	g_cvarPointsFb.AddChangeHook(OnConVarChanged);
+	g_cvarPointsNS.AddChangeHook(OnConVarChanged);
+	g_cvarNSAllSnipers.AddChangeHook(OnConVarChanged);
+	g_cvarPointsAssistKill.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMinEnabled.AddChangeHook(OnConVarChanged);
+	g_cvarPointsMin.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceConnect.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceConnectChat.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceConnectHint.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceDisconnect.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceTopConnect.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceTopPosConnect.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
+    g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
 }

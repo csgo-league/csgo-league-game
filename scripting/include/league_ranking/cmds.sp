@@ -59,7 +59,7 @@ public Action CMD_ResetRank(int client, int args) {
 
 	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,sEscapeArg1);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
-	LogAction(client,-1,"[League]: Rank has been reset (%s)",arg1);
+	LogAction(client,-1,"[League] Rank has been reset (%s)",arg1);
 	char auth[64];
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
@@ -83,7 +83,7 @@ public Action CMD_ResetRankAll(int client, int args) {
 	Format(query,sizeof(query),"DELETE FROM `%s` WHERE 1=1",g_sSQLTable);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
 
-	LogAction(client,-1,"[League]: All rank data has been reset");
+	LogAction(client,-1,"[League] All rank data has been reset");
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
@@ -116,7 +116,7 @@ public Action CMD_Purge(int client, int args) {
 	char query[2000];
 	Format(query,sizeof(query),"DELETE FROM `%s` WHERE lastconnect < '%d'",g_sSQLTable,deletebefore);
 	SQL_TQuery(g_hStatsDb,SQL_PurgeCallback,query);
-	LogAction(client,-1,"[League]: Purged rank (%s days inactivity)",arg1);
+	LogAction(client,-1,"[League] Purged rank (%s days inactivity)",arg1);
 	CPrintToChat(client, "%s %T", MSG, "Purged",client);
 	return Plugin_Handled;
 }
@@ -128,7 +128,7 @@ public void SQL_GetPlayersCallback(Handle owner, Handle hndl, const char[] error
 		return;
 	}
 
-	g_TotalPlayers =SQL_GetRowCount(hndl);
+	g_TotalPlayers = SQL_GetRowCount(hndl);
 }
 
 public Action CMD_Top(int client, int args) {
@@ -317,7 +317,7 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 	char Auth_receive[64];
 
 	int ikills = g_aStats[client][KILLS];
-	int ideaths=g_aStats[client][DEATHS];
+	int ideaths = g_aStats[client][DEATHS];
 
 	int deaths;
 	if (ideaths == 0) {
@@ -377,7 +377,7 @@ public Action CMD_ResetOwnRank(int client, int args) {
 
 	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,g_aClientSteam[client]);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
-	LogAction(client,-1,"[League]: Reseted own rank (%s)",g_aClientSteam[client]);
+	LogAction(client,-1,"[League] Reseted own rank (%s)",g_aClientSteam[client]);
 	OnClientPutInServer(client);
 	CPrintToChat(client,"%s %T",MSG,"ResetMyRank", client);
 	return Plugin_Handled;
