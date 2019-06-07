@@ -1633,37 +1633,37 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		//Player info
-		for (int i = 0; i <= 9; i++) {
-			g_aStats[client][i] = SQL_FetchInt(hndl, 4 + i);
+		for (int i = 0; i < 8; i++) {
+			g_aStats[client][i] = SQL_FetchInt(hndl, 2 + i);
 		}
 
 		//ALL 41 Weapons
 		for (int i = 0; i < 42; i++) {
-			g_aWeapons[client][i] = SQL_FetchInt(hndl, 17 + i);
+			g_aWeapons[client][i] = SQL_FetchInt(hndl, 16 + i);
 		}
 
 		//ALL 8 Hitboxes
-		for (int i = 1; i <= 7; i++) {
-			g_aHitBox[client][i] = SQL_FetchInt(hndl, 57 + i);
+		for (int i = 0; i < 8; i++) {
+			g_aHitBox[client][i] = SQL_FetchInt(hndl, 58 + i);
 		}
 
-		g_aStats[client][C4_PLANTED] = SQL_FetchInt(hndl, 66);
-		g_aStats[client][C4_EXPLODED] = SQL_FetchInt(hndl, 67);
-		g_aStats[client][C4_DEFUSED] = SQL_FetchInt(hndl, 68);
-		g_aStats[client][CT_WIN] = SQL_FetchInt(hndl, 69);
-		g_aStats[client][TR_WIN] = SQL_FetchInt(hndl, 70);
-		g_aStats[client][HOSTAGES_RESCUED] = SQL_FetchInt(hndl, 71);
-		g_aStats[client][VIP_KILLED] = SQL_FetchInt(hndl, 72);
-		g_aStats[client][VIP_ESCAPED] = SQL_FetchInt(hndl, 73);
-		g_aStats[client][VIP_PLAYED] = SQL_FetchInt(hndl, 74);
-		g_aStats[client][MVP] = SQL_FetchInt(hndl, 75);
-		g_aStats[client][DAMAGE] = SQL_FetchInt(hndl, 76);
-		g_aStats[client][MATCH_WIN] = SQL_FetchInt(hndl, 77);
-		g_aStats[client][MATCH_DRAW] = SQL_FetchInt(hndl, 78);
-		g_aStats[client][MATCH_LOSE] = SQL_FetchInt(hndl, 79);
-		g_aStats[client][FB] = SQL_FetchInt(hndl, 80);
-		g_aStats[client][NS] = SQL_FetchInt(hndl, 81);
-		g_aStats[client][NSD] = SQL_FetchInt(hndl, 82);
+		g_aStats[client][C4_PLANTED] = SQL_FetchInt(hndl, 65);
+		g_aStats[client][C4_EXPLODED] = SQL_FetchInt(hndl, 66);
+		g_aStats[client][C4_DEFUSED] = SQL_FetchInt(hndl, 67);
+		g_aStats[client][CT_WIN] = SQL_FetchInt(hndl, 68);
+		g_aStats[client][TR_WIN] = SQL_FetchInt(hndl, 69);
+		g_aStats[client][HOSTAGES_RESCUED] = SQL_FetchInt(hndl, 70);
+		g_aStats[client][VIP_KILLED] = SQL_FetchInt(hndl, 71);
+		g_aStats[client][VIP_ESCAPED] = SQL_FetchInt(hndl, 72);
+		g_aStats[client][VIP_PLAYED] = SQL_FetchInt(hndl, 73);
+		g_aStats[client][MVP] = SQL_FetchInt(hndl, 74);
+		g_aStats[client][DAMAGE] = SQL_FetchInt(hndl, 75);
+		g_aStats[client][MATCH_WIN] = SQL_FetchInt(hndl, 76);
+		g_aStats[client][MATCH_DRAW] = SQL_FetchInt(hndl, 77);
+		g_aStats[client][MATCH_LOSE] = SQL_FetchInt(hndl, 78);
+		g_aStats[client][FB] = SQL_FetchInt(hndl, 79);
+		g_aStats[client][NS] = SQL_FetchInt(hndl, 80);
+		g_aStats[client][NSD] = SQL_FetchInt(hndl, 81);
 	} else {
 		char query[10000];
 
