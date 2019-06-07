@@ -470,9 +470,9 @@ public void DB_Connect(bool firstload) {
 		g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
 		char sError[256];
 		if (g_bMysql) {
-			g_hStatsDb = SQL_Connect("league_ranking", false, sError, sizeof(sError));
+			g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
 		} else {
-			g_hStatsDb = SQLite_UseDatabase("league_ranking", sError, sizeof(sError));
+			g_hStatsDb = SQLite_UseDatabase("league", sError, sizeof(sError));
 		}
 
 		if (g_hStatsDb == null) {

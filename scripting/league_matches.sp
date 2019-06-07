@@ -22,7 +22,7 @@ public void OnPluginStart()
 {
 	char buffer[1024];
 
-	if ((db = SQL_Connect("league_matches", true, buffer, sizeof(buffer))) == null)
+	if ((db = SQL_Connect("league", true, buffer, sizeof(buffer))) == null)
 	{
 		SetFailState(buffer);
 	}
