@@ -689,7 +689,7 @@ public void SQL_DuplicateCallback(Handle owner, Handle hndl, const char[] error,
 
 	PrintToServer("[LeagueRanking] %d duplicated rows removed", SQL_GetAffectedRows(owner));
 	if (client != 0) {
-		PrintToChat(client, "[LeagueRanking] %d duplicated rows removed", SQL_GetAffectedRows(owner));
+		CPrintToChat(client, "[LeagueRanking] %d duplicated rows removed", SQL_GetAffectedRows(owner));
 	}
 }
 
@@ -1698,7 +1698,7 @@ public void SQL_PurgeCallback(Handle owner, Handle hndl, const char[] error, any
 
 	PrintToServer("[LeagueRanking] %d players purged by inactivity", SQL_GetAffectedRows(owner));
 	if (client != 0) {
-		PrintToChat(client, "[LeagueRanking] %d players purged by inactivity", SQL_GetAffectedRows(owner));
+		CPrintToChat(client, "[LeagueRanking] %d players purged by inactivity", SQL_GetAffectedRows(owner));
 	}
 }
 
@@ -1998,7 +1998,7 @@ public Action RankConnectCallback(int client, int rank, any data) {
 
 	if (g_bAnnounceConnect) {
 		if (g_bAnnounceConnectChat) {
-			PrintToChatAll("%s %t",MSG,"PlayerJoinedChat",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
+			CPrintToChatAll("%s %t",MSG,"PlayerJoinedChat",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
 		}
 
 		if (g_bAnnounceConnectHint) {
@@ -2008,7 +2008,7 @@ public Action RankConnectCallback(int client, int rank, any data) {
 
 	if (g_bAnnounceTopConnect && rank <= g_AnnounceTopPosConnect) {
 		if (g_bAnnounceTopConnectChat) {
-			PrintToChatAll("%s %t",MSG,"TopPlayerJoinedChat",g_AnnounceTopPosConnect,sClientName,g_aRankOnConnect[client],s_Country);
+			CPrintToChatAll("%s %t",MSG,"TopPlayerJoinedChat",g_AnnounceTopPosConnect,sClientName,g_aRankOnConnect[client],s_Country);
 		}
 
 		if (g_bAnnounceTopConnectHint) {
@@ -2036,7 +2036,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	char disconnectReason[64];
 	GetEventString(event, "reason", disconnectReason, sizeof(disconnectReason));
 
-	PrintToChatAll("%s %t",MSG,"PlayerLeft",g_sBufferClientName[client], g_aPointsOnDisconnect[client], disconnectReason);
+	CPrintToChatAll("%s %t",MSG,"PlayerLeft",g_sBufferClientName[client], g_aPointsOnDisconnect[client], disconnectReason);
 }
 
 /* Enable Or Disable Points In Warmup */
