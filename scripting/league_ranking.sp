@@ -1003,7 +1003,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 
 	} else if (!g_bFfa && (GetClientTeam(victim) == GetClientTeam(attacker))) {
-		if (attacker < MAXPLAYERS) {
+		if (attacker < MaxClients) {
 			g_aStats[attacker][TK]++;
 			g_aStats[attacker][SCORE] -= g_PointsLoseTk;
 
@@ -1045,11 +1045,11 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 
 		int score_dif;
-		if (attacker < MAXPLAYERS) {
+		if (attacker < MaxClients) {
 			score_dif = g_aStats[victim][SCORE] - g_aStats[attacker][SCORE];
 		}
 
-		if (score_dif < 0 || attacker >= MAXPLAYERS) {
+		if (score_dif < 0 || attacker >= MaxClients) {
 			score_dif = g_PointsKill[team];
 		} else {
 			if (g_PointsKillBonusDif[team] == 0) {
@@ -1065,20 +1065,19 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			score_dif = RoundToCeil(score_dif * g_fPointsTaserMultiplier);
 		}
 
-		if (headshot && attacker < MAXPLAYERS) {
+		if (headshot && attacker < MaxClients) {
 			g_aStats[attacker][HEADSHOTS]++;
 		}
 
 		g_aStats[victim][DEATHS]++;
 
-		if (attacker < MAXPLAYERS) {
+		if (attacker < MaxClients) {
 			g_aStats[attacker][KILLS]++;
 		}
 
 		if (g_bPointsLoseRoundCeil) {
 			g_aStats[victim][SCORE] -= RoundToCeil(score_dif * g_fPercentPointsLose);
 
-			/* Min points */
 			if (g_bPointsMinEnabled) {
 				if (g_aStats[victim][SCORE] < g_PointsMin) {
 					g_aStats[victim][SCORE] = g_PointsMin;
@@ -1087,7 +1086,6 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		} else {
 			g_aStats[victim][SCORE] -= RoundToFloor(score_dif * g_fPercentPointsLose);
 
-			/* Min points */
 			if (g_bPointsMinEnabled) {
 				if (g_aStats[victim][SCORE] < g_PointsMin) {
 					g_aStats[victim][SCORE] = g_PointsMin;
@@ -1095,7 +1093,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			}
 		}
 
-		if (attacker < MAXPLAYERS) {
+		if (attacker < MaxClients) {
 			g_aStats[attacker][SCORE] += score_dif;
 
 			if (GetWeaponNum(weapon) < 42) {
@@ -1103,19 +1101,17 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			}
 		}
 
-		if (headshot && attacker < MAXPLAYERS) {
+		if (headshot && attacker < MaxClients) {
 			g_aStats[attacker][SCORE] += g_PointsHs;
 		}
 
-		/* First blood */
-		if (!firstblood && attacker < MAXPLAYERS) {
+		if (!firstblood && attacker < MaxClients) {
 			g_aStats[attacker][SCORE] += g_PointsFb;
 
 			g_aStats[attacker][FB] ++;
 		}
 
-		/* No scope */
-		if (attacker < MAXPLAYERS && ((StrContains(weapon, "awp") != -1 || StrContains(weapon, "ssg08") != -1) || (g_bNSAllSnipers && (StrContains(weapon, "g3sg1") != -1 || StrContains(weapon, "scar20") != -1))) && (GetEntProp(attacker, Prop_Data, "m_iFOV") <= 0 || GetEntProp(attacker, Prop_Data, "m_iFOV") == GetEntProp(attacker, Prop_Data, "m_iDefaultFOV"))) {
+		if (attacker < MaxClients && ((StrContains(weapon, "awp") != -1 || StrContains(weapon, "ssg08") != -1) || (g_bNSAllSnipers && (StrContains(weapon, "g3sg1") != -1 || StrContains(weapon, "scar20") != -1))) && (GetEntProp(attacker, Prop_Data, "m_iFOV") <= 0 || GetEntProp(attacker, Prop_Data, "m_iFOV") == GetEntProp(attacker, Prop_Data, "m_iDefaultFOV"))) {
 			g_aStats[attacker][SCORE]+= g_PointsNS;
 			g_aStats[attacker][NS]++;
 
@@ -1129,8 +1125,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 	}
 
-	/* Assist */
-	if (assist && attacker < MAXPLAYERS) {
+	if (assist && attacker < MaxClients) {
 		//Do not attack your teammate, my friend
 		if (GetClientTeam(victim) == GetClientTeam(assist))	{
 			return;
@@ -1140,7 +1135,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 	}
 
-	if (attacker < MAXPLAYERS) {
+	if (attacker < MaxClients) {
 		if (g_aStats[attacker][KILLS] == 50) {
 			g_TotalPlayers++;
 		}
@@ -1160,7 +1155,7 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 		return;
 	}
 
-	if (victim != attacker && attacker > 0 && attacker < MAXPLAYERS) {
+	if (victim != attacker && attacker > 0 && attacker < MaxClients) {
 		int hitgroup = GetEventInt(event, "hitgroup");
 		if (hitgroup == 0) {
 			// Player was hit by knife, he, flashbang, or smokegrenade.
@@ -1234,7 +1229,6 @@ public void SavePlayer(int client) {
 		Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], g_aWeapons[client][i]);
 	}
 
-	/* SM1.9 Fix*/
 	char query[4000];
 	char query2[4000];
 
@@ -1294,7 +1288,6 @@ public void LoadPlayer(int client) {
 		g_aWeapons[client][i] = 0;
 	}
 
-	//ReplaceString(name, sizeof(name), "'", "");
 	char auth[32];
 	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
 	strcopy(g_aClientSteam[client], sizeof(g_aClientSteam[]), auth);
@@ -1576,7 +1569,6 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 	} else if (convar == g_cvarPointsBombDropped) {
 		g_PointsBombDropped = g_cvarPointsBombDropped.IntValue;
 	} else if (convar == g_cvarAnnounceConnect) {
-		/*Connect Announcer*/
 		g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
 	} else if (convar == g_cvarAnnounceConnectChat) {
 		g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
@@ -1593,15 +1585,12 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 	} else if (convar == g_cvarAnnounceTopConnectHint) {
 		g_bAnnounceTopConnectHint = g_cvarAnnounceTopConnectHint.BoolValue;
 	} else if (convar == g_cvarPointsAssistKill) {
-		/* Assist */
 		g_PointsAssistKill = g_cvarPointsAssistKill.IntValue;
 	} else if (convar == g_cvarPointsMin) {
-		/* Min points */
 		g_PointsMin = g_cvarPointsMin.IntValue;
 	} else if (convar == g_cvarPointsMinEnabled) {
 		g_bPointsMinEnabled = g_cvarPointsMinEnabled.BoolValue;
 	} else if (convar == g_cvarRankCache) {
-		/* Rank Cache */
 		g_bRankCache = g_cvarRankCache.BoolValue;
 	} else if (convar == g_cvarPointsMatchWin) {
 		g_PointsMatchWin = g_cvarPointsMatchWin.IntValue;
