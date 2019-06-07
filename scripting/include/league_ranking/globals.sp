@@ -122,6 +122,7 @@ bool OnDB[MAXPLAYERS + 1];
 int g_aStats[MAXPLAYERS + 1][STATS_NAMES];
 int g_aWeapons[MAXPLAYERS + 1][WEAPONS_ENUM];
 int g_aHitBox[MAXPLAYERS + 1][HITBOXES];
+int connectTime[MAXPLAYERS + 1];
 int g_TotalPlayers;
 
 ConVar g_cvarPointsMatchWin;
@@ -149,7 +150,7 @@ bool g_bRankCache;
 /* Cooldown Timer */
 Handle hRankTimer[MAXPLAYERS + 1] = null;
 
-/*RankMe Connect Announcer*/
+/* Connect Announcer */
 ConVar g_cvarAnnounceConnect;
 ConVar g_cvarAnnounceConnectChat;
 ConVar g_cvarAnnounceConnectHint;

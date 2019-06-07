@@ -686,7 +686,7 @@ public Action OnSayText(int client, const char[] command, int argc) {
 	StripQuotes(cpMessage); // Text come inside quotes
 	ExplodeString(cpMessage, " ", sWords, sizeof(sWords), sizeof(sWords[])); // Explode it for use at top, topknife, topnade and topweapon
 
-	// Proccess the text
+	// Process the text
 	if (StrEqual(cpMessage, "rank", false)) {
 		CMD_Rank(client, 0);
 	} else if (StrContains(sWords[0], "top", false) == 0) {
@@ -736,7 +736,7 @@ public void OnPluginEnd() {
                 g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
 
 			Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-                g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], g_aStats[client][CONNECTED] + GetTime() - connectTime[client], g_aStats[client][CONNECTED], g_aClientSteam[client]);
+                g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - connectTime[client], g_aClientSteam[client]);
 
 			LogMessage(query);
 			LogMessage(query2);
@@ -1280,7 +1280,9 @@ public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any 
 	}
 }
 
-public void OnClientPutInServer(int client)  {
+public void OnClientPutInServer(int client) {
+    connectTime[client] = GetTime();
+
 	// If the database isn't connected, you can't run SQL_EscapeString.
 	if (g_hStatsDb != null) {
 		LoadPlayer(client);
