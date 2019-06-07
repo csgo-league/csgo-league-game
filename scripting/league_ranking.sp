@@ -20,12 +20,13 @@
 
 #define SENDER_WORLD 0
 #define MAX_LENGTH_MENU 470
-#define PLUGIN_VERSION "1.0.2"
+
+#define PLUGIN_VERSION "1.0.0"
 
 public Plugin myinfo = {
 	name = "[League] Ranking",
 	author = "B3none, Kento",
-	description = "CSGO ranking and statistics",
+	description = "League ranking plugin.",
 	version = PLUGIN_VERSION,
 	url = "https://github.com/csgo-league"
 };
