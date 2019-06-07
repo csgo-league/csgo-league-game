@@ -17,3 +17,19 @@ So as to keep the latest version of the plugin I recommend watching the reposito
 If you appreciate the project then please take the time to star our repository.
 
 ![Star us](https://github.com/b3none/gdprconsent/raw/development/.github/README_ASSETS/star_us.png)
+
+## Installation
+
+1. Add the league configs to the `databases.cfg`
+```
+"league"
+{
+    "driver"			"default"
+    "host"				""
+    "database"			""
+    "user"				""
+    "pass"				""
+    //"timeout"			"0"
+    "port"				"3306"
+}
+```
