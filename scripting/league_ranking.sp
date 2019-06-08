@@ -1,4 +1,4 @@
-// This is a heavily modified version of Kento's RankMe
+// This is a HEAVILY modified version of Kento's RankMe
 // https://github.com/rogeraabbccdd/Kento-Rankme
 
 #include <sourcemod>
