@@ -196,7 +196,7 @@ public void SQL_TopCallback(Handle owner, Handle hndl, const char[] error, any D
 	Format(temp,sizeof(temp)," %T\n","Showing",client,at+1,at+10,g_TotalPlayers);
 	menu.SetTitle("");
 	char sBuffer[200];
-	while(SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+	while (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		i++;
 
 		SQL_FetchString(hndl,2,name,sizeof(name));
@@ -316,7 +316,7 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 	char name[MAX_NAME_LENGTH];
 	GetClientName(client, name, sizeof(name));
 
-	while(SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+	while (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		i++;
 		SQL_FetchString(hndl,2,Name_receive,MAX_NAME_LENGTH*2+1);
 		SQL_FetchString(hndl,1,Auth_receive,64);

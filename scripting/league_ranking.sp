@@ -219,7 +219,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 
 	if (SQL_GetRowCount(hndl)) {
 		char steamid[32];
-		while(SQL_FetchRow(hndl)) {
+		while (SQL_FetchRow(hndl)) {
 			SQL_FetchString(hndl, 1, steamid, 32);
 			PushArrayString(g_arrayRankCache, steamid);
 		}
