@@ -276,7 +276,6 @@ public int Native_GivePoint(Handle plugin, int numParams) {
 	g_aStats[iClient][SCORE] += iPoints;
 }
 
-
 public int Native_GetRank(Handle plugin, int numParams) {
 	int client = GetNativeCell(1);
 	Function callback = GetNativeCell(2);
@@ -311,9 +310,9 @@ void GetClientRank(Handle pack) {
 	CloseHandle(pack);
 
 	int rank;
-	char steamid[32];
-	GetClientAuthId(client, AuthId_SteamID64, steamid, 32, true);
-	rank = FindStringInArray(g_arrayRankCache, steamid);
+	char steamId[32];
+	GetClientAuthId(client, AuthId_SteamID64, steamId, 32, true);
+	rank = FindStringInArray(g_arrayRankCache, steamId);
 
 	if (rank > 0) {
 		CallRankCallback(client, rank, callback, args, plugin);
@@ -402,7 +401,6 @@ public int Native_GetHitbox(Handle plugin, int numParams) {
 	SetNativeArray(2, array, 8);
 }
 
-// Code made by Antithasys
 public Action OnSayText(int client, const char[] command, int argc) {
 	if (!g_bEnabled || !g_bChatTriggers || client == SENDER_WORLD || IsChatTrigger()) {
 		// Don't parse if plugin is disabled or if is from the console or a chat trigger (e.g: ! or /)
@@ -471,9 +469,7 @@ public void OnPluginEnd() {
 			SQL_FastQuery(g_hStatsDb, query);
 			SQL_FastQuery(g_hStatsDb, query2);
 
-			/**
-			Start the forward OnPlayerSaved
-			*/
+			// Start the forward OnPlayerSaved
 			Action fResult;
 			Call_StartForward(g_fwdOnPlayerSaved);
 			Call_PushCell(client);
@@ -728,7 +724,6 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		g_aStats[victim][SUICIDES]++;
 		g_aStats[victim][SCORE] -= g_PointsLoseSuicide;
 
-		/* Min points */
 		if (g_bPointsMinEnabled) {
 			if (g_aStats[victim][SCORE] < g_PointsMin) {
 				g_aStats[victim][SCORE] = g_PointsMin;
@@ -740,7 +735,6 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			g_aStats[attacker][TK]++;
 			g_aStats[attacker][SCORE] -= g_PointsLoseTk;
 
-			/* Min points */
 			if (g_bPointsMinEnabled) {
 				if (g_aStats[victim][SCORE] < g_PointsMin) {
 					g_aStats[victim][SCORE] = g_PointsMin;
@@ -751,7 +745,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		int team = GetClientTeam(attacker);
 		bool headshot = GetEventBool(event, "headshot");
 
-		/* knife */
+		// knife
 		if (StrContains(weapon, "knife") != -1 ||
 			StrEqual(weapon, "bayonet") ||
 			StrEqual(weapon, "melee") ||
@@ -762,17 +756,17 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 			weapon = "knife";
 		}
 
-		/* breachcharge has projectile */
+		// breachcharge has projectile
 		if (StrContains(weapon, "breachcharge") != -1) {
 			weapon = "breachcharge";
 		}
 
-		/* firebomb = molotov */
+		// firebomb = molotov
 		if (StrEqual(weapon, "firebomb")) {
 			weapon = "molotov";
 		}
 
-		/* diversion = decoy, and decoy has projectile */
+		// diversion = decoy, and decoy has projectile
 		if (StrContains(weapon, "diversion") != -1 || StrContains(weapon, "decoy") != -1) {
 			weapon = "decoy";
 		}
@@ -859,7 +853,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 	}
 
 	if (assist && attacker < MaxClients) {
-		//Do not attack your teammate, my friend
+		// Do not attack your teammate, my friend
 		if (GetClientTeam(victim) == GetClientTeam(assist))	{
 			return;
 		} else {
@@ -1057,7 +1051,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
     }
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		// Player info - Score - LastConnect
+		// Player info from Score - LastConnect
 		for (int i = 0; i < 13; i++) {
 			g_aStats[client][i] = SQL_FetchInt(hndl, 2 + i);
 		}
