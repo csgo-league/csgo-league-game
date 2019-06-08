@@ -92,14 +92,13 @@ public void DB_Connect(bool firstload) {
 	if (firstload) {
 		g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
 		char sError[256];
-        g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
-
+		g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
 
 		if (g_hStatsDb == null) {
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
 
-        LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
+		LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
@@ -208,7 +207,7 @@ void BuildRankCache() {
 	char query[1000];
 	MakeSelectQuery(query, sizeof(query));
 
-    Format(query, sizeof(query), "%s ORDER BY score DESC", query);
+	Format(query, sizeof(query), "%s ORDER BY score DESC", query);
 
 	SQL_TQuery(g_hStatsDb, SQL_BuildRankCache, query);
 }
@@ -233,7 +232,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 public Action CMD_Duplicate(int client, int args) {
 	char sQuery[512];
 
-    FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
+	FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
 
 	SQL_TQuery(g_hStatsDb, SQL_DuplicateCallback, sQuery, client);
 
@@ -303,8 +302,7 @@ public int Native_GetRank(Handle plugin, int numParams) {
 	char query[10000];
 	MakeSelectQuery(query, sizeof(query));
 
-    Format(query, sizeof(query), "%s ORDER BY score DESC", query);
-
+	Format(query, sizeof(query), "%s ORDER BY score DESC", query);
 
 	SQL_TQuery(g_hStatsDb, SQL_GetRankCallback, query, pack);
 }
@@ -1009,7 +1007,7 @@ public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any 
 }
 
 public void OnClientPutInServer(int client) {
-    connectTime[client] = GetTime();
+	connectTime[client] = GetTime();
 
 	// If the database isn't connected, you can't run SQL_EscapeString.
 	if (g_hStatsDb != null) {
@@ -1590,11 +1588,11 @@ void AddCvarListeners()
 	g_cvarPointsMinEnabled.AddChangeHook(OnConVarChanged);
 	g_cvarPointsMin.AddChangeHook(OnConVarChanged);
 	g_cvarAnnounceConnect.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceConnectChat.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceConnectHint.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceDisconnect.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceTopConnect.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceTopPosConnect.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
-    g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceConnectChat.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceConnectHint.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceDisconnect.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceTopConnect.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceTopPosConnect.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
+	g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
 }
