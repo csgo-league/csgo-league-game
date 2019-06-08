@@ -5,7 +5,6 @@ ConVar g_cvarEnabled;
 ConVar g_cvarChatChange;
 ConVar g_cvarRankbots;
 ConVar g_cvarAutopurge;
-ConVar g_cvarDumpDB;
 ConVar g_cvarPointsBombDefusedTeam;
 ConVar g_cvarPointsBombDefusedPlayer;
 ConVar g_cvarPointsBombPlantedTeam;
@@ -48,12 +47,28 @@ ConVar g_cvarPointsLoseTk;
 ConVar g_cvarPointsLoseSuicide;
 ConVar g_cvarShowBotsOnRank;
 ConVar g_cvarFfa;
-ConVar g_cvarMysql;
 ConVar g_cvarGatherStats;
 ConVar g_cvarDaysToNotShowOnRank;
-ConVar g_cvarRankMode;
 ConVar g_cvarSQLTable;
 ConVar g_cvarChatTriggers;
+ConVar g_cvarAnnounceConnect;
+ConVar g_cvarAnnounceConnectChat;
+ConVar g_cvarAnnounceConnectHint;
+ConVar g_cvarAnnounceDisconnect;
+ConVar g_cvarAnnounceTopConnect;
+ConVar g_cvarAnnounceTopPosConnect;
+ConVar g_cvarAnnounceTopConnectChat;
+ConVar g_cvarAnnounceTopConnectHint;
+ConVar g_cvarPointsMatchWin;
+ConVar g_cvarPointsMatchDraw;
+ConVar g_cvarPointsMatchLose;
+ConVar g_cvarRankCache;
+ConVar g_cvarPointsAssistKill;
+ConVar g_cvarPointsMinEnabled;
+ConVar g_cvarPointsFb;
+ConVar g_cvarPointsNS;
+ConVar g_cvarNSAllSnipers;
+ConVar g_cvarPointsMin;
 
 bool g_bEnabled;
 bool g_bResetOwnRank;
@@ -62,12 +77,29 @@ bool g_bPointsLoseRoundCeil;
 bool g_bShowRankAll;
 bool g_bShowBotsOnRank;
 bool g_bFfa;
-bool g_bMysql;
 bool g_bGatherStats;
-bool g_bDumpDB;
 bool g_bChatTriggers;
+bool g_bAnnounceConnect;
+bool g_bAnnounceConnectChat;
+bool g_bAnnounceConnectHint;
+bool g_bAnnounceDisconnect;
+bool g_bAnnounceTopConnect;
+bool g_bAnnounceTopConnectChat;
+bool g_bAnnounceTopConnectHint;
+bool g_bNSAllSnipers;
+bool g_bPointsMinEnabled;
+bool g_bRankCache;
+bool OnDB[MAXPLAYERS + 1];
+bool firstblood = false;
+
+char g_sBufferClientName[MAXPLAYERS+1][MAX_NAME_LENGTH];
+char g_aClientSteam[MAXPLAYERS + 1][64];
+char g_sSQLTable[200];
 
 float g_fRankAllTimer;
+float g_fPointsKnifeMultiplier;
+float g_fPointsTaserMultiplier;
+float g_fPercentPointsLose;
 
 int g_PointsBombDefusedTeam;
 int g_PointsBombDefusedPlayer;
@@ -80,19 +112,14 @@ int g_PointsBombDropped;
 int g_PointsHostageRescTeam;
 int g_PointsHostageRescPlayer;
 int g_PointsHs;
-// Size = 4 -> for using client team for points
-int g_PointsKill[4];
+int g_PointsKill[4]; // The size is 4 for using client team for points
 int g_PointsKillBonus[4];
 int g_PointsKillBonusDif[4];
 int g_PointsMvpTr;
 int g_PointsMvpCt;
 int g_MinimalKills;
 int g_PointsStart;
-
-float g_fPointsKnifeMultiplier;
-float g_fPointsTaserMultiplier;
-float g_fPercentPointsLose;
-
+int g_AnnounceTopPosConnect;
 int g_PointsRoundWin[4];
 int g_PointsRoundLose[4];
 int g_MinimumPlayers;
@@ -103,87 +130,30 @@ int g_PointsVipEscapedPlayer;
 int g_PointsVipKilledTeam;
 int g_PointsVipKilledPlayer;
 int g_DaysToNotShowOnRank;
-int g_RankMode;
-
-char g_sSQLTable[200];
-Handle g_hStatsDb;
-bool OnDB[MAXPLAYERS + 1];
+int g_PointsMatchWin;
+int g_PointsMatchDraw;
+int g_PointsMatchLose;
+int g_aPointsOnConnect[MAXPLAYERS+1];
+int g_aPointsOnDisconnect[MAXPLAYERS+1];
+int g_aRankOnConnect[MAXPLAYERS+1];
+int g_PointsAssistKill;
+int g_PointsMin;
+int g_PointsFb;
+int g_PointsNS;
 int g_aStats[MAXPLAYERS + 1][STATS_NAMES];
 int g_aWeapons[MAXPLAYERS + 1][WEAPONS_ENUM];
 int g_aHitBox[MAXPLAYERS + 1][HITBOXES];
 int connectTime[MAXPLAYERS + 1];
 int g_TotalPlayers;
+int g_C4PlantedBy;
 
-ConVar g_cvarPointsMatchWin;
-ConVar g_cvarPointsMatchDraw;
-ConVar g_cvarPointsMatchLose;
-int g_PointsMatchWin;
-int g_PointsMatchDraw;
-int g_PointsMatchLose;
-
+Handle g_hStatsDb;
 Handle g_fwdOnPlayerLoaded;
 Handle g_fwdOnPlayerSaved;
-
-bool DEBUGGING = false;
-int g_C4PlantedBy;
-char g_sC4PlantedByName[MAX_NAME_LENGTH];
-
-// Preventing duplicates
-char g_aClientSteam[MAXPLAYERS + 1][64];
-
-/* Rank cache */
-ConVar g_cvarRankCache;
 Handle g_arrayRankCache[3];
-bool g_bRankCache;
-
-/* Cooldown Timer */
 Handle hRankTimer[MAXPLAYERS + 1] = null;
 
-/* Connect Announcer */
-ConVar g_cvarAnnounceConnect;
-ConVar g_cvarAnnounceConnectChat;
-ConVar g_cvarAnnounceConnectHint;
-ConVar g_cvarAnnounceDisconnect;
-ConVar g_cvarAnnounceTopConnect;
-ConVar g_cvarAnnounceTopPosConnect;
-ConVar g_cvarAnnounceTopConnectChat;
-ConVar g_cvarAnnounceTopConnectHint;
-
-bool g_bAnnounceConnect;
-bool g_bAnnounceConnectChat;
-bool g_bAnnounceConnectHint;
-bool g_bAnnounceDisconnect;
-bool g_bAnnounceTopConnect;
-bool g_bAnnounceTopConnectChat;
-bool g_bAnnounceTopConnectHint;
-
-int g_AnnounceTopPosConnect;
-
-int g_aPointsOnConnect[MAXPLAYERS+1];
-int g_aPointsOnDisconnect[MAXPLAYERS+1];
-int g_aRankOnConnect[MAXPLAYERS+1];
-char g_sBufferClientName[MAXPLAYERS+1][MAX_NAME_LENGTH];
-
-/* Assist */
-ConVar g_cvarPointsAssistKill;
-int g_PointsAssistKill;
-
-/* Min points */
-ConVar g_cvarPointsMin;
-int g_PointsMin;
-ConVar g_cvarPointsMinEnabled;
-bool g_bPointsMinEnabled;
-
-/* First blood */
-bool firstblood = false;
-ConVar g_cvarPointsFb;
-int g_PointsFb;
-
-/* No scope */
-ConVar g_cvarPointsNS;
-int g_PointsNS;
-ConVar g_cvarNSAllSnipers;
-bool g_bNSAllSnipers;
+bool DEBUGGING = false;
 
 #define MSG "[\x04League\x01]"
 #define SPEC 1

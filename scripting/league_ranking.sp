@@ -16,13 +16,10 @@
 #pragma newdecls required
 
 // SQL Queries
-static const char g_sSqliteCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
-static const char g_sMysqlCreate[] = "CREATE TABLE IF NOT EXISTS `%s` (id INTEGER PRIMARY KEY, steam TEXT, name TEXT, score NUMERIC, kills NUMERIC, deaths NUMERIC, assists NUMERIC, suicides NUMERIC, tk NUMERIC, shots NUMERIC, hits NUMERIC, headshots NUMERIC, connected NUMERIC, rounds_tr NUMERIC, rounds_ct NUMERIC, lastconnect NUMERIC,knife NUMERIC,glock NUMERIC,hkp2000 NUMERIC,usp_silencer NUMERIC,p250 NUMERIC,deagle NUMERIC,elite NUMERIC,fiveseven NUMERIC,tec9 NUMERIC,cz75a NUMERIC,revolver NUMERIC,nova NUMERIC,xm1014 NUMERIC,mag7 NUMERIC,sawedoff NUMERIC,bizon NUMERIC,mac10 NUMERIC,mp9 NUMERIC,mp7 NUMERIC,ump45 NUMERIC,p90 NUMERIC,galilar NUMERIC,ak47 NUMERIC,scar20 NUMERIC,famas NUMERIC,m4a1 NUMERIC,m4a1_silencer NUMERIC,aug NUMERIC,ssg08 NUMERIC,sg556 NUMERIC,awp NUMERIC,g3sg1 NUMERIC,m249 NUMERIC,negev NUMERIC,hegrenade NUMERIC,flashbang NUMERIC,smokegrenade NUMERIC,inferno NUMERIC,decoy NUMERIC,taser NUMERIC,mp5sd NUMERIC,breachcharge NUMERIC,head NUMERIC, chest NUMERIC, stomach NUMERIC, left_arm NUMERIC, right_arm NUMERIC, left_leg NUMERIC, right_leg NUMERIC,c4_planted NUMERIC,c4_exploded NUMERIC,c4_defused NUMERIC,ct_win NUMERIC, tr_win NUMERIC, hostages_rescued NUMERIC, vip_killed NUMERIC, vip_escaped NUMERIC, vip_played NUMERIC, mvp NUMERIC, damage NUMERIC, match_win NUMERIC, match_draw NUMERIC, match_lose NUMERIC, first_blood NUMERIC, no_scope NUMERIC, no_scope_dis NUMERIC)";
-static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (0,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
-static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',name='%s'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
+static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
 static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
 static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
-static const char g_sSqlRemoveDuplicateSQLite[] = "delete from `%s` where `%s`.id > (SELECT min(id) from `%s` as t2 WHERE t2.steam=`%s`.steam);";
 static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.steam=vtable.steam);";
 
 public Plugin myinfo = {
@@ -57,7 +54,6 @@ public void OnPluginStart() {
 	HookEventEx("round_end", Event_RoundEnd);
 	HookEventEx("round_start", Event_RoundStart);
 	HookEventEx("round_mvp", Event_RoundMVP);
-	HookEventEx("player_changename", OnClientChangeName, EventHookMode_Pre);
 	HookEventEx("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
 	HookEventEx("cs_win_panel_match", Event_WinPanelMatch);
 
@@ -91,61 +87,19 @@ public void OnConVarChanged_SQLTable(Handle convar, const char[] oldValue, const
 	DB_Connect(true); // Force reloading the stats
 }
 
-public void OnConVarChanged_MySQL(Handle convar, const char[] oldValue, const char[] newValue) {
-	DB_Connect(false);
-}
-
 public void DB_Connect(bool firstload) {
-	if (g_bMysql != g_cvarMysql.BoolValue || firstload) {  // NEEDS TO CONNECT IF CHANGED MYSQL CVAR OR NEVER CONNECTED
-		g_bMysql = g_cvarMysql.BoolValue;
+    // Needs to connect if it hasn't connected yet
+	if (firstload) {
 		g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
 		char sError[256];
-		if (g_bMysql) {
-			g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
-		} else {
-			g_hStatsDb = SQLite_UseDatabase("league", sError, sizeof(sError));
-		}
+        g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
+
 
 		if (g_hStatsDb == null) {
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
 
-		SQL_LockDatabase(g_hStatsDb);
-		char sQuery[9999];
-
-		if (g_bMysql) {
-			Format(sQuery, sizeof(sQuery), g_sMysqlCreate, g_sSQLTable);
-			SQL_FastQuery(g_hStatsDb, sQuery);
-		} else {
-			Format(sQuery, sizeof(sQuery), g_sSqliteCreate, g_sSQLTable);
-			SQL_FastQuery(g_hStatsDb, sQuery);
-		}
-
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` MODIFY id INTEGER AUTO_INCREMENT", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN vip_killed NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN vip_escaped NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN vip_played NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN match_win NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN match_draw NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN match_lose NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN mp5sd NUMERIC AFTER taser", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN breachcharge NUMERIC AFTER mp5sd", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN first_blood NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN no_scope NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		Format(sQuery, sizeof(sQuery), "ALTER TABLE `%s` ADD COLUMN no_scope_dis NUMERIC", g_sSQLTable);
-		SQL_FastQuery(g_hStatsDb, sQuery);
-		SQL_UnlockDatabase(g_hStatsDb);
+        LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
@@ -153,7 +107,6 @@ public void DB_Connect(bool firstload) {
 			}
 		}
 	}
-
 }
 
 public void OnConfigsExecuted() {
@@ -172,7 +125,6 @@ public void OnConfigsExecuted() {
 	g_fRankAllTimer = g_cvarRankAllTimer.FloatValue;
 	g_bRankBots = g_cvarRankbots.BoolValue;
 	g_bFfa = g_cvarFfa.BoolValue;
-	g_bDumpDB = g_cvarDumpDB.BoolValue;
 	g_PointsBombDefusedTeam = g_cvarPointsBombDefusedTeam.IntValue;
 	g_PointsBombDefusedPlayer = g_cvarPointsBombDefusedPlayer.IntValue;
 	g_PointsBombPlantedTeam = g_cvarPointsBombPlantedTeam.IntValue;
@@ -208,7 +160,6 @@ public void OnConfigsExecuted() {
 	g_PointsLoseSuicide = g_cvarPointsLoseSuicide.IntValue;
 	g_DaysToNotShowOnRank = g_cvarDaysToNotShowOnRank.IntValue;
 	g_bGatherStats = g_cvarGatherStats.BoolValue;
-	g_RankMode = g_cvarRankMode.IntValue;
 	g_bChatTriggers = g_cvarChatTriggers.BoolValue;
 	g_PointsMvpCt = g_cvarPointsMvpCt.IntValue;
 	g_PointsMvpTr = g_cvarPointsMvpTr.IntValue;
@@ -253,17 +204,11 @@ void BuildRankCache() {
 	ClearArray(g_arrayRankCache[2]);
 
 	PushArrayString(g_arrayRankCache[0], "Rank By SteamId: This is First Line in Array");
-	PushArrayString(g_arrayRankCache[1], "Rank By Name: This is First Line in Array");
-	PushArrayString(g_arrayRankCache[2], "Rank By IP: This is First Line in Array");
 
 	char query[1000];
 	MakeSelectQuery(query, sizeof(query));
 
-	if (g_RankMode == 1) {
-		Format(query, sizeof(query), "%s ORDER BY score DESC", query);
-	} else if (g_RankMode == 2) {
-		Format(query, sizeof(query), "%s ORDER BY CAST(CAST(kills as float)/CAST (deaths as float) as float) DESC", query);
-	}
+    Format(query, sizeof(query), "%s ORDER BY score DESC", query);
 
 	SQL_TQuery(g_hStatsDb, SQL_BuildRankCache, query);
 }
@@ -275,28 +220,20 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 	}
 
 	if (SQL_GetRowCount(hndl)) {
-		char steamid[32], name[128], ip[32];
+		char steamid[32];
 		while(SQL_FetchRow(hndl)) {
 			SQL_FetchString(hndl, 1, steamid, 32);
-			SQL_FetchString(hndl, 2, name, 128);
-			SQL_FetchString(hndl, 3, ip, 32);
 			PushArrayString(g_arrayRankCache[0], steamid);
-			PushArrayString(g_arrayRankCache[1], name);
-			PushArrayString(g_arrayRankCache[2], ip);
 		}
 	} else {
-		LogMessage("[LeagueRanking] No mork rank");
+		LogMessage("[LeagueRanking] No more rank");
 	}
 }
 
 public Action CMD_Duplicate(int client, int args) {
-	char sQuery[400];
+	char sQuery[512];
 
-	if (g_bMysql) {
-        FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-	} else {
-        FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateSQLite, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-	}
+    FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
 
 	SQL_TQuery(g_hStatsDb, SQL_DuplicateCallback, sQuery, client);
 
@@ -341,10 +278,8 @@ public int Native_GivePoint(Handle plugin, int numParams) {
 	}
 
 	char[] Reason = new char[len + 1];
-	char Name[MAX_NAME_LENGTH];
 	GetNativeString(3, Reason, len + 1);
 	g_aStats[iClient][SCORE] += iPoints;
-	GetClientName(iClient, Name, sizeof(Name));
 }
 
 
@@ -368,11 +303,8 @@ public int Native_GetRank(Handle plugin, int numParams) {
 	char query[10000];
 	MakeSelectQuery(query, sizeof(query));
 
-	if (g_RankMode == 1) {
-		Format(query, sizeof(query), "%s ORDER BY score DESC", query);
-	} else if (g_RankMode == 2) {
-		Format(query, sizeof(query), "%s ORDER BY CAST(CAST(kills as float)/CAST (deaths as float) as float) DESC", query);
-	}
+    Format(query, sizeof(query), "%s ORDER BY score DESC", query);
+
 
 	SQL_TQuery(g_hStatsDb, SQL_GetRankCallback, query, pack);
 }
@@ -475,46 +407,6 @@ public int Native_GetHitbox(Handle plugin, int numParams) {
 	}
 
 	SetNativeArray(2, array, 8);
-}
-
-public void DumpDB() {
-	if (!g_bDumpDB || g_bMysql) {
-		return;
-	}
-
-	char sQuery[1000];
-	FormatEx(sQuery, sizeof(sQuery), "SELECT * from `%s`", g_sSQLTable);
-	SQL_TQuery(g_hStatsDb, SQL_DumpCallback, sQuery);
-}
-
-public Action OnClientChangeName(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled) {
-		return Plugin_Continue;
-	}
-
-	int client = GetClientOfUserId(GetEventInt(event, "userid"));
-	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
-		return Plugin_Continue;
-	}
-
-	if (IsClientConnected(client))
-	{
-		char clientnewname[MAX_NAME_LENGTH];
-		GetEventString(event, "newname", clientnewname, sizeof(clientnewname));
-		if (client == g_C4PlantedBy) {
-			strcopy(g_sC4PlantedByName, sizeof(g_sC4PlantedByName), clientnewname);
-		}
-		char Eclientnewname[MAX_NAME_LENGTH * 2 + 1];
-		SQL_EscapeString(g_hStatsDb, clientnewname, Eclientnewname, sizeof(Eclientnewname));
-
-		//ReplaceString(clientnewname, sizeof(clientnewname), "'", "");
-		char query[10000];
-
-		Format(query, sizeof(query), "UPDATE `%s` SET name='%s' WHERE steam = '%s';", g_sSQLTable, Eclientnewname, g_aClientSteam[client]);
-
-		SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
-	}
-	return Plugin_Continue;
 }
 
 // Code made by Antithasys
@@ -728,8 +620,6 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 			SavePlayer(i);
 		}
 	}
-
-	DumpDB();
 }
 
 public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast) {
@@ -1267,59 +1157,6 @@ public void OnClientDisconnect(int client) {
 	OnDB[client] = false;
 }
 
-public void SQL_DumpCallback(Handle owner, Handle hndl, const char[] error, any Datapack) {
-	if (hndl == null) {
-		LogError("[LeagueRanking] Query Fail: %s", error);
-		PrintToServer(error);
-		return;
-	}
-
-	Handle File1;
-	char fields_values[600];
-	char field[100];
-	char prepared_field[200];
-
-	fields_values[0] = 0;
-
-	File1 = OpenFile("rank.sql", "w");
-	if (File1 == null) {
-		LogError("[LeagueRanking] Unable to open dump file.");
-	}
-
-	int fields = SQL_GetFieldCount(hndl);
-	bool first;
-
-	if (g_bMysql) {
-		WriteFileLine(File1, g_sMysqlCreate, g_sSQLTable);
-		WriteFileLine(File1, "");
-	} else {
-		WriteFileLine(File1, g_sSqliteCreate, g_sSQLTable);
-		WriteFileLine(File1, "");
-	}
-
-	while (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl))
-	{
-		field = "";
-		fields_values = "";
-		first = true;
-		for (int i = 0; i <= fields - 1; i++) {
-			SQL_FetchString(hndl, i, field, sizeof(field));
-
-			SQL_EscapeString(g_hStatsDb, field, prepared_field, sizeof(prepared_field));
-
-			if (first) {
-				Format(fields_values, sizeof(fields_values), "\"%s\"", prepared_field);
-				first = false;
-			} else {
-				Format(fields_values, sizeof(fields_values), "%s,\"%s\"", fields_values, prepared_field);
-			}
-		}
-
-		WriteFileLine(File1, "INSERT INTO `%s` VALUES (%s);", g_sSQLTable, fields_values);
-	}
-	CloseHandle(File1);
-}
-
 public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] newValue) {
 	int g_bQueryPlayerCount;
 
@@ -1337,8 +1174,6 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		g_bQueryPlayerCount = true;
 	} else if (convar == g_cvarFfa) {
 		g_bFfa = g_cvarFfa.BoolValue;
-	} else if (convar == g_cvarDumpDB) {
-		g_bDumpDB = g_cvarDumpDB.BoolValue;
 	} else if (convar == g_cvarPointsBombDefusedTeam) {
 		g_PointsBombDefusedTeam = g_cvarPointsBombDefusedTeam.IntValue;
 	} else if (convar == g_cvarPointsBombDefusedPlayer) {
@@ -1406,9 +1241,6 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		g_bQueryPlayerCount = true;
 	} else if (convar == g_cvarGatherStats) {
 		g_bGatherStats = g_cvarGatherStats.BoolValue;
-	} else if (convar == g_cvarRankMode) {
-		g_RankMode = g_cvarRankMode.IntValue;
-		BuildRankCache();
 	} else if (convar == g_cvarChatTriggers) {
 		g_bChatTriggers = g_cvarChatTriggers.BoolValue;
 	} else if (convar == g_cvarPointsMvpCt) {
@@ -1670,11 +1502,8 @@ void CreateCvars()
     g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
     g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
     g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-    g_cvarMysql = CreateConVar("league_ranking_mysql", "1", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
-    g_cvarDumpDB = CreateConVar("league_ranking_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
-    g_cvarRankMode = CreateConVar("league_ranking_rank_mode", "1", "Rank by what? 1 = by points 2 = by KDR ", _, true, 1.0, true, 2.0);
     g_cvarSQLTable = CreateConVar("league_ranking_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
     g_cvarChatTriggers = CreateConVar("league_ranking_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarPointsMvpCt = CreateConVar("league_ranking_points_mvp_ct", "1", "How many points a CT got for being the MVP?", _, true, 0.0);
@@ -1743,11 +1572,8 @@ void AddCvarListeners()
 	g_cvarPointsLoseTk.AddChangeHook(OnConVarChanged);
 	g_cvarPointsLoseSuicide.AddChangeHook(OnConVarChanged);
 	g_cvarFfa.AddChangeHook(OnConVarChanged);
-	g_cvarDumpDB.AddChangeHook(OnConVarChanged);
 	g_cvarGatherStats.AddChangeHook(OnConVarChanged);
 	g_cvarDaysToNotShowOnRank.AddChangeHook(OnConVarChanged);
-	g_cvarRankMode.AddChangeHook(OnConVarChanged);
-	g_cvarMysql.AddChangeHook(OnConVarChanged_MySQL);
 	g_cvarSQLTable.AddChangeHook(OnConVarChanged_SQLTable);
 	g_cvarChatTriggers.AddChangeHook(OnConVarChanged);
 	g_cvarPointsMvpCt.AddChangeHook(OnConVarChanged);
