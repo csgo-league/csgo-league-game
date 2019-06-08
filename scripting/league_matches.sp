@@ -25,43 +25,6 @@ public void OnPluginStart() {
 		SetFailState(buffer);
 	}
 
-	Format(buffer, sizeof(buffer), "CREATE TABLE IF NOT EXISTS sql_matches_scoretotal (");
-	Format(buffer, sizeof(buffer), "%s match_id bigint(20) unsigned NOT NULL AUTO_INCREMENT,", buffer);
-	Format(buffer, sizeof(buffer), "%s timestamp int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s team_0 int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s team_1 int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s team_2 int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s team_3 int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s teamname_1 varchar(64) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s teamname_2 varchar(64) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s map varchar(128) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s PRIMARY KEY (match_id),", buffer);
-	Format(buffer, sizeof(buffer), "%s UNIQUE KEY match_id (match_id));", buffer);
-
-	if (!SQL_FastQuery(db, buffer)) {
-		SQL_GetError(db, buffer, sizeof(buffer));
-		SetFailState(buffer);
-	}
-
-	Format(buffer, sizeof(buffer), "CREATE TABLE IF NOT EXISTS sql_matches (");
-	Format(buffer, sizeof(buffer), "%s match_id bigint(20) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s name varchar(65) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s steam64 varchar(64) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s team int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s alive int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s ping int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s account int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s kills int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s assists int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s deaths int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s mvps int(11) NOT NULL,", buffer);
-	Format(buffer, sizeof(buffer), "%s score int(11) NOT NULL);", buffer);
-
-	if (!SQL_FastQuery(db, buffer)) {
-		SQL_GetError(db, buffer, sizeof(buffer));
-		SetFailState(buffer);
-	}
-	
 	HookEventEx("cs_win_panel_match", cs_win_panel_match);
 }
 
@@ -130,7 +93,7 @@ public Action delay(Handle timer) {
 			}
 
 			Format(buffer, sizeof(buffer), "INSERT INTO sql_matches");
-			Format(buffer, sizeof(buffer), "%s (match_id, team, alive, ping, name, account, kills, assists, deaths, mvps, score, steam64)", buffer);
+			Format(buffer, sizeof(buffer), "%s (match_id, team, alive, ping, name, account, kills, assists, deaths, mvps, score, steam)", buffer);
 			Format(buffer, sizeof(buffer), "%s VALUES (LAST_INSERT_ID(), '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%s');", buffer, m_iTeam, m_bAlive, m_iPing, name, m_iAccount, m_iKills, m_iAssists, m_iDeaths, m_iMVPs, m_iScore, steamid64);
 			SQL_AddQuery(txn, buffer);
 		}
