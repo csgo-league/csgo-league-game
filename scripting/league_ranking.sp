@@ -987,9 +987,7 @@ public void SQL_SaveCallback(Handle owner, Handle hndl, const char[] error, any 
 		return;
 	}
 
-	/**
-		Start the forward OnPlayerSaved
-	*/
+	// Start the forward OnPlayerSaved
 	Action fResult;
 	Call_StartForward(g_fwdOnPlayerSaved);
 	Call_PushCell(client);
@@ -1104,9 +1102,8 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 		}
 	}
 	OnDB[client] = true;
-	/**
-	Start the forward OnPlayerLoaded
-	*/
+
+	// Start the forward OnPlayerLoaded
 	Action fResult;
 	Call_StartForward(g_fwdOnPlayerLoaded);
 	Call_PushCell(client);
@@ -1149,145 +1146,6 @@ public void OnClientDisconnect(int client) {
 	OnDB[client] = false;
 }
 
-public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] newValue) {
-	int g_bQueryPlayerCount;
-
-	if (convar == g_cvarShowBotsOnRank) {
-		g_bShowBotsOnRank = g_cvarShowBotsOnRank.BoolValue;
-		g_bQueryPlayerCount = true;
-	} else if (convar == g_cvarEnabled) {
-		g_bEnabled = g_cvarEnabled.BoolValue;
-	} else if (convar == g_cvarShowRankAll) {
-		g_bShowRankAll = g_cvarShowRankAll.BoolValue;
-	} else if (convar == g_cvarRankAllTimer) {
-		g_fRankAllTimer = g_cvarRankAllTimer.FloatValue;
-	} else if (convar == g_cvarRankbots) {
-		g_bRankBots = g_cvarRankbots.BoolValue;
-		g_bQueryPlayerCount = true;
-	} else if (convar == g_cvarFfa) {
-		g_bFfa = g_cvarFfa.BoolValue;
-	} else if (convar == g_cvarPointsBombDefusedTeam) {
-		g_PointsBombDefusedTeam = g_cvarPointsBombDefusedTeam.IntValue;
-	} else if (convar == g_cvarPointsBombDefusedPlayer) {
-		g_PointsBombDefusedPlayer = g_cvarPointsBombDefusedPlayer.IntValue;
-	} else if (convar == g_cvarPointsBombPlantedTeam) {
-		g_PointsBombPlantedTeam = g_cvarPointsBombPlantedTeam.IntValue;
-	} else if (convar == g_cvarPointsBombPlantedPlayer) {
-		g_PointsBombPlantedPlayer = g_cvarPointsBombPlantedPlayer.IntValue;
-	} else if (convar == g_cvarPointsBombExplodeTeam) {
-		g_PointsBombExplodeTeam = g_cvarPointsBombExplodeTeam.IntValue;
-	} else if (convar == g_cvarPointsBombExplodePlayer) {
-		g_PointsBombExplodePlayer = g_cvarPointsBombExplodePlayer.IntValue;
-	} else if (convar == g_cvarPointsHostageRescTeam) {
-		g_PointsHostageRescTeam = g_cvarPointsHostageRescTeam.IntValue;
-	} else if (convar == g_cvarPointsHostageRescPlayer) {
-		g_PointsHostageRescPlayer = g_cvarPointsHostageRescPlayer.IntValue;
-	} else if (convar == g_cvarPointsHs) {
-		g_PointsHs = g_cvarPointsHs.IntValue;
-	} else if (convar == g_cvarPointsKillCt) {
-		g_PointsKill[CT] = g_cvarPointsKillCt.IntValue;
-	} else if (convar == g_cvarPointsKillTr) {
-		g_PointsKill[TR] = g_cvarPointsKillTr.IntValue;
-	} else if (convar == g_cvarPointsKillBonusCt) {
-		g_PointsKillBonus[CT] = g_cvarPointsKillBonusCt.IntValue;
-	} else if (convar == g_cvarPointsKillBonusTr) {
-		g_PointsKillBonus[TR] = g_cvarPointsKillBonusTr.IntValue;
-	} else if (convar == g_cvarPointsKillBonusDifCt) {
-		g_PointsKillBonusDif[CT] = g_cvarPointsKillBonusDifCt.IntValue;
-	} else if (convar == g_cvarPointsKillBonusDifTr) {
-		g_PointsKillBonusDif[TR] = g_cvarPointsKillBonusDifTr.IntValue;
-	} else if (convar == g_cvarPointsStart) {
-		g_PointsStart = g_cvarPointsStart.IntValue;
-	} else if (convar == g_cvarPointsKnifeMultiplier) {
-		g_fPointsKnifeMultiplier = g_cvarPointsKnifeMultiplier.FloatValue;
-	} else if (convar == g_cvarPointsTaserMultiplier) {
-		g_fPointsTaserMultiplier = g_cvarPointsTaserMultiplier.FloatValue;
-	} else if (convar == g_cvarPointsTrRoundWin) {
-		g_PointsRoundWin[TR] = g_cvarPointsTrRoundWin.IntValue;
-	} else if (convar == g_cvarPointsCtRoundWin) {
-		g_PointsRoundWin[CT] = g_cvarPointsCtRoundWin.IntValue;
-	} else if (convar == g_cvarPointsTrRoundLose) {
-		g_PointsRoundLose[TR] = g_cvarPointsTrRoundLose.IntValue;
-	} else if (convar == g_cvarPointsCtRoundLose) {
-		g_PointsRoundLose[CT] = g_cvarPointsCtRoundLose.IntValue;
-	} else if (convar == g_cvarMinimalKills) {
-		g_MinimalKills = g_cvarMinimalKills.IntValue;
-	} else if (convar == g_cvarPercentPointsLose) {
-		g_fPercentPointsLose = g_cvarPercentPointsLose.FloatValue;
-	} else if (convar == g_cvarPointsLoseRoundCeil) {
-		g_bPointsLoseRoundCeil = g_cvarPointsLoseRoundCeil.BoolValue;
-	} else if (convar == g_cvarMinimumPlayers) {
-		g_MinimumPlayers = g_cvarMinimumPlayers.IntValue;
-	} else if (convar == g_cvarResetOwnRank) {
-		g_bResetOwnRank = g_cvarResetOwnRank.BoolValue;
-	} else if (convar == g_cvarPointsVipEscapedTeam) {
-		g_PointsVipEscapedTeam = g_cvarPointsVipEscapedTeam.IntValue;
-	} else if (convar == g_cvarPointsVipEscapedPlayer) {
-		g_PointsVipEscapedPlayer = g_cvarPointsVipEscapedPlayer.IntValue;
-	} else if (convar == g_cvarPointsVipKilledTeam) {
-		g_PointsVipKilledTeam = g_cvarPointsVipKilledTeam.IntValue;
-	} else if (convar == g_cvarPointsVipKilledPlayer) {
-		g_PointsVipKilledPlayer = g_cvarPointsVipKilledPlayer.IntValue;
-	} else if (convar == g_cvarDaysToNotShowOnRank) {
-		g_DaysToNotShowOnRank = g_cvarDaysToNotShowOnRank.IntValue;
-		g_bQueryPlayerCount = true;
-	} else if (convar == g_cvarGatherStats) {
-		g_bGatherStats = g_cvarGatherStats.BoolValue;
-	} else if (convar == g_cvarChatTriggers) {
-		g_bChatTriggers = g_cvarChatTriggers.BoolValue;
-	} else if (convar == g_cvarPointsMvpCt) {
-		g_PointsMvpCt = g_cvarPointsMvpCt.IntValue;
-	} else if (convar == g_cvarPointsMvpTr) {
-		g_PointsMvpTr = g_cvarPointsMvpTr.IntValue;
-	} else if (convar == g_cvarPointsBombPickup) {
-		g_PointsBombDropped = g_cvarPointsBombPickup.IntValue;
-	} else if (convar == g_cvarPointsBombDropped) {
-		g_PointsBombDropped = g_cvarPointsBombDropped.IntValue;
-	} else if (convar == g_cvarAnnounceConnect) {
-		g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
-	} else if (convar == g_cvarAnnounceConnectChat) {
-		g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
-	} else if (convar == g_cvarAnnounceConnectHint) {
-		g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
-	} else if (convar == g_cvarAnnounceDisconnect) {
-		g_bAnnounceDisconnect = g_cvarAnnounceDisconnect.BoolValue;
-	} else if (convar == g_cvarAnnounceTopConnect) {
-		g_bAnnounceTopConnect = g_cvarAnnounceTopConnect.BoolValue;
-	} else if (convar == g_cvarAnnounceTopPosConnect) {
-		g_AnnounceTopPosConnect = g_cvarAnnounceTopPosConnect.IntValue;
-	} else if (convar == g_cvarAnnounceTopConnectChat) {
-		g_bAnnounceTopConnectChat = g_cvarAnnounceTopConnectChat.BoolValue;
-	} else if (convar == g_cvarAnnounceTopConnectHint) {
-		g_bAnnounceTopConnectHint = g_cvarAnnounceTopConnectHint.BoolValue;
-	} else if (convar == g_cvarPointsAssistKill) {
-		g_PointsAssistKill = g_cvarPointsAssistKill.IntValue;
-	} else if (convar == g_cvarPointsMin) {
-		g_PointsMin = g_cvarPointsMin.IntValue;
-	} else if (convar == g_cvarPointsMinEnabled) {
-		g_bPointsMinEnabled = g_cvarPointsMinEnabled.BoolValue;
-	} else if (convar == g_cvarRankCache) {
-		g_bRankCache = g_cvarRankCache.BoolValue;
-	} else if (convar == g_cvarPointsMatchWin) {
-		g_PointsMatchWin = g_cvarPointsMatchWin.IntValue;
-	} else if (convar == g_cvarPointsMatchDraw) {
-		g_PointsMatchDraw = g_cvarPointsMatchDraw.IntValue;
-	} else if (convar == g_cvarPointsMatchLose) {
-		g_PointsMatchLose = g_cvarPointsMatchLose.IntValue;
-	} else if (convar == g_cvarPointsFb) {
-		g_PointsFb = g_cvarPointsFb.IntValue;
-	} else if (convar == g_cvarPointsNS) {
-		g_PointsNS = g_cvarPointsNS.IntValue;
-	} else if (convar == g_cvarNSAllSnipers) {
-		g_bNSAllSnipers = g_cvarNSAllSnipers.BoolValue;
-	}
-
-	if (g_bQueryPlayerCount && g_hStatsDb != null) {
-		char query[10000];
-		MakeSelectQuery(query, sizeof(query));
-		SQL_TQuery(g_hStatsDb, SQL_GetPlayersCallback, query);
-	}
-}
-
 stock bool IsValidClient(int client, bool nobots = true) {
 	if (client <= 0 || client > MaxClients || !IsClientConnected(client) || (nobots && IsFakeClient(client))) {
 		return false;
@@ -1302,7 +1160,7 @@ stock void MakeSelectQuery(char[] sQuery, int strsize) {
 
 	// Append check for bots
 	if (!g_bShowBotsOnRank) {
-		Format(sQuery, strsize, "%s AND steam <> 'BOT'", sQuery);
+		Format(sQuery, strsize, "%s AND steam != 'BOT'", sQuery);
 	}
 
 	// Append check for inactivity
@@ -1403,7 +1261,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 
 public void OnGameFrame() {
     if (GameRules_GetProp("m_bWarmupPeriod") == 1) {
-        //In Warmup
+        //In warmup
         g_bGatherStats = false;
     } else {
         //Not in warmup
@@ -1587,4 +1445,143 @@ void AddCvarListeners()
 	g_cvarAnnounceTopPosConnect.AddChangeHook(OnConVarChanged);
 	g_cvarAnnounceTopConnectChat.AddChangeHook(OnConVarChanged);
 	g_cvarAnnounceTopConnectHint.AddChangeHook(OnConVarChanged);
+}
+
+public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] newValue) {
+	int g_bQueryPlayerCount;
+
+	if (convar == g_cvarShowBotsOnRank) {
+		g_bShowBotsOnRank = g_cvarShowBotsOnRank.BoolValue;
+		g_bQueryPlayerCount = true;
+	} else if (convar == g_cvarEnabled) {
+		g_bEnabled = g_cvarEnabled.BoolValue;
+	} else if (convar == g_cvarShowRankAll) {
+		g_bShowRankAll = g_cvarShowRankAll.BoolValue;
+	} else if (convar == g_cvarRankAllTimer) {
+		g_fRankAllTimer = g_cvarRankAllTimer.FloatValue;
+	} else if (convar == g_cvarRankbots) {
+		g_bRankBots = g_cvarRankbots.BoolValue;
+		g_bQueryPlayerCount = true;
+	} else if (convar == g_cvarFfa) {
+		g_bFfa = g_cvarFfa.BoolValue;
+	} else if (convar == g_cvarPointsBombDefusedTeam) {
+		g_PointsBombDefusedTeam = g_cvarPointsBombDefusedTeam.IntValue;
+	} else if (convar == g_cvarPointsBombDefusedPlayer) {
+		g_PointsBombDefusedPlayer = g_cvarPointsBombDefusedPlayer.IntValue;
+	} else if (convar == g_cvarPointsBombPlantedTeam) {
+		g_PointsBombPlantedTeam = g_cvarPointsBombPlantedTeam.IntValue;
+	} else if (convar == g_cvarPointsBombPlantedPlayer) {
+		g_PointsBombPlantedPlayer = g_cvarPointsBombPlantedPlayer.IntValue;
+	} else if (convar == g_cvarPointsBombExplodeTeam) {
+		g_PointsBombExplodeTeam = g_cvarPointsBombExplodeTeam.IntValue;
+	} else if (convar == g_cvarPointsBombExplodePlayer) {
+		g_PointsBombExplodePlayer = g_cvarPointsBombExplodePlayer.IntValue;
+	} else if (convar == g_cvarPointsHostageRescTeam) {
+		g_PointsHostageRescTeam = g_cvarPointsHostageRescTeam.IntValue;
+	} else if (convar == g_cvarPointsHostageRescPlayer) {
+		g_PointsHostageRescPlayer = g_cvarPointsHostageRescPlayer.IntValue;
+	} else if (convar == g_cvarPointsHs) {
+		g_PointsHs = g_cvarPointsHs.IntValue;
+	} else if (convar == g_cvarPointsKillCt) {
+		g_PointsKill[CT] = g_cvarPointsKillCt.IntValue;
+	} else if (convar == g_cvarPointsKillTr) {
+		g_PointsKill[TR] = g_cvarPointsKillTr.IntValue;
+	} else if (convar == g_cvarPointsKillBonusCt) {
+		g_PointsKillBonus[CT] = g_cvarPointsKillBonusCt.IntValue;
+	} else if (convar == g_cvarPointsKillBonusTr) {
+		g_PointsKillBonus[TR] = g_cvarPointsKillBonusTr.IntValue;
+	} else if (convar == g_cvarPointsKillBonusDifCt) {
+		g_PointsKillBonusDif[CT] = g_cvarPointsKillBonusDifCt.IntValue;
+	} else if (convar == g_cvarPointsKillBonusDifTr) {
+		g_PointsKillBonusDif[TR] = g_cvarPointsKillBonusDifTr.IntValue;
+	} else if (convar == g_cvarPointsStart) {
+		g_PointsStart = g_cvarPointsStart.IntValue;
+	} else if (convar == g_cvarPointsKnifeMultiplier) {
+		g_fPointsKnifeMultiplier = g_cvarPointsKnifeMultiplier.FloatValue;
+	} else if (convar == g_cvarPointsTaserMultiplier) {
+		g_fPointsTaserMultiplier = g_cvarPointsTaserMultiplier.FloatValue;
+	} else if (convar == g_cvarPointsTrRoundWin) {
+		g_PointsRoundWin[TR] = g_cvarPointsTrRoundWin.IntValue;
+	} else if (convar == g_cvarPointsCtRoundWin) {
+		g_PointsRoundWin[CT] = g_cvarPointsCtRoundWin.IntValue;
+	} else if (convar == g_cvarPointsTrRoundLose) {
+		g_PointsRoundLose[TR] = g_cvarPointsTrRoundLose.IntValue;
+	} else if (convar == g_cvarPointsCtRoundLose) {
+		g_PointsRoundLose[CT] = g_cvarPointsCtRoundLose.IntValue;
+	} else if (convar == g_cvarMinimalKills) {
+		g_MinimalKills = g_cvarMinimalKills.IntValue;
+	} else if (convar == g_cvarPercentPointsLose) {
+		g_fPercentPointsLose = g_cvarPercentPointsLose.FloatValue;
+	} else if (convar == g_cvarPointsLoseRoundCeil) {
+		g_bPointsLoseRoundCeil = g_cvarPointsLoseRoundCeil.BoolValue;
+	} else if (convar == g_cvarMinimumPlayers) {
+		g_MinimumPlayers = g_cvarMinimumPlayers.IntValue;
+	} else if (convar == g_cvarResetOwnRank) {
+		g_bResetOwnRank = g_cvarResetOwnRank.BoolValue;
+	} else if (convar == g_cvarPointsVipEscapedTeam) {
+		g_PointsVipEscapedTeam = g_cvarPointsVipEscapedTeam.IntValue;
+	} else if (convar == g_cvarPointsVipEscapedPlayer) {
+		g_PointsVipEscapedPlayer = g_cvarPointsVipEscapedPlayer.IntValue;
+	} else if (convar == g_cvarPointsVipKilledTeam) {
+		g_PointsVipKilledTeam = g_cvarPointsVipKilledTeam.IntValue;
+	} else if (convar == g_cvarPointsVipKilledPlayer) {
+		g_PointsVipKilledPlayer = g_cvarPointsVipKilledPlayer.IntValue;
+	} else if (convar == g_cvarDaysToNotShowOnRank) {
+		g_DaysToNotShowOnRank = g_cvarDaysToNotShowOnRank.IntValue;
+		g_bQueryPlayerCount = true;
+	} else if (convar == g_cvarGatherStats) {
+		g_bGatherStats = g_cvarGatherStats.BoolValue;
+	} else if (convar == g_cvarChatTriggers) {
+		g_bChatTriggers = g_cvarChatTriggers.BoolValue;
+	} else if (convar == g_cvarPointsMvpCt) {
+		g_PointsMvpCt = g_cvarPointsMvpCt.IntValue;
+	} else if (convar == g_cvarPointsMvpTr) {
+		g_PointsMvpTr = g_cvarPointsMvpTr.IntValue;
+	} else if (convar == g_cvarPointsBombPickup) {
+		g_PointsBombDropped = g_cvarPointsBombPickup.IntValue;
+	} else if (convar == g_cvarPointsBombDropped) {
+		g_PointsBombDropped = g_cvarPointsBombDropped.IntValue;
+	} else if (convar == g_cvarAnnounceConnect) {
+		g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
+	} else if (convar == g_cvarAnnounceConnectChat) {
+		g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
+	} else if (convar == g_cvarAnnounceConnectHint) {
+		g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
+	} else if (convar == g_cvarAnnounceDisconnect) {
+		g_bAnnounceDisconnect = g_cvarAnnounceDisconnect.BoolValue;
+	} else if (convar == g_cvarAnnounceTopConnect) {
+		g_bAnnounceTopConnect = g_cvarAnnounceTopConnect.BoolValue;
+	} else if (convar == g_cvarAnnounceTopPosConnect) {
+		g_AnnounceTopPosConnect = g_cvarAnnounceTopPosConnect.IntValue;
+	} else if (convar == g_cvarAnnounceTopConnectChat) {
+		g_bAnnounceTopConnectChat = g_cvarAnnounceTopConnectChat.BoolValue;
+	} else if (convar == g_cvarAnnounceTopConnectHint) {
+		g_bAnnounceTopConnectHint = g_cvarAnnounceTopConnectHint.BoolValue;
+	} else if (convar == g_cvarPointsAssistKill) {
+		g_PointsAssistKill = g_cvarPointsAssistKill.IntValue;
+	} else if (convar == g_cvarPointsMin) {
+		g_PointsMin = g_cvarPointsMin.IntValue;
+	} else if (convar == g_cvarPointsMinEnabled) {
+		g_bPointsMinEnabled = g_cvarPointsMinEnabled.BoolValue;
+	} else if (convar == g_cvarRankCache) {
+		g_bRankCache = g_cvarRankCache.BoolValue;
+	} else if (convar == g_cvarPointsMatchWin) {
+		g_PointsMatchWin = g_cvarPointsMatchWin.IntValue;
+	} else if (convar == g_cvarPointsMatchDraw) {
+		g_PointsMatchDraw = g_cvarPointsMatchDraw.IntValue;
+	} else if (convar == g_cvarPointsMatchLose) {
+		g_PointsMatchLose = g_cvarPointsMatchLose.IntValue;
+	} else if (convar == g_cvarPointsFb) {
+		g_PointsFb = g_cvarPointsFb.IntValue;
+	} else if (convar == g_cvarPointsNS) {
+		g_PointsNS = g_cvarPointsNS.IntValue;
+	} else if (convar == g_cvarNSAllSnipers) {
+		g_bNSAllSnipers = g_cvarNSAllSnipers.BoolValue;
+	}
+
+	if (g_bQueryPlayerCount && g_hStatsDb != null) {
+		char query[10000];
+		MakeSelectQuery(query, sizeof(query));
+		SQL_TQuery(g_hStatsDb, SQL_GetPlayersCallback, query);
+	}
 }
