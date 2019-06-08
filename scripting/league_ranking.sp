@@ -95,10 +95,9 @@ public void DB_Connect(bool firstload) {
 		g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
 
 		if (g_hStatsDb == null) {
+		    LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
-
-		LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
