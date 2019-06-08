@@ -16,7 +16,7 @@
 #pragma newdecls required
 
 // SQL Queries
-static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
 static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
 static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
@@ -95,9 +95,10 @@ public void DB_Connect(bool firstload) {
 		g_hStatsDb = SQL_Connect("league", false, sError, sizeof(sError));
 
 		if (g_hStatsDb == null) {
-		    LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 			SetFailState("[LeagueRanking] Unable to connect to the database (%s)", sError);
 		}
+
+		LogError("[LeagueRanking] If you haven't already you'll need to run the migrations on the web interface.");
 
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
@@ -460,7 +461,6 @@ public void OnPluginEnd() {
 				Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], g_aWeapons[client][i]);
 			}
 
-			/* SM1.9 Fix */
 			char query[4000];
 			char query2[4000];
 
@@ -1064,38 +1064,38 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
     }
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		//Player info
-		for (int i = 0; i < 10; i++) {
+		// Player info - Score - LastConnect
+		for (int i = 0; i < 13; i++) {
 			g_aStats[client][i] = SQL_FetchInt(hndl, 2 + i);
 		}
 
-		//ALL 41 Weapons
-		for (int i = 0; i < 42; i++) {
-			g_aWeapons[client][i] = SQL_FetchInt(hndl, 16 + i);
+		// 41 Weapons
+		for (int i = 0; i < 41; i++) {
+			g_aWeapons[client][i] = SQL_FetchInt(hndl, 15 + i);
 		}
 
-		//ALL 8 Hitboxes
+		// 8 Hitboxes
 		for (int i = 0; i < 8; i++) {
-			g_aHitBox[client][i] = SQL_FetchInt(hndl, 58 + i);
+			g_aHitBox[client][i] = SQL_FetchInt(hndl, 57 + i);
 		}
 
-		g_aStats[client][C4_PLANTED] = SQL_FetchInt(hndl, 65);
-		g_aStats[client][C4_EXPLODED] = SQL_FetchInt(hndl, 66);
-		g_aStats[client][C4_DEFUSED] = SQL_FetchInt(hndl, 67);
-		g_aStats[client][CT_WIN] = SQL_FetchInt(hndl, 68);
-		g_aStats[client][TR_WIN] = SQL_FetchInt(hndl, 69);
-		g_aStats[client][HOSTAGES_RESCUED] = SQL_FetchInt(hndl, 70);
-		g_aStats[client][VIP_KILLED] = SQL_FetchInt(hndl, 71);
-		g_aStats[client][VIP_ESCAPED] = SQL_FetchInt(hndl, 72);
-		g_aStats[client][VIP_PLAYED] = SQL_FetchInt(hndl, 73);
-		g_aStats[client][MVP] = SQL_FetchInt(hndl, 74);
-		g_aStats[client][DAMAGE] = SQL_FetchInt(hndl, 75);
-		g_aStats[client][MATCH_WIN] = SQL_FetchInt(hndl, 76);
-		g_aStats[client][MATCH_DRAW] = SQL_FetchInt(hndl, 77);
-		g_aStats[client][MATCH_LOSE] = SQL_FetchInt(hndl, 78);
-		g_aStats[client][FB] = SQL_FetchInt(hndl, 79);
-		g_aStats[client][NS] = SQL_FetchInt(hndl, 80);
-		g_aStats[client][NSD] = SQL_FetchInt(hndl, 81);
+		g_aStats[client][C4_PLANTED] = SQL_FetchInt(hndl, 64);
+		g_aStats[client][C4_EXPLODED] = SQL_FetchInt(hndl, 65);
+		g_aStats[client][C4_DEFUSED] = SQL_FetchInt(hndl, 66);
+		g_aStats[client][CT_WIN] = SQL_FetchInt(hndl, 67);
+		g_aStats[client][TR_WIN] = SQL_FetchInt(hndl, 68);
+		g_aStats[client][HOSTAGES_RESCUED] = SQL_FetchInt(hndl, 69);
+		g_aStats[client][VIP_KILLED] = SQL_FetchInt(hndl, 70);
+		g_aStats[client][VIP_ESCAPED] = SQL_FetchInt(hndl, 71);
+		g_aStats[client][VIP_PLAYED] = SQL_FetchInt(hndl, 72);
+		g_aStats[client][MVP] = SQL_FetchInt(hndl, 73);
+		g_aStats[client][DAMAGE] = SQL_FetchInt(hndl, 74);
+		g_aStats[client][MATCH_WIN] = SQL_FetchInt(hndl, 75);
+		g_aStats[client][MATCH_DRAW] = SQL_FetchInt(hndl, 76);
+		g_aStats[client][MATCH_LOSE] = SQL_FetchInt(hndl, 77);
+		g_aStats[client][FB] = SQL_FetchInt(hndl, 78);
+		g_aStats[client][NS] = SQL_FetchInt(hndl, 79);
+		g_aStats[client][NSD] = SQL_FetchInt(hndl, 80);
 	} else {
 		char query[10000];
 
