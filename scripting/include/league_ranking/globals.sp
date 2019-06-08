@@ -153,6 +153,9 @@ Handle g_fwdOnPlayerSaved;
 Handle g_arrayRankCache;
 Handle hRankTimer[MAXPLAYERS + 1] = null;
 
+bool DEBUGGING = false;
+
+#define MSG "[\x04League\x01]"
 #define SPEC 1
 #define TR 2
 #define CT 3
