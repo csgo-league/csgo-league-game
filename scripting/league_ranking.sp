@@ -15,9 +15,13 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define MSG "[\x04League\x01]"
+
+bool DEBUGGING = false;
+
 // SQL Queries
 static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
-static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i',%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
+static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
 static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
 static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
 static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.steam=vtable.steam);";
@@ -33,13 +37,11 @@ public Plugin myinfo = {
 public void OnPluginStart() {
 	CreateCvars();
 
-	g_arrayRankCache[0] = CreateArray(ByteCountToCells(128));
-	g_arrayRankCache[1] = CreateArray(ByteCountToCells(128));
-	g_arrayRankCache[2] = CreateArray(ByteCountToCells(128));
+	g_arrayRankCache = CreateArray(ByteCountToCells(128));
 
 	AddCvarListeners();
 
-	// EVENTS
+	// Events
 	HookEventEx("player_death", EventPlayerDeath);
 	HookEventEx("player_hurt", EventPlayerHurt);
 	HookEventEx("weapon_fire", EventWeaponFire);
@@ -197,11 +199,9 @@ void BuildRankCache() {
 		return;
 	}
 
-	ClearArray(g_arrayRankCache[0]);
-	ClearArray(g_arrayRankCache[1]);
-	ClearArray(g_arrayRankCache[2]);
+	ClearArray(g_arrayRankCache);
 
-	PushArrayString(g_arrayRankCache[0], "Rank By SteamId: This is First Line in Array");
+	PushArrayString(g_arrayRankCache, "Rank By SteamId: This is First Line in Array");
 
 	char query[1000];
 	MakeSelectQuery(query, sizeof(query));
@@ -221,7 +221,7 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 		char steamid[32];
 		while(SQL_FetchRow(hndl)) {
 			SQL_FetchString(hndl, 1, steamid, 32);
-			PushArrayString(g_arrayRankCache[0], steamid);
+			PushArrayString(g_arrayRankCache, steamid);
 		}
 	} else {
 		LogMessage("[LeagueRanking] No more rank");
@@ -316,8 +316,8 @@ void GetClientRank(Handle pack) {
 
 	int rank;
 	char steamid[32];
-	GetClientAuthId(client, AuthId_Steam2, steamid, 32, true);
-	rank = FindStringInArray(g_arrayRankCache[0], steamid);
+	GetClientAuthId(client, AuthId_SteamID64, steamid, 32, true);
+	rank = FindStringInArray(g_arrayRankCache, steamid);
 
 	if (rank > 0) {
 		CallRankCallback(client, rank, callback, args, plugin);
@@ -1026,7 +1026,7 @@ public void LoadPlayer(int client) {
 	}
 
 	char auth[32];
-	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	strcopy(g_aClientSteam[client], sizeof(g_aClientSteam[]), auth);
 	char query[10000];
 
@@ -1057,7 +1057,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 	}
 
 	char auth[64];
-	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
 	if (!StrEqual(auth, g_aClientSteam[client])) {
         return;
     }

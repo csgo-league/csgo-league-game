@@ -63,7 +63,7 @@ public Action CMD_ResetRank(int client, int args) {
 	char auth[64];
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
-			GetClientAuthId(i,AuthId_Steam2,auth,sizeof(auth));
+			GetClientAuthId(i,AuthId_SteamID64,auth,sizeof(auth));
 
 			if (StrEqual(auth,arg1,false)) {
 				OnClientPutInServer(i);
