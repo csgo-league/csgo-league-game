@@ -1670,7 +1670,7 @@ void CreateCvars()
     g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
     g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
     g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-    g_cvarMysql = CreateConVar("league_ranking_mysql", "0", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
+    g_cvarMysql = CreateConVar("league_ranking_mysql", "1", "Using MySQL? 1 = true 0 = false (SQLite)", _, true, 0.0, true, 1.0);
     g_cvarDumpDB = CreateConVar("league_ranking_dump_db", "0", "Dump the Database to SQL file? (required to be 1 if using the web interface and SQLite, case MySQL, it won't be dumped) 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
