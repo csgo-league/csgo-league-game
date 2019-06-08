@@ -279,7 +279,7 @@ public Action CMD_Rank(int client, int args) {
 	char query[2000];
 	MakeSelectQuery(query,sizeof(query));
 
-    Format(query,sizeof(query),"%s ORDER BY score DESC",query);
+	Format(query,sizeof(query),"%s ORDER BY score DESC",query);
 
 	SQL_TQuery(g_hStatsDb,SQL_RankCallback,query,client);
 	return Plugin_Handled;

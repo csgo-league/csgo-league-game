@@ -314,7 +314,7 @@ stock int CFormat(char[] szMessage, int maxlength, int author = NO_INDEX) {
 		    // Tag needs saytext2
             // If saytext2 is not supported by game replace tag with green tag
             ReplaceString(szMessage, maxlength, CTag[i], CTagCode[Colour_Green], false);
-        } else {
+		} else {
             // Game supports saytext2
             // If random player for tag wasn't specified replace tag and find player
             if (iRandomPlayer == NO_INDEX) {
@@ -350,7 +350,7 @@ stock int CFindRandomPlayerByTeam(int colour_team) {
 		return 0;
 	}
 
-    for (int i = 1; i <= MaxClients; i++) {
+	for (int i = 1; i <= MaxClients; i++) {
         if (IsClientInGame(i) && GetClientTeam(i) == colour_team) {
             return i;
         }
@@ -415,7 +415,7 @@ stock void CSetupProfile() {
 	} else if (GetUserMessageId("SayText2") == INVALID_MESSAGE_ID) {
 	    // Profile for other games
         CProfile_SayText2 = false;
-    } else {
+	} else {
         CProfile_Colours[Colour_Red] = true;
         CProfile_Colours[Colour_Blue] = true;
         CProfile_TeamIndex[Colour_Red] = 2;
