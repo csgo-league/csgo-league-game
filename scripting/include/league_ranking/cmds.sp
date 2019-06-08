@@ -362,7 +362,7 @@ public Action CMD_ResetOwnRank(int client, int args) {
 
 	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,g_aClientSteam[client]);
 	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
-	LogAction(client,-1,"[League] Reseted own rank (%s)",g_aClientSteam[client]);
+	LogAction(client,-1,"[League] Reset own rank (%s)",g_aClientSteam[client]);
 	OnClientPutInServer(client);
 	CPrintToChat(client,"%s %T",MSG,"ResetMyRank", client);
 	return Plugin_Handled;
