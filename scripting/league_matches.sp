@@ -14,7 +14,7 @@ public Plugin myinfo = {
 	name = "[League] Matches",
 	author = "B3none",
 	description = "League scoreboard saving system.",
-	version = "1.0.0",
+	version = "1.1.0",
 	url = "https://github.com/b3none/csgo-league-game"
 };
 
