@@ -17,7 +17,7 @@ If you appreciate the project then please take the time to star our repository.
 ![Star us](https://github.com/b3none/gdprconsent/raw/development/.github/README_ASSETS/star_us.png)
 
 ## Installation
-1. Go to the [releases](https://github.com/csgo-league/csgo-league-game/releases) tab and download the latest stable version.
+1. Go to the [releases](https://github.com/csgo-league/csgo-league-game/releases/latest) tab and download the latest stable version.
 2. Add the league configs to the `databases.cfg`
 ```
 "league"
