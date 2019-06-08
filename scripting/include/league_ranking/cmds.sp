@@ -1,4 +1,4 @@
-// FROM SMLIB
+// from smlib
 #define GAMEUNITS_TO_METERS	0.01905
 
 stock int Array_FindHighestValue(any[] array, int size, int start = 0) {
@@ -264,7 +264,6 @@ public Action CMD_Rank(int client, int args) {
 		return Plugin_Handled;
 	}
 
-	//LogToFile("rankme.debug.log","\"sm_rank\" command called by client %d.",client);
 	if (g_aStats[client][KILLS] < g_MinimalKills) {
 		CPrintToChat(client,"%s %T",MSG,"NotRanked",client,g_aStats[client][KILLS],g_MinimalKills);
 		return Plugin_Handled;
@@ -294,7 +293,6 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 	if (client == 0 || !IsClientInGame(client)) {
 		return;
     }
-	//LogToFile("rankme.debug.log","Rank SQL callback called by client %d.",client);
 	int i;
 
 	g_TotalPlayers =SQL_GetRowCount(hndl);
