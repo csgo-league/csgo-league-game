@@ -89,20 +89,33 @@ public Action Command_Unpause(int client, int args) {
   MatchTeam team = GetClientMatchTeam(client);
   g_TeamReadyForUnpause[team] = true;
 
-  if (g_TeamReadyForUnpause[MatchTeam_Team1] && g_TeamReadyForUnpause[MatchTeam_Team2]) {
-    Unpause();
-    if (IsPlayer(client)) {
-      Get5_MessageToAll("%t", "MatchUnpauseInfoMessage", client);
+  if (!g_InExtendedPause)
+  {
+      if (g_TeamReadyForUnpause[MatchTeam_Team1] && g_TeamReadyForUnpause[MatchTeam_Team2]) {
+      Unpause();
+      if (IsPlayer(client)) {
+        Get5_MessageToAll("%t", "MatchUnpauseInfoMessage", client);
+      }
+      g_TeamReadyForUnpause[MatchTeam_Team1] = false;
+      g_TeamReadyForUnpause[MatchTeam_Team2] = false;
+    } else if (g_TeamReadyForUnpause[MatchTeam_Team1] && !g_TeamReadyForUnpause[MatchTeam_Team2]) {
+      Get5_MessageToAll("%t", "WaitingForUnpauseInfoMessage", g_FormattedTeamNames[MatchTeam_Team1],
+                        g_FormattedTeamNames[MatchTeam_Team2]);
+    } else if (!g_TeamReadyForUnpause[MatchTeam_Team1] && g_TeamReadyForUnpause[MatchTeam_Team2]) {
+      Get5_MessageToAll("%t", "WaitingForUnpauseInfoMessage", g_FormattedTeamNames[MatchTeam_Team2],
+                        g_FormattedTeamNames[MatchTeam_Team1]);
     }
-    g_TeamReadyForUnpause[MatchTeam_Team1] = false;
-    g_TeamReadyForUnpause[MatchTeam_Team2] = false;
-  } else if (g_TeamReadyForUnpause[MatchTeam_Team1] && !g_TeamReadyForUnpause[MatchTeam_Team2]) {
-    Get5_MessageToAll("%t", "WaitingForUnpauseInfoMessage", g_FormattedTeamNames[MatchTeam_Team1],
-                      g_FormattedTeamNames[MatchTeam_Team2]);
-  } else if (!g_TeamReadyForUnpause[MatchTeam_Team1] && g_TeamReadyForUnpause[MatchTeam_Team2]) {
-    Get5_MessageToAll("%t", "WaitingForUnpauseInfoMessage", g_FormattedTeamNames[MatchTeam_Team2],
-                      g_FormattedTeamNames[MatchTeam_Team1]);
   }
+  else
+  {
+      if (client == 0)
+      {
+        Unpause();
+        Get5_MessageToAll("%t", "AdminForceUnPauseInfoMessage");
+        return Plugin_Handled;
+      }
+  }
+
 
   return Plugin_Handled;
 }

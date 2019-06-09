@@ -237,6 +237,7 @@ stock void Unpause() {
   else
   {
     ServerCommand("mp_unpause_match");
+    g_InExtendedPause = false;
   }
 }
 
