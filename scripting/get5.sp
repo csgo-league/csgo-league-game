@@ -223,11 +223,11 @@ Handle g_OnSeriesResult = INVALID_HANDLE;
 
 // clang-format off
 public Plugin myinfo = {
-  name = "Get5",
-  author = "splewis",
+  name = "[League] Match Handler",
+  author = "Splewis, PandahChan, B3None, The Doggy",
   description = "",
   version = PLUGIN_VERSION,
-  url = "https://github.com/splewis/get5"
+  url = ""
 };
 // clang-format on
 

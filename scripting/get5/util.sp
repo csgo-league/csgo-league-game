@@ -227,7 +227,17 @@ stock bool Pause(int pauseTime = 0, int csTeam = CS_TEAM_NONE) {
 }
 
 stock void Unpause() {
-  ServerCommand("mp_unpause_match");
+
+  if (GameRules_GetProp("m_bTerroristTimeOutActive") == 1){
+      GameRules_SetPropFloat("m_flTerroristTimeOutRemaining", 0);
+  }
+  else if (GameRules_GetProp("m_bCTTimeOutActive") == 1){
+      GameRules_SetPropFloat("m_flCTTimeOutRemaining", 0);
+  }
+  else
+  {
+    ServerCommand("mp_unpause_match");
+  }
 }
 
 stock void RestartGame(int delay) {
