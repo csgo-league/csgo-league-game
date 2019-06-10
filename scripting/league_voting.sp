@@ -122,6 +122,6 @@ public Action Timer_PreOT(Handle timer) {
         menu.AddItem("yes", "Yes");
         menu.AddItem("no", "No");
         menu.ExitButton = false;
-        menu.DisplayVoteToAll(60);
+        menu.DisplayVoteToAll(20);
     }
 }
