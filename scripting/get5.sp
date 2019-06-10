@@ -76,6 +76,7 @@ ConVar g_SetHostnameCvar;
 ConVar g_StatsPathFormatCvar;
 ConVar g_StopCommandEnabledCvar;
 ConVar g_TeamTimeToKnifeDecisionCvar;
+ConVar g_ServerOverTimeDecisionCvar;
 ConVar g_TeamTimeToStartCvar;
 ConVar g_TimeFormatCvar;
 ConVar g_VetoConfirmationTimeCvar;
@@ -116,6 +117,7 @@ ArrayList g_CvarNames = null;
 ArrayList g_CvarValues = null;
 bool g_InScrimMode = false;
 bool g_HasKnifeRoundStarted = false;
+bool g_OTFlag = false;
 
 /** Other state **/
 Get5State g_GameState = Get5State_None;
@@ -351,6 +353,7 @@ public void OnPluginStart() {
   AddAliasedCommand("unready", Command_NotReady, "Marks the client as not ready");
   AddAliasedCommand("notready", Command_NotReady, "Marks the client as not ready");
   AddAliasedCommand("forceready", Command_ForceReadyClient, "Force marks clients team as ready");
+  AddAliasedCommand("forceteamscore", Command_ForceTeamScore, "LOL");
   AddAliasedCommand("tech", Command_TechPause, "Calls for a tech pause");
   AddAliasedCommand("pause", Command_Pause, "Pauses the game");
   AddAliasedCommand("unpause", Command_Unpause, "Unpauses the game");
@@ -512,8 +515,13 @@ public Action Timer_InfoMessages(Handle timer) {
                       g_FormattedTeamNames[g_KnifeWinnerTeam]);
   }
 
+  if (g_GameState == Get5State_WaitingForOverTimeDecision){
+    //Get5_MessageToAll("%t", "WaitingForOvertimeInfoMessage");
+  }
+
   // Handle postgame
   if (g_GameState == Get5State_PostGame) {
+    g_OTFlag = false;
     Get5_MessageToAll("%t", "WaitingForGOTVBrodcastEndingInfoMessage");
   }
 
@@ -752,6 +760,7 @@ public Action Command_EndMatch(int client, int args) {
 
   // Call game-ending forwards.
   g_MapChangePending = false;
+  g_OTFlag = false;
   char mapName[PLATFORM_MAX_PATH];
   GetCleanMapName(mapName, sizeof(mapName));
   int team1score = CS_GetTeamScore(MatchTeamToCSTeam(MatchTeam_Team1));
@@ -1194,10 +1203,21 @@ public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
     int roundsPlayed = GameRules_GetProp("m_totalRoundsPlayed");
     LogDebug("m_totalRoundsPlayed = %d", roundsPlayed);
 
+    int maxrounds = GetCvarIntSafe("mp_maxrounds");
     int roundsPerHalf = GetCvarIntSafe("mp_maxrounds") / 2;
     int roundsPerOTHalf = GetCvarIntSafe("mp_overtime_maxrounds") / 2;
 
     bool halftimeEnabled = (GetCvarIntSafe("mp_halftime") != 0);
+    
+    if (!g_OTFlag)
+    {
+      if (CS_GetTeamScore(MatchTeamToCSTeam(MatchTeam_Team1)) == CS_GetTeamScore(MatchTeamToCSTeam(MatchTeam_Team2)) && roundsPlayed == maxrounds)
+      {
+        g_OTFlag = true; 
+        ChangeState(Get5State_WaitingForOverTimeDecision);
+      }
+    }
+    
     if (halftimeEnabled) {
       // TODO: There should be a better way of detecting when halftime is occuring.
       // What about the halftime_start event, or one of the intermission events?
@@ -1207,17 +1227,22 @@ public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
         LogDebug("Pending regulation side swap");
         g_PendingSideSwap = true;
       }
-
-      // Now in OT.
+       // Now in OT.
       if (roundsPlayed >= 2 * roundsPerHalf) {
-        int otround = roundsPlayed - 2 * roundsPerHalf;  // round 33 -> round 3, etc.
-        // Do side swaps at OT halves (rounds 3, 9, ...)
-        if ((otround + roundsPerOTHalf) % (2 * roundsPerOTHalf) == 0) {
-          LogDebug("Pending OT side swap");
-          g_PendingSideSwap = true;
-        }
-      }
+         int otround = roundsPlayed - 2 * roundsPerHalf;  // round 33 -> round 3, etc.
+         // Do side swaps at OT halves (rounds 3, 9, ...)
+         if ((otround + roundsPerOTHalf) % (2 * roundsPerOTHalf) == 0) {
+           LogDebug("Pending OT side swap");
+           g_PendingSideSwap = true;
+         }
+       }
     }
+  }
+
+  if (g_GameState == Get5State_WaitingForOverTimeDecision)
+  {
+    CreateVoteMenu();
+    CreateTimer(1.0, Timer_PreOT);
   }
 }
 
@@ -1235,6 +1260,65 @@ public void SwapSides() {
   }
 
   EventLogger_SideSwap(g_TeamSide[MatchTeam_Team1], g_TeamSide[MatchTeam_Team2]);
+}
+
+public int Handle_VoteMenu(Menu menu, MenuAction action, int param1, int param2)
+{
+  if (action == MenuAction_End){
+    delete menu;
+  }
+}
+
+public void Handle_VoteResults(Menu menu,
+                              int num_votes,
+                              int num_clients,
+                              const int[][] client_info,
+                              int num_items,
+                              const int[][] item_info)
+{
+  int total_votes = 0;
+
+  for (int i = 0; i < num_items; i++){
+    if (item_info[i][VOTEINFO_ITEM_INDEX] == 0){
+      total_votes = item_info[i][VOTEINFO_ITEM_VOTES];
+      break;
+    }
+  }
+
+  if (num_clients == total_votes)
+  {
+    PrintToChatAll("This match will go to overtime.");
+    InOvertime();
+    ChangeState(Get5State_Live);
+    Unpause();
+  }
+  else
+  {
+    Unpause();
+    PrintToChatAll("This match will end in a tie.");
+    g_OTFlag = false;
+    ExecCfg(g_WarmupCfgCvar);
+    EnsurePausedWarmup();
+    ChangeState(Get5State_PostGame);
+    total_votes = 0;
+  }
+
+
+}
+
+public void CreateVoteMenu() {
+  if (IsVoteInProgress())
+  {
+    return;
+  }
+
+  Menu menu = new Menu(Handle_VoteMenu);
+  menu.VoteResultCallback = Handle_VoteResults;
+  menu.SetTitle("Play Overtime?");
+  menu.AddItem("yes", "Yes");
+  menu.AddItem("no", "No");
+  menu.ExitButton = false;
+  menu.DisplayVoteToAll(60);
 }
 
 /**
@@ -1290,6 +1374,10 @@ public Action Timer_PostKnife(Handle timer) {
 
   ExecCfg(g_WarmupCfgCvar);
   EnsurePausedWarmup();
+}
+
+public Action Timer_PreOT(Handle timer) {
+  Pause();
 }
 
 public Action StopDemo(Handle timer) {
@@ -1358,6 +1446,14 @@ public Action Command_Status(int client, int args) {
 
   json.Cleanup();
   delete json;
+  return Plugin_Handled;
+}
+
+public Action Command_ForceTeamScore(int client, int arg)
+{
+  CS_SetTeamScore(CS_TEAM_T, 14);
+  CS_SetTeamScore(CS_TEAM_CT, 14);
+
   return Plugin_Handled;
 }
 

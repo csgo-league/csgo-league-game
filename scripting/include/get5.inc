@@ -12,6 +12,7 @@ enum Get5State {
   Get5State_WaitingForKnifeRoundDecision,  // waiting for a .stay/.swap command after the knife
   Get5State_GoingLive,                     // in the lo3 process
   Get5State_Live,                          // the match is live
+  Get5State_WaitingForOverTimeDecision,    // 
   Get5State_PostGame,                      // postgame screen + waiting for GOTV to finish broadcast
 };
 
