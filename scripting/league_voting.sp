@@ -109,43 +109,6 @@ public void Handle_VoteResults(Menu menu,
         g_bIsOvertime = false;
 
     }
-
-    // PrintToChatAll("Lets check the results");
-    // PrintToChatAll("Overtime flag status: %b", g_bIsOvertime);
-    // int winner = 0;
-    // if (num_items > 1 && (item_info[0][VOTEINFO_ITEM_VOTES] == item_info[1][VOTEINFO_ITEM_VOTES])) {
-    //     // PrintToChatAll("1");
-    //     // Unpause();
-    //     // Get5_MessageToAll("%t", "MatchDraw");
-    //     // ServerCommand("get5_endmatch");
-    //     // StartWarmup();
-    //     // EnsurePausedWarmup();
-    //     // g_bIsOvertime = false;
-    //     // PrintToChatAll("Overtime flag status: %b", g_bIsOvertime);
-    // }
-    // PrintToChatAll("2");
-    // char strWinnerInfo[64];
-    // menu.GetItem(item_info[winner][VOTEINFO_ITEM_INDEX], strWinnerInfo, sizeof(strWinnerInfo));
-
-    // if (StrEqual(strWinnerInfo,"yes")) {
-    //     PrintToChatAll("3");
-    //     Get5_MessageToAll("%t", "OvertimeCommencing");
-    //     InOvertime();
-    //     Unpause();
-    //     g_bIsOvertime = false;
-    //     PrintToChatAll("Overtime flag status: %b", g_bIsOvertime);
-    // }
-    // else
-    // {
-    //     PrintToChatAll("4");
-    //     Unpause();
-    //     Get5_MessageToAll("%t", "MatchDraw");
-    //     ServerCommand("get5_endmatch");
-    //     StartWarmup();
-    //     EnsurePausedWarmup();
-    //     g_bIsOvertime = false;
-    //     PrintToChatAll("Overtime flag status: %b", g_bIsOvertime);
-    // }
 }
 
 public Action Timer_PreOT(Handle timer) {
