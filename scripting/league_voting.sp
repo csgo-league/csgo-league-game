@@ -22,7 +22,6 @@ bool g_bIsOvertime = false;
 ArrayList g_ChatAliases;
 ArrayList g_ChatAliasesCommands;
 
-
 #include "league/util.sp"
 
 public void OnPluginStart() {
