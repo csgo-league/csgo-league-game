@@ -66,9 +66,7 @@ void CreateVoteMenu() {
 public int Handle_VoteMenu(Menu menu, MenuAction action, int param1, int param2) {
     if (action == MenuAction_End) {
         delete menu;
-    }
-    if (action == MenuAction_VoteCancel && param1 == VoteCancel_NoVotes)
-    {
+    } else if (action == MenuAction_VoteCancel && param1 == VoteCancel_NoVotes) {
         Get5_MessageToAll("%t", "MatchDraw");
         Unpause();
         ServerCommand("get5_endmatch");
@@ -93,29 +91,27 @@ public void Handle_VoteResults(Menu menu,
     char strWinnerInfo[64];
     menu.GetItem(item_info[winner][VOTEINFO_ITEM_INDEX], strWinnerInfo, sizeof(strWinnerInfo));
 
-    if(StrEqual(strWinnerInfo, "yes")) {
+    if (StrEqual(strWinnerInfo, "yes")) {
         Get5_MessageToAll("%t", "OvertimeCommencing");
         InOvertime();
         Unpause();
         g_bIsOvertime = false;
 
-    }
-    else {
+    } else {
         Get5_MessageToAll("%t", "MatchDraw");
         Unpause();
         ServerCommand("get5_endmatch");
         StartWarmup();
         EnsurePausedWarmup();
         g_bIsOvertime = false;
-
     }
 }
 
 public Action Timer_PreOT(Handle timer) {
-    PrintToChatAll("-1");
+    // PrintToChatAll("-1");
     Pause();
-    if (!IsVoteInProgress())
-    {
+    
+    if (!IsVoteInProgress()) {
         Menu menu = new Menu(Handle_VoteMenu);
         menu.VoteResultCallback = Handle_VoteResults;
         menu.SetTitle("Play Overtime?");
