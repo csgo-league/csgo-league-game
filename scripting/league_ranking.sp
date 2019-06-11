@@ -1277,12 +1277,9 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 public void OnGameFrame() {
 	Get5State currentState = Get5_GetGameState();
 
-	if (currentState == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
-	{
+	if (currentState == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision) {
 		g_bGatherStats = false;
-	}
-	else
-	{
+	} else {
 		g_bGatherStats = true;
 	}
 }
