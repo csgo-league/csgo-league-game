@@ -84,8 +84,8 @@ public void OnMapStart() {
     }
 }
 
-public void ResetVars(int Client) {
-	if (!IsValidClient(Client)) {
+public void ResetVars(int client) {
+	if (!IsValidClient(client)) {
 	    return;
 	}
 
@@ -164,8 +164,8 @@ public void CreateAndVerifySQLTables() {
 	g_Database.Query(SQL_GenericQuery, sQuery);
 }
 
-public void OnClientAuthorized(int Client, const char[] AuthID) {
-	if (!IsClientConnected(Client) || IsFakeClient(Client)) {
+public void OnClientAuthorized(int client, const char[] AuthID) {
+	if (!IsClientConnected(client) || IsFakeClient(client)) {
 	    return;
 	}
 
@@ -173,13 +173,13 @@ public void OnClientAuthorized(int Client, const char[] AuthID) {
 	GetClientAuthId(Client, AuthId_SteamID64, sSteamID64, sizeof(sSteamID64));
 
 	Format(sQuery, sizeof(sQuery), "SELECT a.live, b.team FROM sql_matches_scoretotal AS a INNER JOIN ( SELECT match_id, team FROM sql_matches WHERE steamid64='%s' GROUP BY match_id ) AS b ON a.match_id=b.match_id;", sSteamID64);
-	g_Database.Query(SQL_LoadTeamStatus, sQuery, GetClientUserId(Client));
+	g_Database.Query(SQL_LoadTeamStatus, sQuery, GetClientUserId(client));
 }
 
 public void SQL_LoadTeamStatus(Database db, DBResultSet results, const char[] sError, any userID) {
-	int Client = GetClientOfUserId(userID);
+	int client = GetClientOfUserId(userID);
 
-	if (Client == 0 || !IsClientConnected(Client) || IsFakeClient(Client)) {
+	if (client == 0 || !IsClientConnected(client) || IsFakeClient(client)) {
 	    return;
 	}
 
@@ -284,9 +284,8 @@ public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Sco
 	g_Database.Query(SQL_GenericQuery, sQuery);
 }
 
-public Action Command_JoinTeam(int Client, char[] sCommand, int iArgs)
-{
-	if (!IsValidClient(Client) || Get5_GetGameState() == Get5State_GoingLive) {
+public Action Command_JoinTeam(int client, char[] sCommand, int iArgs) {
+	if (!IsValidClient(client) || Get5_GetGameState() == Get5State_GoingLive) {
 	    return Plugin_Handled;
 	}
 
@@ -299,7 +298,7 @@ public Action Command_JoinTeam(int Client, char[] sCommand, int iArgs)
 		return Plugin_Handled;
 	}
 
-	if (GetClientTeam(Client) == 1 || GetClientTeam(Client) == 2 || GetClientTeam(Client) == 3) {
+	if (GetClientTeam(client) == 1 || GetClientTeam(client) == 2 || GetClientTeam(client) == 3) {
 	    return Plugin_Handled;
 	}
 
@@ -322,7 +321,7 @@ public Action Command_JoinTeam(int Client, char[] sCommand, int iArgs)
 	}
 }
 
-public Action Command_JoinGame(int Client, char[] sCommand, int iArgs) {
+public Action Command_JoinGame(int client, char[] sCommand, int iArgs) {
 	return Plugin_Handled;
 }
 
@@ -337,7 +336,7 @@ public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	CheckSurrenderVotes();
 }
 
-void UpdatePlayerStats(bool allPlayers = true, int Client = 0)
+void UpdatePlayerStats(bool allPlayers = true, int client = 0)
 {
 	if (Get5_GetGameState() != Get5State_Live) {
 	    return;
@@ -424,19 +423,19 @@ void UpdateMatchStats(bool duringMatch = false) {
 	g_Database.Query(SQL_GenericQuery, sQuery);
 }
 
-public Action Command_EndMatch(int Client, int iArgs) {
+public Action Command_EndMatch(int client, int iArgs) {
 	if (!IsValidClient(Client, true) || Get5_GetGameState() != Get5State_Live) {
 	    return Plugin_Handled;
 	}
 
-	int iTeam = GetClientTeam(Client);
+	int iTeam = GetClientTeam(client);
 
 	if (iTeam == CS_TEAM_T) {
         // Check if CT is 8 or more rounds ahead of T
 		if (CS_GetTeamScore(CS_TEAM_CT) - 8 >= CS_GetTeamScore(iTeam)) {
 		    // Check if client has already voted to surrender
-			if (ga_iEndMatchVotesT.FindValue(Client) == -1) {
-				ga_iEndMatchVotesT.Push(Client); // Add client to ArrayList
+			if (ga_iEndMatchVotesT.FindValue(client) == -1) {
+				ga_iEndMatchVotesT.Push(client); // Add client to ArrayList
 
 				int iTeamCount = GetTeamClientCount(iTeam);
 
@@ -468,8 +467,8 @@ public Action Command_EndMatch(int Client, int iArgs) {
 	    // Check if T is 8 or more rounds ahead of CT
 		if (CS_GetTeamScore(CS_TEAM_T) - 8 >= CS_GetTeamScore(iTeam)) {
 		    // Check if client has already voted to surrender
-			if (ga_iEndMatchVotesCT.FindValue(Client) == -1) {
-				ga_iEndMatchVotesCT.Push(Client); // Add client to ArrayList
+			if (ga_iEndMatchVotesCT.FindValue(client) == -1) {
+				ga_iEndMatchVotesCT.Push(client); // Add client to ArrayList
 
 				int iTeamCount = GetTeamClientCount(iTeam);
 				if (ga_iEndMatchVotesCT.Length >= iTeamCount) {
@@ -710,7 +709,7 @@ public int MatchEndRequestComplete(Handle hRequest, bool bFailure, bool bRequest
 }
 
 public void Event_WeaponFired(Event event, const char[] name, bool dontBroadcast) {
-	int Client = GetClientOfUserId(event.GetInt("userid"));
+	int client = GetClientOfUserId(event.GetInt("userid"));
 	if (Get5_GetGameState() != Get5State_Live || !IsValidClient(Client, true)) {
 	    return;
 	}
@@ -727,7 +726,7 @@ public void Event_WeaponFired(Event event, const char[] name, bool dontBroadcast
 
 public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast)
 {
-	int Client = GetClientOfUserId(event.GetInt("attacker"));
+	int client = GetClientOfUserId(event.GetInt("attacker"));
 	if (Get5_GetGameState() != Get5State_Live || !IsValidClient(Client, true)) {
 	    return;
 	}
@@ -741,11 +740,11 @@ public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void OnClientDisconnect(int Client)
+public void OnClientDisconnect(int client)
 {
-	if (IsValidClient(Client)) {
-		int iIndexT = ga_iEndMatchVotesT.FindValue(Client);
-		int iIndexCT = ga_iEndMatchVotesCT.FindValue(Client);
+	if (IsValidClient(client)) {
+		int iIndexT = ga_iEndMatchVotesT.FindValue(client);
+		int iIndexCT = ga_iEndMatchVotesCT.FindValue(client);
 
 		if (iIndexT != -1) {
 		    ga_iEndMatchVotesT.Erase(iIndexT);
@@ -758,7 +757,7 @@ public void OnClientDisconnect(int Client)
 
 		CheckSurrenderVotes();
 
-		ResetVars(Client);
+		ResetVars(client);
 
 		if (Get5_GetGameState() == Get5State_Live && IsValidClient(Client, true)) {
 			char sQuery[1024], sSteamID[64];
