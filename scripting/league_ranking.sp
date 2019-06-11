@@ -11,6 +11,7 @@
 #include <league_ranking/colours.sp>
 #include <league_ranking/globals.sp>
 #include <league_ranking/cmds.sp>
+#include <get5>
 
 #pragma semicolon 1
 #pragma newdecls required
@@ -24,7 +25,7 @@ static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `
 
 public Plugin myinfo = {
 	name = "[League] Ranking",
-	author = "B3none, Kento",
+	author = "B3none, Kento, PandahChan",
 	description = "League ranking plugin.",
 	version = "1.1.0",
 	url = "https://github.com/csgo-league"
@@ -698,6 +699,11 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 		return;
 	}
 
+	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	g_aStats[client][SCORE] -= g_PointsBombDropped;
@@ -705,6 +711,11 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 
 public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
 	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+		return;
+	}
+
+	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	{
 		return;
 	}
 
@@ -876,6 +887,11 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 		return;
 	}
 
+	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}
+
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
 	if (!g_bRankBots && (attacker == 0 || IsFakeClient(victim) || IsFakeClient(attacker))) {
@@ -940,6 +956,11 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 
 public void SavePlayer(int client) {
 	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+		return;
+	}
+
+	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	{
 		return;
 	}
 
@@ -1254,13 +1275,16 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 }
 
 public void OnGameFrame() {
-    if (GameRules_GetProp("m_bWarmupPeriod") == 1) {
-        //In warmup
-        g_bGatherStats = false;
-    } else {
-        //Not in warmup
-        g_bGatherStats = true;
-    }
+	Get5State currentState = Get5_GetGameState();
+
+	if (currentState == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	{
+		g_bGatherStats = false;
+	}
+	else
+	{
+		g_bGatherStats = true;
+	}
 }
 
 public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroadcast) {
