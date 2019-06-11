@@ -329,15 +329,13 @@ public void Event_PlayerDeath(Event event, const char[] name, bool dontBroadcast
 	UpdatePlayerStats(false, GetClientOfUserId(event.GetInt("userid")));
 }
 
-public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
-{
+public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast) {
 	UpdateMatchStats(true);
 	UpdatePlayerStats();
 	CheckSurrenderVotes();
 }
 
-void UpdatePlayerStats(bool allPlayers = true, int client = 0)
-{
+void UpdatePlayerStats(bool allPlayers = true, int client = 0) {
 	if (Get5_GetGameState() != Get5State_Live) {
 	    return;
 	}
@@ -376,6 +374,7 @@ void UpdatePlayerStats(bool allPlayers = true, int client = 0)
 			txn_UpdateStats.AddQuery(sQuery);
 		}
 		g_Database.Execute(txn_UpdateStats, SQL_TranSuccess, SQL_TranFailure);
+
 		return;
 	}
 
@@ -500,8 +499,7 @@ public Action Command_EndMatch(int client, int iArgs) {
 	return Plugin_Handled;
 }
 
-public void CheckSurrenderVotes()
-{
+public void CheckSurrenderVotes() {
 	int iTeamCount = GetTeamClientCount(CS_TEAM_CT);
 	if (iTeamCount <= 1) {
 	    return;
@@ -541,8 +539,7 @@ public void CheckSurrenderVotes()
 	}
 }
 
-public Action Timer_KickEveryoneSurrender(Handle timer)
-{
+public Action Timer_KickEveryoneSurrender(Handle timer) {
 	for (int i = 1; i <= MaxClients; i++) {
 	    if (IsValidClient(i)) {
 	        KickClient(i, "Match force ended by surrender vote");
@@ -552,8 +549,7 @@ public Action Timer_KickEveryoneSurrender(Handle timer)
 	return Plugin_Stop;
 }
 
-public Action Timer_KickEveryoneEnd(Handle timer)
-{
+public Action Timer_KickEveryoneEnd(Handle timer) {
 	for (int i = 1; i <= MaxClients; i++) {
 	    if (IsValidClient(i)) {
 	        KickClient(i, "Thanks for playing!\nView the match on our website for statistics.");
@@ -564,8 +560,7 @@ public Action Timer_KickEveryoneEnd(Handle timer)
 	return Plugin_Stop;
 }
 
-public void SendReport()
-{
+public void SendReport() {
 	char sWebHook[128], sSiteURL[128], sAvatarURL[128];
 	g_CVDiscordWebhook.GetString(sWebHook, sizeof(sWebHook));
 	g_CVSiteURL.GetString(sSiteURL, sizeof(sSiteURL));
@@ -675,8 +670,7 @@ public void SendMatchEndRequest() {
     }
 }
 
-public int OnHTTPRequestComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode)
-{
+public int OnHTTPRequestComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
 	if (!bRequestSuccessful || eStatusCode != k_EHTTPStatusCode204NoContent) {
 		LogError("HTTP request failed, status code: %i", eStatusCode);
     }
@@ -684,8 +678,7 @@ public int OnHTTPRequestComplete(Handle hRequest, bool bFailure, bool bRequestSu
 	CloseHandle(hRequest);
 }
 
-public int MatchEndRequestComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode)
-{
+public int MatchEndRequestComplete(Handle hRequest, bool bFailure, bool bRequestSuccessful, EHTTPStatusCode eStatusCode) {
 	if (!bRequestSuccessful) {
 		LogError("HTTP request failed, status code: %i", eStatusCode);
 		delete hRequest;
@@ -724,8 +717,7 @@ public void Event_WeaponFired(Event event, const char[] name, bool dontBroadcast
 	}
 }
 
-public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast)
-{
+public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast) {
 	int client = GetClientOfUserId(event.GetInt("attacker"));
 	if (Get5_GetGameState() != Get5State_Live || !IsValidClient(Client, true)) {
 	    return;
@@ -740,8 +732,7 @@ public void Event_PlayerHurt(Event event, const char[] name, bool dontBroadcast)
 	}
 }
 
-public void OnClientDisconnect(int client)
-{
+public void OnClientDisconnect(int client) {
 	if (IsValidClient(client)) {
 		int iIndexT = ga_iEndMatchVotesT.FindValue(client);
 		int iIndexCT = ga_iEndMatchVotesCT.FindValue(client);
@@ -759,9 +750,9 @@ public void OnClientDisconnect(int client)
 
 		ResetVars(client);
 
-		if (Get5_GetGameState() == Get5State_Live && IsValidClient(Client, true)) {
+		if (Get5_GetGameState() == Get5State_Live && IsValidClient(client, true)) {
 			char sQuery[1024], sSteamID[64];
-			GetClientAuthId(Client, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
+			GetClientAuthId(client, AuthId_SteamID64, sSteamID, sizeof(sSteamID));
 			Format(sQuery, sizeof(sQuery), "UPDATE sql_matches SET disconnected=1 WHERE match_id=LAST_INSERT_ID() AND steamid64='%s'", sSteamID);
 			g_Database.Query(SQL_GenericQuery, sQuery);
 		}
@@ -777,8 +768,7 @@ public void SQL_GenericQuery(Database db, DBResultSet results, const char[] sErr
 	}
 }
 
-stock bool IsValidClient(int client, bool inPug = false)
-{
+stock bool IsValidClient(int client, bool inPug = false) {
 	if (client >= 1 &&
 	client <= MaxClients &&
 	IsClientConnected(client) &&
