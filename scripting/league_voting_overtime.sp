@@ -2,12 +2,12 @@
 #include <cstrike>
 #include <sdktools>
 #include <get5>
-#include "include/restorecvars.inc"
+#include <restorecvars>
 
 public Plugin myinfo = {
-	name = "[League] Voting",
+	name = "[League] Overtime Voting",
 	author = "PandahChan",
-	description = "League voting plugin.",
+	description = "League overtime voting plugin.",
 	version = "1.1.0",
 	url = "https://github.com/csgo-league"
 };
