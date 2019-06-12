@@ -36,8 +36,6 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
     Get5State state = Get5_GetGameState();
     g_bIsOvertime = false;
 
-    PrintToChatAll("The round has ended.");
-
     if (CS_GetTeamScore(CS_TEAM_T) == CS_GetTeamScore(CS_TEAM_CT) && roundsPlayed == maxrounds) {
         g_bIsOvertime = true;
     }
@@ -107,7 +105,6 @@ public void Handle_VoteResults(Menu menu,
 }
 
 public Action Timer_PreOT(Handle timer) {
-    // PrintToChatAll("-1");
     Pause();
     
     if (!IsVoteInProgress()) {
