@@ -54,13 +54,7 @@ public int Handle_VoteMenu(Menu menu, MenuAction action, int param1, int param2)
     }
 }
 
-public void Handle_VoteResults(Menu menu,
-                              int num_votes,
-                              int num_clients,
-                              const int[][] client_info,
-                              int num_items,
-                              const int[][] item_info)
-{
+public void Handle_VoteResults(Menu menu, int num_votes, int num_clients, const int[][] client_info, int num_items, const int[][] item_info) {
     int total_votes = 0;
 
     for (int i = 0; i < num_items; i++){
@@ -70,44 +64,20 @@ public void Handle_VoteResults(Menu menu,
         }
     }
 
-    if ( (total_votes*100 / num_clients) >= 80) {
+    if ((total_votes * 100 / num_clients) >= 80) {
         Get5_MessageToAll("%t", "OvertimeCommencing");
         InOvertime();
         Unpause();
         g_bIsOvertime = false;
         return;
-    } else {
-        Get5_MessageToAll("%t", "MatchDraw");
-        Unpause();
-        ServerCommand("get5_endmatch");
-        StartWarmup();
-        EnsurePausedWarmup();
-        g_bIsOvertime = false;
     }
-    // int winner = 0;
-    // if (num_items > 1 &&(item_info[0][VOTEINFO_ITEM_VOTES] == item_info[1][VOTEINFO_ITEM_VOTES])) {
-    //     winner = 1;
-    // }
-    
-    // char strWinnerInfo[64];
-    // menu.GetItem(item_info[winner][VOTEINFO_ITEM_INDEX], strWinnerInfo, sizeof(strWinnerInfo));
-    // PrintToChatAll("UwU %i", item_info[winner][VOTEINFO_ITEM_INDEX]);
 
-    // if (StrEqual(strWinnerInfo, "yes")) {
-    //     Get5_MessageToAll("%t", "OvertimeCommencing");
-    //     InOvertime();
-    //     Unpause();
-    //     g_bIsOvertime = false;
-
-    //     return;
-    // }
-
-    // Get5_MessageToAll("%t", "MatchDraw");
-    // Unpause();
-    // ServerCommand("get5_endmatch");
-    // StartWarmup();
-    // EnsurePausedWarmup();
-    // g_bIsOvertime = false;
+    Get5_MessageToAll("%t", "MatchDraw");
+    Unpause();
+    ServerCommand("get5_endmatch");
+    StartWarmup();
+    EnsurePausedWarmup();
+    g_bIsOvertime = false;
 }
 
 public Action Timer_PreOT(Handle timer) {
