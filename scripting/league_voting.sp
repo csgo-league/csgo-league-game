@@ -2,7 +2,7 @@
 #include <cstrike>
 #include <sdktools>
 #include <get5>
-#include "include/restorecvars.inc"
+#include <restorecvars>
 
 public Plugin myinfo = {
 	name = "[League] Voting",
@@ -20,7 +20,9 @@ bool g_bIsOvertime = false;
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
+
     g_WarmupCfgCvar = CreateConVar("get5_warmup_cfg", "get5/warmup.cfg", "Config file to exec in warmup periods");
+
     HookEventEx("round_end", Event_RoundEnd);
 }
 
@@ -72,7 +74,6 @@ public void Handle_VoteResults(Menu menu,
         InOvertime();
         Unpause();
         g_bIsOvertime = false;
-
     } else {
         Get5_MessageToAll("%t", "MatchDraw");
         Unpause();
@@ -85,6 +86,7 @@ public void Handle_VoteResults(Menu menu,
 
 public Action Timer_PreOT(Handle timer) {
     Pause();
+
     Menu menu = new Menu(Handle_VoteMenu);
     menu.VoteResultCallback = Handle_VoteResults;
     menu.SetTitle("Play Overtime?");
