@@ -16,7 +16,7 @@ So as to keep the latest version of the plugin I recommend watching the reposito
 ## Share the love
 If you appreciate the project then please take the time to star our repository.
 
-![Star us](https://github.com/b3none/gdprconsent/raw/development/.github/README_ASSETS/star_us.png)
+![Star us](https://i.imgur.com/HuQqnwD.png)
 
 ## Installation
 1. Insatall our fork of [get5](https://github.com/csgo-league/csgo-league-get5).
