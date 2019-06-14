@@ -74,14 +74,16 @@ public void Handle_VoteResults(Menu menu,
         InOvertime();
         Unpause();
         g_bIsOvertime = false;
-    } else {
-        Get5_MessageToAll("%t", "MatchDraw");
-        Unpause();
-        ServerCommand("get5_endmatch");
-        StartWarmup();
-        EnsurePausedWarmup();
-        g_bIsOvertime = false;
+
+        return;
     }
+
+    Get5_MessageToAll("%t", "MatchDraw");
+    Unpause();
+    ServerCommand("get5_endmatch");
+    StartWarmup();
+    EnsurePausedWarmup();
+    g_bIsOvertime = false;
 }
 
 public Action Timer_PreOT(Handle timer) {
