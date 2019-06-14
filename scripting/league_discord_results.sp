@@ -20,7 +20,7 @@ public Plugin myinfo = {
 	name = "[League] Match Result",
 	author = "The Doggy, B3none",
 	description = "Post the final score in Discord via Webhook",
-	version = "2.0.0",
+	version = "1.0.0",
 	url = "https://github.com/csgo-league"
 };
 
