@@ -16,12 +16,6 @@ ConVar g_WarmupCfgCvar;
 bool g_InExtendedPause = false;
 bool g_bIsOvertime = false;
 
-/** Chat aliases loaded **/
-#define ALIAS_LENGTH 64
-#define COMMAND_LENGTH 64
-ArrayList g_ChatAliases;
-ArrayList g_ChatAliasesCommands;
-
 #include "league/util.sp"
 
 public void OnPluginStart() {
@@ -41,23 +35,8 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
     }
     
     if (g_bIsOvertime && state == Get5State_Live) {
-        CreateVoteMenu();
-        CreateTimer(1.0, Timer_PreOT);
+        CreateTimer(0.1, Timer_PreOT);
     }
-}
-
-void CreateVoteMenu() {
-  if (IsVoteInProgress()) {
-      return;
-  }
-
-  Menu menu = new Menu(Handle_VoteMenu);
-  menu.VoteResultCallback = Handle_VoteResults;
-  menu.SetTitle("Play Overtime?");
-  menu.AddItem("yes", "Yes");
-  menu.AddItem("no", "No");
-  menu.ExitButton = false;
-  menu.DisplayVoteToAll(60);
 }
 
 public int Handle_VoteMenu(Menu menu, MenuAction action, int param1, int param2) {
@@ -106,14 +85,11 @@ public void Handle_VoteResults(Menu menu,
 
 public Action Timer_PreOT(Handle timer) {
     Pause();
-    
-    if (!IsVoteInProgress()) {
-        Menu menu = new Menu(Handle_VoteMenu);
-        menu.VoteResultCallback = Handle_VoteResults;
-        menu.SetTitle("Play Overtime?");
-        menu.AddItem("yes", "Yes");
-        menu.AddItem("no", "No");
-        menu.ExitButton = false;
-        menu.DisplayVoteToAll(20);
-    }
+    Menu menu = new Menu(Handle_VoteMenu);
+    menu.VoteResultCallback = Handle_VoteResults;
+    menu.SetTitle("Play Overtime?");
+    menu.AddItem("yes", "Yes");
+    menu.AddItem("no", "No");
+    menu.ExitButton = false;
+    menu.DisplayVoteToAll(20);
 }
