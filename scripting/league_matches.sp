@@ -247,7 +247,7 @@ public void AddPlayerStats(KeyValues kv, MatchTeam team) {
       // TODO: this should really get split up somehow. Once it hits 32-arguments
       // (aka just a few more) it will cause runtime errors and the Format will fail.
       Format(queryBuffer, sizeof(queryBuffer), "REPLACE INTO `matches_players` \
-                (matchid, mapnumber, steamid64, team, \
+                (matchid, mapnumber, steam, team, \
                 rounds_played, name, kills, deaths, flashbang_assists, \
                 assists, teamkills, headshot_kills, damage, \
                 bomb_plants, bomb_defuses, \
