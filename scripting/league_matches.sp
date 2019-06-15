@@ -185,7 +185,7 @@ public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Sco
   char winnerString[64];
   GetTeamString(mapWinner, winnerString, sizeof(winnerString));
   Format(queryBuffer, sizeof(queryBuffer),
-         "UPDATE `maps` SET winner = '%s', end_time = NOW() \
+         "UPDATE `matches_maps` SET winner = '%s', end_time = NOW() \
         WHERE matchid = %d and mapnumber = %d",
          winnerString, g_MatchID, mapNumber);
   LogDebug(queryBuffer);
