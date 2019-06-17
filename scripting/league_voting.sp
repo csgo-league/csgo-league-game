@@ -20,6 +20,10 @@ bool g_bIsOvertime = false;
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
+    AddCommandListener(Listener_Vote, "vote");
+    AddCommandListener(Listener_Callvote, "callvote");
+    AddCommandListener(Listener_Listissues, "listissues");
+
 
     g_WarmupCfgCvar = CreateConVar("get5_warmup_cfg", "get5/warmup.cfg", "Config file to exec in warmup periods");
 
