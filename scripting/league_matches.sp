@@ -1,111 +1,310 @@
-// Modified version of:
-// https://github.com/DistrictNineHost/Sourcemod-SQLMatches/blob/master/game%20server/sqlmatch.sp
+// Modified from https://github.com/splewis/get5
 
 #include <sourcemod>
-#include <sdkhooks>
-#include <sdktools>
+#include <cstrike>
+#include <get5>
+#include <logdebug>
+#include "get5/util.sp"
 
 #pragma semicolon 1
 #pragma newdecls required
 
-Handle db;
+Database db = null;
+char queryBuffer[1024];
+
+int g_MatchID = -1;
+
+ConVar g_ForceMatchIDCvar;
+bool g_DisableStats = false;
 
 public Plugin myinfo = {
-	name = "[League] Matches",
-	author = "B3none",
-	description = "League scoreboard saving system.",
-	version = "1.1.0",
-	url = "https://github.com/b3none/csgo-league-game"
+  name = "[League] Matches",
+  author = "splewis, B3none",
+  description = "Records match stats collected by get5 to MySQL",
+  version = "1.0.1",
+  url = "https://github.com/csgo-league"
 };
 
 public void OnPluginStart() {
-	char buffer[1024];
+  InitDebugLog("league", "league_matches");
 
-	if ((db = SQL_Connect("league", true, buffer, sizeof(buffer))) == null) {
-		SetFailState(buffer);
-	}
+  g_ForceMatchIDCvar = CreateConVar("league_matches_force_matchid", "0", "If set to a positive integer, this will force get5 to use the matchid in this convar");
 
-	HookEventEx("cs_win_panel_match", cs_win_panel_match);
+  char error[255];
+  db = SQL_Connect("league", true, error, sizeof(error));
+  if (db == null) {
+    SetFailState("Could not connect to league database: %s", error);
+  } else {
+    g_DisableStats = false;
+    db.SetCharset("utf8mb4");
+  }
 }
 
-public void cs_win_panel_match(Handle event, const char[] eventname, bool dontBroadcast) {
-	CreateTimer(0.1, delay, _, TIMER_FLAG_NO_MAPCHANGE);
+public void Get5_OnBackupRestore() {
+  char matchid[64];
+  Get5_GetMatchID(matchid, sizeof(matchid));
+  g_MatchID = StringToInt(matchid);
 }
 
-public Action delay(Handle timer) {
-	Transaction txn = SQL_CreateTransaction();
+public void Get5_OnSeriesInit() {
+  g_MatchID = -1;
 
-	char mapname[128];
-	GetCurrentMap(mapname, sizeof(mapname));
-	
-	char teamname1[64];
-	char teamname2[64];
+  char seriesType[64];
+  char team1Name[64];
+  char team2Name[64];
 
-	GetConVarString(FindConVar("mp_teamname_1"), teamname1, sizeof(teamname1));
-	GetConVarString(FindConVar("mp_teamname_2"), teamname2, sizeof(teamname2));
+  char seriesTypeSz[sizeof(seriesType) * 2 + 1];
+  char team1NameSz[sizeof(team1Name) * 2 + 1];
+  char team2NameSz[sizeof(team2Name) * 2 + 1];
 
-	char buffer[512];
+  KeyValues tmpStats = new KeyValues("Stats");
 
-	Format(buffer, sizeof(buffer), "INSERT INTO sql_matches_scoretotal (team_0, team_1, team_2, team_3, teamname_1, teamname_2, map, timestamp) VALUES (0, 0, 0, 0, '%s', '%s', '%s', '%i');", teamname1, teamname2, mapname, GetTime());
-	SQL_AddQuery(txn, buffer);
+  Get5_GetMatchStats(tmpStats);
+  tmpStats.GetString(STAT_SERIESTYPE, seriesType, sizeof(seriesType));
+  db.Escape(seriesType, seriesTypeSz, sizeof(seriesTypeSz));
 
-	int ent = MaxClients + 1;
-	
-	while ((ent = FindEntityByClassname(ent, "cs_team_manager")) != -1) {
-		Format(buffer, sizeof(buffer), "UPDATE sql_matches_scoretotal SET team_%i = %i WHERE match_id = LAST_INSERT_ID();", GetEntProp(ent, Prop_Send, "m_iTeamNum"), GetEntProp(ent, Prop_Send, "m_scoreTotal"));
-		SQL_AddQuery(txn, buffer);
-	}
+  tmpStats.GetString(STAT_SERIES_TEAM1NAME, team1Name, sizeof(team1Name));
+  db.Escape(team1Name, team1NameSz, sizeof(team1NameSz));
 
-	char name[MAX_NAME_LENGTH];
-	char steamid64[64];
+  tmpStats.GetString(STAT_SERIES_TEAM2NAME, team2Name, sizeof(team2Name));
+  db.Escape(team2Name, team2NameSz, sizeof(team2NameSz));
 
-	int m_iTeam;
-	int m_bAlive;
-	int m_iPing;
-	int m_iAccount;
-	int m_iKills;
-	int m_iAssists;
-	int m_iDeaths;
-	int m_iMVPs;
-	int m_iScore;
+  delete tmpStats;
 
-	if ((ent = FindEntityByClassname(-1, "cs_player_manager")) != -1) {
-		for (int i = 1; i <= MaxClients; i++) {
-			if (!IsClientInGame(i)) {
-				continue;
-			}
+  g_DisableStats = false;
+  LogDebug("Setting up series stats, get5_mysql_force_matchid = %d", g_ForceMatchIDCvar.IntValue);
 
-			m_iTeam = GetEntProp(ent, Prop_Send, "m_iTeam", _, i);
-			m_bAlive = GetEntProp(ent, Prop_Send, "m_bAlive", _, i);
-			m_iPing = GetEntProp(ent, Prop_Send, "m_iPing", _, i);
-			m_iAccount = GetEntProp(i, Prop_Send, "m_iAccount");
-			m_iKills = GetEntProp(ent, Prop_Send, "m_iKills", _, i);
-			m_iAssists = GetEntProp(ent, Prop_Send, "m_iAssists", _, i);
-			m_iDeaths = GetEntProp(ent, Prop_Send, "m_iDeaths", _, i);
-			m_iMVPs = GetEntProp(ent, Prop_Send, "m_iMVPs", _, i);
-			m_iScore = GetEntProp(ent, Prop_Send, "m_iScore", _, i);
+  if (g_ForceMatchIDCvar.IntValue > 0) {
+    SetMatchID(g_ForceMatchIDCvar.IntValue);
+    g_ForceMatchIDCvar.IntValue = 0;
+    Format(queryBuffer, sizeof(queryBuffer), "INSERT INTO `matches` \
+            (matchid, series_type, team1_name, team2_name, start_time) VALUES \
+            (%d, '%s', '%s', '%s', NOW())",
+           g_MatchID, seriesTypeSz, team1NameSz, team2NameSz);
+    LogDebug(queryBuffer);
+    db.Query(SQLErrorCheckCallback, queryBuffer);
 
-			Format(name, MAX_NAME_LENGTH, "%N", i);
-			SQL_EscapeString(db, name, name, sizeof(name));
+    LogMessage("Starting match id %d", g_MatchID);
+  } else {
+    Transaction t = SQL_CreateTransaction();
 
-			if (!GetClientAuthId(i, AuthId_SteamID64, steamid64, sizeof(steamid64))) {
-				steamid64[0] = '\0';
-			}
+    Format(queryBuffer, sizeof(queryBuffer), "INSERT INTO `matches` \
+            (series_type, team1_name, team2_name, start_time) VALUES \
+            ('%s', '%s', '%s', NOW())",
+           seriesTypeSz, team1NameSz, team2NameSz);
+    LogDebug(queryBuffer);
+    t.AddQuery(queryBuffer);
 
-			Format(buffer, sizeof(buffer), "INSERT INTO sql_matches");
-			Format(buffer, sizeof(buffer), "%s (match_id, team, alive, ping, name, account, kills, assists, deaths, mvps, score, steam)", buffer);
-			Format(buffer, sizeof(buffer), "%s VALUES (LAST_INSERT_ID(), '%i', '%i', '%i', '%s', '%i', '%i', '%i', '%i', '%i', '%i', '%s');", buffer, m_iTeam, m_bAlive, m_iPing, name, m_iAccount, m_iKills, m_iAssists, m_iDeaths, m_iMVPs, m_iScore, steamid64);
-			SQL_AddQuery(txn, buffer);
-		}
-	}
+    Format(queryBuffer, sizeof(queryBuffer), "SELECT LAST_INSERT_ID()");
+    LogDebug(queryBuffer);
+    t.AddQuery(queryBuffer);
 
-	SQL_ExecuteTransaction(db, txn);
+    db.Execute(t, MatchInitSuccess, MatchInitFailure);
+  }
 }
 
-public void onSuccess(Database database, any data, int numQueries, Handle[] results, any[] bufferData) {
-	PrintToServer("onSuccess");
+public void MatchInitSuccess(Database database, any data, int numQueries, Handle[] results, any[] queryData) {
+  Handle matchidResult = results[1];
+  if (SQL_FetchRow(matchidResult)) {
+    SetMatchID(SQL_FetchInt(matchidResult, 0));
+    LogMessage("Starting match id %d", g_MatchID);
+  } else {
+    LogError("Failed to get matchid from match init query");
+    g_DisableStats = true;
+  }
 }
 
-public void onError(Database database, any data, int numQueries, const char[] error, int failIndex, any[] queryData) {
-	PrintToServer("onError");
+public void MatchInitFailure(Database database, any data, int numQueries, const char[] error, int failIndex, any[] queryData) {
+  LogError("Failed match creation query, error = %s", error);
+  g_DisableStats = true;
+}
+
+static void SetMatchID(int matchid) {
+  g_MatchID = matchid;
+  char idStr[32];
+  IntToString(g_MatchID, idStr, sizeof(idStr));
+  Get5_SetMatchID(idStr);
+}
+
+public void Get5_OnGoingLive(int mapNumber) {
+  if (g_DisableStats) {
+    return;
+  }
+
+  char mapName[255];
+  GetCurrentMap(mapName, sizeof(mapName));
+
+  char mapNameSz[sizeof(mapName) * 2 + 1];
+  db.Escape(mapName, mapNameSz, sizeof(mapNameSz));
+
+  Format(queryBuffer, sizeof(queryBuffer), "INSERT IGNORE INTO `matches_maps` \
+        (matchid, mapnumber, mapname, start_time) VALUES \
+        (%d, %d, '%s', NOW())",
+         g_MatchID, mapNumber, mapNameSz);
+  LogDebug(queryBuffer);
+
+  db.Query(SQLErrorCheckCallback, queryBuffer);
+}
+
+public void UpdateRoundStats(int mapNumber) {
+  // Update team scores
+  int t1score = CS_GetTeamScore(Get5_MatchTeamToCSTeam(MatchTeam_Team1));
+  int t2score = CS_GetTeamScore(Get5_MatchTeamToCSTeam(MatchTeam_Team2));
+
+  Format(queryBuffer, sizeof(queryBuffer), "UPDATE `matches_maps` \
+        SET team1_score = %d, team2_score = %d WHERE matchid = %d and mapnumber = %d",
+         t1score, t2score, g_MatchID, mapNumber);
+  LogDebug(queryBuffer);
+  db.Query(SQLErrorCheckCallback, queryBuffer);
+
+  // Update player stats
+  KeyValues kv = new KeyValues("Stats");
+  Get5_GetMatchStats(kv);
+  char mapKey[32];
+  Format(mapKey, sizeof(mapKey), "map%d", mapNumber);
+  if (kv.JumpToKey(mapKey)) {
+    if (kv.JumpToKey("team1")) {
+      AddPlayerStats(kv, MatchTeam_Team1);
+      kv.GoBack();
+    }
+    if (kv.JumpToKey("team2")) {
+      AddPlayerStats(kv, MatchTeam_Team2);
+      kv.GoBack();
+    }
+    kv.GoBack();
+  }
+  delete kv;
+}
+
+public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Score, int team2Score, int mapNumber) {
+  if (g_DisableStats) {
+    return;
+  }
+
+  // Update the map winner
+  char winnerString[64];
+  GetTeamString(mapWinner, winnerString, sizeof(winnerString));
+  Format(queryBuffer, sizeof(queryBuffer),
+         "UPDATE `matches_maps` SET winner = '%s', end_time = NOW() \
+        WHERE matchid = %d and mapnumber = %d",
+         winnerString, g_MatchID, mapNumber);
+  LogDebug(queryBuffer);
+  db.Query(SQLErrorCheckCallback, queryBuffer);
+
+  // Update the series scores
+  int t1_seriesscore, t2_seriesscore, tmp;
+  Get5_GetTeamScores(MatchTeam_Team1, t1_seriesscore, tmp);
+  Get5_GetTeamScores(MatchTeam_Team2, t2_seriesscore, tmp);
+
+  Format(queryBuffer, sizeof(queryBuffer), "UPDATE `matches` \
+        SET team1_score = %d, team2_score = %d WHERE matchid = %d",
+         t1_seriesscore, t2_seriesscore, g_MatchID);
+  LogDebug(queryBuffer);
+  db.Query(SQLErrorCheckCallback, queryBuffer);
+}
+
+public void AddPlayerStats(KeyValues kv, MatchTeam team) {
+  char name[MAX_NAME_LENGTH];
+  char auth[AUTH_LENGTH];
+  char nameSz[MAX_NAME_LENGTH * 2 + 1];
+  char authSz[AUTH_LENGTH * 2 + 1];
+  int mapNumber = MapNumber();
+
+  if (kv.GotoFirstSubKey()) {
+    do {
+      kv.GetSectionName(auth, sizeof(auth));
+      kv.GetString("name", name, sizeof(name));
+      db.Escape(auth, authSz, sizeof(authSz));
+      db.Escape(name, nameSz, sizeof(nameSz));
+
+      int kills = kv.GetNum(STAT_KILLS);
+      int deaths = kv.GetNum(STAT_DEATHS);
+      int flashbang_assists = kv.GetNum(STAT_FLASHBANG_ASSISTS);
+      int assists = kv.GetNum(STAT_ASSISTS);
+      int teamkills = kv.GetNum(STAT_TEAMKILLS);
+      int damage = kv.GetNum(STAT_DAMAGE);
+      int headshot_kills = kv.GetNum(STAT_HEADSHOT_KILLS);
+      int roundsplayed = kv.GetNum(STAT_ROUNDSPLAYED);
+      int plants = kv.GetNum(STAT_BOMBPLANTS);
+      int defuses = kv.GetNum(STAT_BOMBDEFUSES);
+      int v1 = kv.GetNum(STAT_V1);
+      int v2 = kv.GetNum(STAT_V2);
+      int v3 = kv.GetNum(STAT_V3);
+      int v4 = kv.GetNum(STAT_V4);
+      int v5 = kv.GetNum(STAT_V5);
+      int k2 = kv.GetNum(STAT_2K);
+      int k3 = kv.GetNum(STAT_3K);
+      int k4 = kv.GetNum(STAT_4K);
+      int k5 = kv.GetNum(STAT_5K);
+      int firstkill_t = kv.GetNum(STAT_FIRSTKILL_T);
+      int firstkill_ct = kv.GetNum(STAT_FIRSTKILL_CT);
+      int firstdeath_t = kv.GetNum(STAT_FIRSTDEATH_T);
+      int firstdeath_ct = kv.GetNum(STAT_FIRSTDEATH_CT);
+
+      char teamString[16];
+      GetTeamString(team, teamString, sizeof(teamString));
+
+      // TODO: this should really get split up somehow. Once it hits 32-arguments
+      // (aka just a few more) it will cause runtime errors and the Format will fail.
+      Format(queryBuffer, sizeof(queryBuffer), "REPLACE INTO `matches_players` \
+                (matchid, mapnumber, steam, team, \
+                rounds_played, name, kills, deaths, flashbang_assists, \
+                assists, teamkills, headshot_kills, damage, \
+                bomb_plants, bomb_defuses, \
+                v1, v2, v3, v4, v5, \
+                2k, 3k, 4k, 5k, \
+                firstkill_t, firstkill_ct, firstdeath_t, firstdeath_ct \
+                ) VALUES \
+                (%d, %d, '%s', '%s', \
+                %d, '%s', %d, %d, %d, \
+                %d, %d, %d, %d, \
+                %d, %d, \
+                %d, %d, %d, %d, %d, \
+                %d, %d, %d, %d, \
+                %d, %d, %d, %d)",
+             g_MatchID, mapNumber, authSz, teamString, roundsplayed, nameSz, kills, deaths,
+             flashbang_assists, assists, teamkills, headshot_kills, damage, plants, defuses, v1, v2,
+             v3, v4, v5, k2, k3, k4, k5, firstkill_t, firstkill_ct, firstdeath_t, firstdeath_ct);
+
+      LogDebug(queryBuffer);
+      db.Query(SQLErrorCheckCallback, queryBuffer);
+    } while (kv.GotoNextKey());
+    kv.GoBack();
+  }
+}
+
+public void Get5_OnSeriesResult(MatchTeam seriesWinner, int team1MapScore, int team2MapScore) {
+  if (g_DisableStats) {
+    return;
+  }
+
+  char winnerString[64];
+  GetTeamString(seriesWinner, winnerString, sizeof(winnerString));
+
+  Format(queryBuffer, sizeof(queryBuffer), "UPDATE `matches` \
+        SET winner = '%s', team1_score = %d, team2_score = %d, end_time = NOW() \
+        WHERE matchid = %d",
+         winnerString, team1MapScore, team2MapScore, g_MatchID);
+  LogDebug(queryBuffer);
+  db.Query(SQLErrorCheckCallback, queryBuffer);
+}
+
+public int SQLErrorCheckCallback(Handle owner, Handle hndl, const char[] error, int data) {
+  if (!StrEqual("", error)) {
+    LogError("Last Connect SQL Error: %s", error);
+  }
+}
+
+public void Get5_OnRoundStatsUpdated() {
+  if (Get5_GetGameState() == Get5State_Live && !g_DisableStats) {
+    UpdateRoundStats(MapNumber());
+  }
+}
+
+static int MapNumber() {
+  int t1, t2;
+  int buf;
+  Get5_GetTeamScores(MatchTeam_Team1, t1, buf);
+  Get5_GetTeamScores(MatchTeam_Team2, t2, buf);
+  return t1 + t2;
 }
