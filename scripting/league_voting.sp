@@ -13,6 +13,8 @@ public Plugin myinfo = {
 	url = "https://github.com/csgo-league"
 };
 
+#pragma newdecls required;
+
 ConVar g_WarmupCfgCvar;
 bool g_InExtendedPause = false;
 bool g_bIsOvertime = false;
@@ -26,7 +28,6 @@ char detailsString[512];
 char otherTeamString[512];
 char passString[512];
 char passDetailsString[512];
-char backupToLoad[512];
 bool isTeamOnly = false;
 bool soloOnly = false;
 bool isVoteActive = false;
@@ -39,10 +40,27 @@ ConVar g_hMaxroundsOT = null;
 
 #include "functions/listeners/listissues.sp"
 #include "functions/listeners/callvote.sp"
+#include "functions/listeners/vote.sp"
+#include "functions/listeners/convarChange.sp"
+#include "functions/listeners/roundStart.sp"
+#include "functions/listeners/terminateRound.sp"
+
+#include "functions/handlers/voteYes.sp"
+#include "functions/handlers/voteNo.sp"
+#include "functions/handlers/getResults.sp"
+#include "functions/handlers/votePass.sp"
+#include "functions/handlers/voteFail.sp"
+#include "functions/handlers/voteTimeout.sp"
+
+#include "functions/resolvers/doSurrender.sp"
+#include "functions/resolvers/doStartTimeout.sp"
+
+#include "functions/functions.sp"
+#include "league/util.sp"
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
-    // AddCommandListener(Listener_Vote, "vote");
+    AddCommandListener(Listener_Vote, "vote");
     AddCommandListener(Listener_Callvote, "callvote");
     AddCommandListener(Listener_Listissues, "listissues");
     g_hVoteDuration = FindConVar("sv_vote_timer_duration");

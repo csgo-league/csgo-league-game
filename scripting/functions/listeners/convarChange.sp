@@ -32,8 +32,6 @@ public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[]
 
 public void OnConVarChange_voteDuration(ConVar convar, char[] oldValue, char[] newValue)
 {
-	if (GetConVarInt(g_hEnabled) <= 0) return;
-
 	if (GetConVarFloat(g_hVoteDuration) < 1.0)
 	{
 		SetConVarFloat(g_hVoteDuration, 1.0);

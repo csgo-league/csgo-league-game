@@ -1,21 +1,23 @@
-public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason) {
-    canSurrender = false;
+public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason)
+{
+	canSurrender = false;
 
-    if (reason != CSRoundEnd_TerroristsSurrender && reason != CSRoundEnd_CTSurrender) {
-        if (isVoteActive) {
-            int entity = FindEntityByClassname(-1, "vote_controller");
-            
-            if (entity < 0) {
-                return Plugin_Continue;
-            }
+	if (reason != CSRoundEnd_TerroristsSurrender && reason != CSRoundEnd_CTSurrender)
+	{
+		if (isVoteActive == true)
+		{
+			int entity = FindEntityByClassname(-1, "vote_controller");
 
-            int activeIssue = GetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", -1);
+			if (entity < 0) return Plugin_Continue;
 
-            if (activeIssue == 0) {
-                VoteFail(33);
-            }
-        }
-    }
+			int activeIssue = GetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", -1);
 
-    return Plugin_Continue;
+			if (activeIssue == 0) // Surrender
+			{
+				CreateTimer(1.0, Timer_VoteFail, 33);
+			}
+		}
+	}
+
+	return Plugin_Continue;
 }
