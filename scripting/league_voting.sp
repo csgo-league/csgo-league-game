@@ -107,21 +107,6 @@ public void OnMapStart(){
     for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
 }
 
-public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
-    int roundsPlayed = GameRules_GetProp("m_totalRoundsPlayed");
-    int maxrounds = GetCvarIntSafe("mp_maxrounds");
-    Get5State state = Get5_GetGameState();
-    g_bIsOvertime = false;
-
-    if (CS_GetTeamScore(CS_TEAM_T) == CS_GetTeamScore(CS_TEAM_CT) && roundsPlayed == maxrounds) {
-        g_bIsOvertime = true;
-    }
-    
-    if (g_bIsOvertime && state == Get5State_Live) {
-        CreateTimer(0.1, Timer_PreOT);
-    }
-}
-
 public int Handle_VoteMenu(Menu menu, MenuAction action, int param1, int param2) {
     if (action == MenuAction_End) {
         delete menu;
@@ -172,3 +157,28 @@ public Action Timer_PreOT(Handle timer) {
     menu.ExitButton = false;
     menu.DisplayVoteToAll(20);
 }
+
+public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
+    int roundsPlayed = GameRules_GetProp("m_totalRoundsPlayed");
+    int maxrounds = GetCvarIntSafe("mp_maxrounds");
+    Get5State state = Get5_GetGameState();
+    g_bIsOvertime = false;
+
+    if (CS_GetTeamScore(CS_TEAM_T) == CS_GetTeamScore(CS_TEAM_CT) && roundsPlayed == maxrounds) {
+        g_bIsOvertime = true;
+    }
+    
+    if (g_bIsOvertime && state == Get5State_Live) {
+        CreateTimer(0.1, Timer_PreOT);
+    }
+}
+
+public Action Command_Surrender(int client, int args) {
+    int CTScore = CS_GetTeamScore(CS_TEAM_CT);
+    int TScore = CS_GetTeamScore(CS_TEAM_T);
+    if (CTScore - 8 >= TScore || TScore - 8 >= CTScore) {
+        FakeClientCommandEx(client,"callvote Surrender");
+    }
+    else {
+        Get5_Message(client, "Surrender is currently unavailable. You need to be 8 rounds behind.");
+    }
