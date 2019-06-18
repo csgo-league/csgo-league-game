@@ -15,6 +15,9 @@ ConVar g_CVSiteURL;
 ConVar g_CVUsername;
 ConVar g_CVEmbedColour;
 ConVar g_CVEmbedAvatar;
+char g_FormattedTeamNames[MatchTeam_Count][128];
+
+ArrayList ga_sWinningPlayers;
 
 public Plugin myinfo = {
 	name = "[League] Match Result",
@@ -25,11 +28,15 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
+    ga_sWinningPlayers = new ArrayList(64);
+
 	g_CVDiscordWebhook = CreateConVar("sm_discord_webhook", "", "Discord web hook endpoint", FCVAR_PROTECTED);
 	g_CVSiteURL = CreateConVar("league_discord_results_site_url", "", "Website url for viewing scores", FCVAR_PROTECTED);
 	g_CVUsername = CreateConVar("league_discord_results_username", "League Results", "Username to use for webhook", FCVAR_PROTECTED);
 	g_CVEmbedColour = CreateConVar("league_discord_results_embed_color", "16741688", "Color to use for webhook (Must be decimal value)", FCVAR_PROTECTED);
 	g_CVEmbedAvatar = CreateConVar("league_discord_results_embed_avatar", "https://avatars1.githubusercontent.com/u/51230829", "Avatar to use for webhook", FCVAR_PROTECTED);
+
+    AutoExecConfig(true, "league_discord_results");
 }
 
 public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Score, int team2Score, int mapNumber) {
@@ -75,12 +82,14 @@ public void SendReport() {
 
 	char sWinTitle[64], sBuffer[128], sDescription[1024];
 	int len = 0;
+
+	char teamName[32];
 	if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
 	} else if (iWinners == CS_TEAM_T) {
-		Format(sWinTitle, sizeof(sWinTitle), "Terrorists just won %i:%i!", iTScore, iCTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_T)], iTScore, iCTScore);
 	} else {
-		Format(sWinTitle, sizeof(sWinTitle), "Counter-Terrorists just won %i:%i!", iCTScore, iTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_CT)], iCTScore, iTScore);
     }
 
 	json_object_set_new(jContentAuthor, "name", json_string(sWinTitle));
@@ -137,4 +146,12 @@ public int OnHTTPRequestComplete(Handle hRequest, bool bFailure, bool bRequestSu
     }
 
 	CloseHandle(hRequest);
+}
+
+stock bool IsValidClient(int client) {
+	if (client <= 0 || client > MaxClients || !IsClientConnected(client) || IsFakeClient(client)) {
+		return false;
+	}
+
+	return IsClientInGame(client);
 }

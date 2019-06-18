@@ -10,8 +10,8 @@
  * The JSON specification (RFC 4627) defines the following data types:
  * object, array, string, number, boolean, and null.
  * JSON types are used dynamically; arrays and objects can hold any
- * other data type, including themselves. For this reason, Jansson’s
- * type system is also dynamic in nature. There’s one Handle type to
+ * other data type, including themselves. For this reason, Janssonï¿½s
+ * type system is also dynamic in nature. Thereï¿½s one Handle type to
  * represent all JSON values, and the referenced structure knows the
  * type of the JSON value it holds.
  *
@@ -55,24 +55,24 @@ native json_type:json_typeof(Handle:hObj);
 #define json_is_boolean(%1)			( json_typeof(%1) == JSON_TRUE || json_typeof(%1) == JSON_FALSE )
 
 /**
- * Saves json_type as a String in out
+ * Saves json_type as a String in output
  *
- * @param in                json_type value to convert to string
- * @param out               Buffer to store the json_type value
+ * @param input             json_type value to convert to string
+ * @param output            Buffer to store the json_type value
  * @param maxlength         Maximum length of string buffer.
  *
  * @return                  False if the type does not exist.
  */
-stock bool:Stringify_json_type(json_type:in, String:out[], maxlength) {
-	switch(in) {
-		case JSON_OBJECT:		strcopy(out, maxlength, "Object");
-		case JSON_ARRAY:		strcopy(out, maxlength, "Array");
-		case JSON_STRING:		strcopy(out, maxlength, "String");
-		case JSON_INTEGER:		strcopy(out, maxlength, "Integer");
-		case JSON_REAL:			strcopy(out, maxlength, "Real");
-		case JSON_TRUE:			strcopy(out, maxlength, "True");
-		case JSON_FALSE:		strcopy(out, maxlength, "False");
-		case JSON_NULL:			strcopy(out, maxlength, "Null");
+stock bool:Stringify_json_type(json_type:input, String:output[], maxlength) {
+	switch(input) {
+		case JSON_OBJECT:		strcopy(output, maxlength, "Object");
+		case JSON_ARRAY:		strcopy(output, maxlength, "Array");
+		case JSON_STRING:		strcopy(output, maxlength, "String");
+		case JSON_INTEGER:		strcopy(output, maxlength, "Integer");
+		case JSON_REAL:			strcopy(output, maxlength, "Real");
+		case JSON_TRUE:			strcopy(output, maxlength, "True");
+		case JSON_FALSE:		strcopy(output, maxlength, "False");
+		case JSON_NULL:			strcopy(output, maxlength, "Null");
 		default: return false;
 	}
 
@@ -577,7 +577,7 @@ native Handle:json_null();
  * Strings
  *
  * Jansson uses UTF-8 as the character encoding. All JSON strings must
- * be valid UTF-8 (or ASCII, as it’s a subset of UTF-8). Normal null
+ * be valid UTF-8 (or ASCII, as itï¿½s a subset of UTF-8). Normal null
  * terminated C strings are used, so JSON strings may not contain
  * embedded null characters.
  *
@@ -715,6 +715,7 @@ native Float:json_number_value(Handle:hNumber);
 
 /**
  * Decodes the JSON string sJSON and returns the array or object it contains.
+ * Errors while decoding can be found in the sourcemod error log.
  *
  * @param sJSON             String containing valid JSON
 
@@ -724,16 +725,51 @@ native Float:json_number_value(Handle:hNumber);
 native Handle:json_load(const String:sJSON[]);
 
 /**
+ * Decodes the JSON string sJSON and returns the array or object it contains.
+ * This function provides additional error feedback and does not log errors
+ * to the sourcemod error log.
+ *
+ * @param sJSON             String containing valid JSON
+ * @param sErrorText        This buffer will be filled with the error
+ *                          message.
+ * @param maxlen            Size of the buffer
+ * @param iLine             This int will contain the line of the error
+ * @param iColumn           This int will contain the column of the error
+ *
+ * @return                  Handle to JSON object or array.
+ *                          or INVALID_HANDLE on error.
+ */
+native Handle:json_load_ex(const String:sJSON[], String:sErrorText[], maxlen, &iLine, &iColumn);
+
+/**
  * Decodes the JSON text in file sFilePath and returns the array or object
- * it contains
+ * it contains.
+ * Errors while decoding can be found in the sourcemod error log.
  *
  * @param sFilePath         Path to a file containing pure JSON
-
+ *
  * @return                  Handle to JSON object or array.
  *                          or INVALID_HANDLE on error.
  */
 native Handle:json_load_file(const String:sFilePath[PLATFORM_MAX_PATH]);
 
+/**
+ * Decodes the JSON text in file sFilePath and returns the array or object
+ * it contains.
+ * This function provides additional error feedback and does not log errors
+ * to the sourcemod error log.
+ *
+ * @param sFilePath         Path to a file containing pure JSON
+ * @param sErrorText        This buffer will be filled with the error
+ *                          message.
+ * @param maxlen            Size of the buffer
+ * @param iLine             This int will contain the line of the error
+ * @param iColumn           This int will contain the column of the error
+ *
+ * @return                  Handle to JSON object or array.
+ *                          or INVALID_HANDLE on error.
+ */
+native Handle:json_load_file_ex(const String:sFilePath[PLATFORM_MAX_PATH], String:sErrorText[], maxlen, &iLine, &iColumn);
 
 
 
@@ -1002,7 +1038,7 @@ stock json_object_get_string(Handle:hObj, const String:sKey[], String:sBuffer[],
 /**
  * Pack String Rules
  *
- * Here’s the full list of format characters:
+ * Hereï¿½s the full list of format characters:
  *  n    Output a JSON null value. No argument is consumed.
  *  s    Output a JSON string, consuming one argument.
  *  b    Output a JSON bool value, consuming one argument.
@@ -1237,6 +1273,7 @@ public __ext_smjansson_SetNTVOptional()
 	MarkNativeAsOptional("json_object_size");
 	MarkNativeAsOptional("json_object_get");
 	MarkNativeAsOptional("json_object_set");
+	MarkNativeAsOptional("json_object_set_new");
 	MarkNativeAsOptional("json_object_del");
 	MarkNativeAsOptional("json_object_clear");
 	MarkNativeAsOptional("json_object_update");
@@ -1249,13 +1286,17 @@ public __ext_smjansson_SetNTVOptional()
 	MarkNativeAsOptional("json_object_iter_key");
 	MarkNativeAsOptional("json_object_iter_value");
 	MarkNativeAsOptional("json_object_iter_set");
+	MarkNativeAsOptional("json_object_iter_set_new");
 
 	MarkNativeAsOptional("json_array");
 	MarkNativeAsOptional("json_array_size");
 	MarkNativeAsOptional("json_array_get");
 	MarkNativeAsOptional("json_array_set");
+	MarkNativeAsOptional("json_array_set_new");
 	MarkNativeAsOptional("json_array_append");
+	MarkNativeAsOptional("json_array_append_new");
 	MarkNativeAsOptional("json_array_insert");
+	MarkNativeAsOptional("json_array_insert_new");
 	MarkNativeAsOptional("json_array_remove");
 	MarkNativeAsOptional("json_array_clear");
 	MarkNativeAsOptional("json_array_extend");
@@ -1272,6 +1313,11 @@ public __ext_smjansson_SetNTVOptional()
 	MarkNativeAsOptional("json_real_value");
 	MarkNativeAsOptional("json_real_set");
 	MarkNativeAsOptional("json_number_value");
+
+	MarkNativeAsOptional("json_boolean");
+	MarkNativeAsOptional("json_true");
+	MarkNativeAsOptional("json_false");
+	MarkNativeAsOptional("json_null");	
 
 	MarkNativeAsOptional("json_load");
 	MarkNativeAsOptional("json_load_file");
