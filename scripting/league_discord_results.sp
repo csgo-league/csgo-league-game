@@ -16,6 +16,8 @@ ConVar g_CVUsername;
 ConVar g_CVEmbedColour;
 ConVar g_CVEmbedAvatar;
 
+ArrayList ga_sWinningPlayers;
+
 public Plugin myinfo = {
 	name = "[League] Match Result",
 	author = "The Doggy, B3none",
