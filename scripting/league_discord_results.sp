@@ -138,3 +138,11 @@ public int OnHTTPRequestComplete(Handle hRequest, bool bFailure, bool bRequestSu
 
 	CloseHandle(hRequest);
 }
+
+stock bool IsValidClient(int client) {
+	if (client <= 0 || client > MaxClients || !IsClientConnected(client) || (IsFakeClient(client))) {
+		return false;
+	}
+
+	return IsClientInGame(client);
+}
