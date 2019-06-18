@@ -1230,26 +1230,6 @@ public Action RankConnectCallback(int client, int rank, any data) {
         StrContains(s_Country, "Vatican", false) != -1 ) {
         Format(s_Country, sizeof(s_Country), "The %s", s_Country);
     }
-
-	// if (g_bAnnounceConnect) {
-	// 	if (g_bAnnounceConnectChat) {
-	// 		CPrintToChatAll("%s %t",MSG,"PlayerJoinedChat",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
-	// 	}
-
-	// 	if (g_bAnnounceConnectHint) {
-	// 		PrintHintTextToAll("%t","PlayerJoinedHint",sClientName,g_aRankOnConnect[client],g_aPointsOnConnect[client],s_Country);
-	// 	}
-	// }
-
-	// if (g_bAnnounceTopConnect && rank <= g_AnnounceTopPosConnect) {
-	// 	if (g_bAnnounceTopConnectChat) {
-	// 		CPrintToChatAll("%s %t",MSG,"TopPlayerJoinedChat",g_AnnounceTopPosConnect,sClientName,g_aRankOnConnect[client],s_Country);
-	// 	}
-
-	// 	if (g_bAnnounceTopConnectHint) {
-	// 		PrintHintTextToAll("%t","TopPlayerJoinedHint",g_AnnounceTopPosConnect,sClientName,g_aRankOnConnect[client],s_Country);
-	// 	}
-	// }
 }
 
 public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast) {
@@ -1267,11 +1247,6 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	strcopy(g_sBufferClientName[client],MAX_NAME_LENGTH,sName);
 
 	g_aPointsOnDisconnect[client] = LeagueRanking_GetPoints(client);
-
-	// char disconnectReason[64];
-	// GetEventString(event, "reason", disconnectReason, sizeof(disconnectReason));
-
-	// CPrintToChatAll("%s %t",MSG,"PlayerLeft",g_sBufferClientName[client], g_aPointsOnDisconnect[client], disconnectReason);
 }
 
 public void OnGameFrame() {
