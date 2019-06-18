@@ -81,12 +81,16 @@ public void SendReport() {
 
 	char sWinTitle[64], sBuffer[128], sDescription[1024];
 	int len = 0;
+
+	char teamName[32];
 	if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
 	} else if (iWinners == CS_TEAM_T) {
-		Format(sWinTitle, sizeof(sWinTitle), "Terrorists just won %i:%i!", iTScore, iCTScore);
+    	GetTeamName(CS_TEAM_T, teamName, sizeof(teamName));
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName, iTScore, iCTScore);
 	} else {
-		Format(sWinTitle, sizeof(sWinTitle), "Counter-Terrorists just won %i:%i!", iCTScore, iTScore);
+	    GetTeamName(CS_TEAM_CT, teamName, sizeof(teamName));
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName, iCTScore, iTScore);
     }
 
 	json_object_set_new(jContentAuthor, "name", json_string(sWinTitle));
