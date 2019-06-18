@@ -27,6 +27,8 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
+    ga_sWinningPlayers = new ArrayList(64);
+
 	g_CVDiscordWebhook = CreateConVar("sm_discord_webhook", "", "Discord web hook endpoint", FCVAR_PROTECTED);
 	g_CVSiteURL = CreateConVar("league_discord_results_site_url", "", "Website url for viewing scores", FCVAR_PROTECTED);
 	g_CVUsername = CreateConVar("league_discord_results_username", "League Results", "Username to use for webhook", FCVAR_PROTECTED);
