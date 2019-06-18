@@ -104,7 +104,7 @@ public Action Listener_Callvote(int client, const char[] command, int arg) {
             PbSetInt(voteStart, "time", -1);
             EndMessage();
             return Plugin_Handled;
-        } else if (GameRules_GetProp("m_bMatchWaitingToResume") == 1) {
+        } else if (GameRules_GetProp("m_bMatchWaitingForResume") == 1) {
             Handle voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
             PbSetInt(voteStart, "reason", 26); // 26 = The match is already paused!
             PbSetInt(voteStart, "time", -1);

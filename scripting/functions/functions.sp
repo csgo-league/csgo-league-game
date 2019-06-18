@@ -70,39 +70,60 @@ public Action Timer_ResetData(Handle timer) {
 /*
 	Credit: https://github.com/powerlord/sourcemod-tf2-scramble/blob/master/addons/sourcemod/scripting/include/valve.inc#L18
 */
-stock PrintValveTranslation(int[] clients, int numClients, int msg_dest, const char[] msg_name, const char[] param1, const char[] param2, const char[] param3, const char[] param4)
+
+
+enum Destination
 {
-	new Handle:bf = StartMessage("TextMsg", clients, numClients, USERMSG_RELIABLE);
+	Destination_HintText 		= 1,
+	Destination_ClientConsole	= 2,
+	Destination_Chat			= 3,
+	Destination_CenterText		= 4,
+}
+
+stock void PrintValveTranslation(int[] clients,
+								 int numClients,
+								 Destination msg_dest,
+								 const char[] msg_name,
+								 const char[] param1="",
+								 const char[] param2="",
+								 const char[] param3="",
+								 const char[] param4="")
+{
+	Handle msg = StartMessage("TextMsg", clients, numClients, USERMSG_RELIABLE);
 	
 	if (GetUserMessageType() == UM_Protobuf)
 	{
-		PbSetInt(bf, "msg_dst", msg_dest);
-		PbAddString(bf, "params", msg_name);
+		Protobuf proto = UserMessageToProtobuf(msg);
 		
-		PbAddString(bf, "params", param1);
-		PbAddString(bf, "params", param2);
-		PbAddString(bf, "params", param3);
-		PbAddString(bf, "params", param4);
+		proto.SetInt("msg_dst", view_as<int>(msg_dest));
+		proto.AddString("params", msg_name);
+		
+		proto.AddString("params", param1);
+		proto.AddString("params", param2);
+		proto.AddString("params", param3);
+		proto.AddString("params", param4);
 	}
 	else
 	{
-		BfWriteByte(bf, msg_dest);
-		BfWriteString(bf, msg_name);
+		BfWrite bf = UserMessageToBfWrite(msg);
 		
-		BfWriteString(bf, param1);
-		BfWriteString(bf, param2);
-		BfWriteString(bf, param3);
-		BfWriteString(bf, param4);
+		bf.WriteByte(view_as<int>(msg_dest));
+		bf.WriteString(msg_name);
+		
+		bf.WriteString(param1);
+		bf.WriteString(param2);
+		bf.WriteString(param3);
+		bf.WriteString(param4);
 	}
 	
 	EndMessage();
 }
 
-stock PrintValveTranslationToAll(int msg_dest, const char[] msg_name, const char[] param1, const char[] param2, const char[] param3, const char[] param4)
+stock void PrintValveTranslationToAll(Destination msg_dest, const char[] msg_name,const char[] param1="",const char[] param2="",const char[] param3="",const char[] param4="")
 {
 	int total = 0;
-	int clients[MaxClients];
-	for (new i=1; i<=MaxClients; i++)
+	int[] clients = new int[MaxClients];
+	for (int i=1; i<=MaxClients; i++)
 	{
 		if (IsClientConnected(i))
 		{

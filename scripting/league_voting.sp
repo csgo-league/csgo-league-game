@@ -19,6 +19,8 @@ ConVar g_WarmupCfgCvar;
 bool g_InExtendedPause = false;
 bool g_bIsOvertime = false;
 
+char steamid[64];
+
 /* Server Voting Variables */
 int teamVoteID = -1;
 int voteType = -1;
@@ -60,9 +62,12 @@ ConVar g_hMaxroundsOT = null;
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
+
+    for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
     AddCommandListener(Listener_Vote, "vote");
     AddCommandListener(Listener_Callvote, "callvote");
     AddCommandListener(Listener_Listissues, "listissues");
+
     g_hVoteDuration = FindConVar("sv_vote_timer_duration");
     g_hMaxrounds = FindConVar("mp_maxrounds");
     g_hMaxroundsOT = FindConVar("mp_overtime_maxrounds");
@@ -73,7 +78,35 @@ public void OnPluginStart() {
 
     g_WarmupCfgCvar = CreateConVar("get5_warmup_cfg", "get5/warmup.cfg", "Config file to exec in warmup periods");
 
+    HookEvent("player_connect_full", Event_PlayerConnect); 
+    HookEvent("round_start", Event_RoundStart);
     HookEventEx("round_end", Event_RoundEnd);
+}
+
+public void OnClientConnected(int client) {
+    if (GetConVarFloat(g_hVoteDuration) < 1.0) {
+        SetConVarFloat(g_hVoteDuration, 1.0);
+    }
+    alreadyVoted[client] = false;
+}
+
+public void OnClientDisconnect(int client) {
+    alreadyVoted[client] = false;
+}
+
+public void Event_PlayerConnect(Event event, const char[] name, bool dontBroadcast) 
+{
+    int client = GetClientOfUserId(event.GetInt("userid"));
+    GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
+    PrintToChatAll("steamid %s", steamid);
+    PrintToChatAll("Team %s", Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+    ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+}  
+
+public void OnMapStart(){
+    GameRules_SetProp("m_bIsQueuedMatchmaking", 1);
+    canSurrender = false;
+    for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
 }
 
 public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
