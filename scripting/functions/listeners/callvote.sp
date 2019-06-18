@@ -84,7 +84,6 @@ public Action Listener_Callvote(int client, const char[] command, int arg) {
             PbSetInt(voteStart, "time", -1);
             EndMessage();
             return Plugin_Handled;
-
         }
 
         voteType = 0;
@@ -96,8 +95,7 @@ public Action Listener_Callvote(int client, const char[] command, int arg) {
         isTeamOnly = true;
         soloOnly = false;
         issueFound = true;
-    }
-    else if (strcmp(option, "StartTimeout", false) == 0 && (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T)) {
+    } else if (strcmp(option, "StartTimeout", false) == 0 && (GetClientTeam(client) == CS_TEAM_CT || GetClientTeam(client) == CS_TEAM_T)) {
         if (GameRules_GetProp("m_bTerroristTimeOutActive") == 1 || GameRules_GetProp("m_bCTTimeOutActive") == 1) {
             Handle voteStart = StartMessage("CallVoteFailed", onlyUs, 1, USERMSG_RELIABLE);
             PbSetInt(voteStart, "reason", 30); // 30 = A timeout is already in progress.

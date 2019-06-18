@@ -9,7 +9,7 @@ public Action Timer_VoteFail(Handle timer, int reason) {
 
     if (soloOnly) {
         int client = GetClientOfUserId(voteCaller);
-        if (client <=0 && client > MaxClients) {
+        if (client <= 0 && client > MaxClients) {
             CreateTimer(0.5, Timer_ResetData);
             return;
         }

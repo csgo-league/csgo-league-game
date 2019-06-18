@@ -1,11 +1,7 @@
 bool DidWePassQuorumRatio(int yesVotes, int noVotes, int quorum) {
-    int resultQuorum = yesVotes / (yesVotes + noVotes) *100;
+    int resultQuorum = yesVotes / (yesVotes + noVotes) * 100;
 
-    if (resultQuorum >= quorum) {
-        return true;
-    } else {
-        return false;
-    }
+    return resultQuorum >= quorum
 }
 
 int RealPlayerCount(int client, bool InGameOnly, bool teamOnly, bool noSpectators) {
@@ -91,8 +87,7 @@ stock void PrintValveTranslation(int[] clients,
 {
 	Handle msg = StartMessage("TextMsg", clients, numClients, USERMSG_RELIABLE);
 	
-	if (GetUserMessageType() == UM_Protobuf)
-	{
+	if (GetUserMessageType() == UM_Protobuf) {
 		Protobuf proto = UserMessageToProtobuf(msg);
 		
 		proto.SetInt("msg_dst", view_as<int>(msg_dest));
@@ -102,9 +97,7 @@ stock void PrintValveTranslation(int[] clients,
 		proto.AddString("params", param2);
 		proto.AddString("params", param3);
 		proto.AddString("params", param4);
-	}
-	else
-	{
+	} else {
 		BfWrite bf = UserMessageToBfWrite(msg);
 		
 		bf.WriteByte(view_as<int>(msg_dest));
@@ -119,14 +112,11 @@ stock void PrintValveTranslation(int[] clients,
 	EndMessage();
 }
 
-stock void PrintValveTranslationToAll(Destination msg_dest, const char[] msg_name,const char[] param1="",const char[] param2="",const char[] param3="",const char[] param4="")
-{
+stock void PrintValveTranslationToAll(Destination msg_dest, const char[] msg_name,const char[] param1="",const char[] param2="",const char[] param3="",const char[] param4="") {
 	int total = 0;
 	int[] clients = new int[MaxClients];
-	for (int i=1; i<=MaxClients; i++)
-	{
-		if (IsClientConnected(i))
-		{
+	for (int i=1; i<=MaxClients; i++) {
+		if (IsClientConnected(i)) {
 			clients[total++] = i;
 		}
 	}

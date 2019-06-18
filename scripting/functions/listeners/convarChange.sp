@@ -1,5 +1,7 @@
 public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[] newValue) {
-    if (RealPlayerCount(0, false, false, false) <= 0) return;
+    if (RealPlayerCount(0, false, false, false) <= 0) {
+        return;
+    }
 
     int CTScore = CS_GetTeamScore(CS_TEAM_CT);
     int TScore = CS_GetTeamScore(CS_TEAM_T);
@@ -19,22 +21,17 @@ public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[]
 
     if (res == 1) { // Match is now 1 round before halftime
         canSurrender = false;
-    }
-    if (res == ((RoundToNearest(float(maxRounds / 2)) - maxRounds) + 1)) {
+    } else if (res == ((RoundToNearest(float(maxRounds / 2)) - maxRounds) + 1)) {
         canSurrender = false;
-    }
-    // TODO: Check players if game is 5v3 if yes then surrender is available.
-    if (CTScore - 8 >= TScore || TScore - 8 >= CTScore) {
+    } else if (IsSurrenderAvailable()) {
         canSurrender = true;
     } else {
         canSurrender = false;
     }
 }
 
-public void OnConVarChange_voteDuration(ConVar convar, char[] oldValue, char[] newValue)
-{
-	if (GetConVarFloat(g_hVoteDuration) < 1.0)
-	{
+public void OnConVarChange_voteDuration(ConVar convar, char[] oldValue, char[] newValue) {
+	if (GetConVarFloat(g_hVoteDuration) < 1.0) {
 		SetConVarFloat(g_hVoteDuration, 1.0);
 	}
 }

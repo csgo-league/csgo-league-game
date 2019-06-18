@@ -4,7 +4,6 @@
 #include <get5>
 #include <restorecvars>
 
-
 public Plugin myinfo = {
 	name = "[League] Voting",
 	author = "PandahChan",
@@ -12,8 +11,6 @@ public Plugin myinfo = {
 	version = "1.1.0",
 	url = "https://github.com/csgo-league"
 };
-
-#pragma newdecls required;
 
 ConVar g_WarmupCfgCvar;
 bool g_InExtendedPause = false;
@@ -59,6 +56,8 @@ ConVar g_hMaxroundsOT = null;
 
 #include "functions/functions.sp"
 #include "league/util.sp"
+
+#pragma newdecls required;
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
@@ -174,11 +173,19 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 }
 
 public Action Command_Surrender(int client, int args) {
+    if (IsSurrenderAvailable()) {
+        FakeClientCommandEx(client,"callvote Surrender");
+    } else {
+        Get5_Message(client, "Surrender is currently unavailable. You need to be 8 rounds behind.");
+    }
+}
+
+stock bool IsSurrenderAvailable() {
     int CTScore = CS_GetTeamScore(CS_TEAM_CT);
     int TScore = CS_GetTeamScore(CS_TEAM_T);
     if (CTScore - 8 >= TScore || TScore - 8 >= CTScore) {
-        FakeClientCommandEx(client,"callvote Surrender");
+        return true;
+    } else {
+        return false;
     }
-    else {
-        Get5_Message(client, "Surrender is currently unavailable. You need to be 8 rounds behind.");
-    }
+}
