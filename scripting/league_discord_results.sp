@@ -21,7 +21,7 @@ ArrayList ga_sWinningPlayers;
 
 public Plugin myinfo = {
 	name = "[League] Match Result",
-	author = "The Doggy, B3none",
+	author = "The Doggy, B3none, PandahChan",
 	description = "Post the final score in Discord via Webhook",
 	version = "1.0.0",
 	url = "https://github.com/csgo-league"
@@ -83,13 +83,18 @@ public void SendReport() {
 	char sWinTitle[64], sBuffer[128], sDescription[1024];
 	int len = 0;
 
-	char teamName[32];
+	char teamName1[32];
+	char teamName2[32];
+	GetConVarString(FindConVar("mp_teamname_1"), teamName1, sizeof(teamName1));
+	GetConVarString(FindConVar("mp_teamname_2"), teamName2, sizeof(teamName2));
+	
+
 	if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
 	} else if (iWinners == CS_TEAM_T) {
-		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_T)], iTScore, iCTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName1, iTScore, iCTScore);
 	} else {
-		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_CT)], iCTScore, iTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName2, iCTScore, iTScore);
     }
 
 	json_object_set_new(jContentAuthor, "name", json_string(sWinTitle));
@@ -116,9 +121,11 @@ public void SendReport() {
 			len += Format(sDescription[len], sizeof(sDescription) - len, "%s\n", sName);
 		}
 	}
+	
 
 	len += Format(sDescription[len], sizeof(sDescription) - len, "\n[View more](%s/matches/%i)", sSiteURL, g_iMatchID);
 	json_object_set_new(jContent, "description", json_string(sDescription));
+	ga_sWinningPlayers.Clear();
 
 	json_array_append_new(jEmbeds, jContent);
 	json_object_set_new(jRequest, "username", json_string(sUserName));
