@@ -23,10 +23,8 @@ public void OnConVarChange_checkSurrender(ConVar convar, char[] oldValue, char[]
         canSurrender = false;
     } else if (res == ((RoundToNearest(float(maxRounds / 2)) - maxRounds) + 1)) {
         canSurrender = false;
-    } else if (IsSurrenderAvailable()) {
-        canSurrender = true;
     } else {
-        canSurrender = false;
+        canSurrender = IsSurrenderAvailable();
     }
 }
 

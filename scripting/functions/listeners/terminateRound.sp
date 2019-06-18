@@ -1,10 +1,8 @@
 public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason) {
 	canSurrender = false;
 
-	if (reason != CSRoundEnd_TerroristsSurrender && reason != CSRoundEnd_CTSurrender)
-	{
-		if (isVoteActive)
-		{
+	if (reason != CSRoundEnd_TerroristsSurrender && reason != CSRoundEnd_CTSurrender) {
+		if (isVoteActive) {
 			int entity = FindEntityByClassname(-1, "vote_controller");
 
 			if (entity < 0) {
@@ -13,8 +11,8 @@ public Action CS_OnTerminateRound(float& delay, CSRoundEndReason& reason) {
 
 			int activeIssue = GetEntProp(entity, Prop_Send, "m_iActiveIssueIndex", -1);
 
-			if (activeIssue == 0) // Surrender
-			{
+			// Surrender
+			if (activeIssue == 0) {
 				CreateTimer(1.0, Timer_VoteFail, 33);
 			}
 		}

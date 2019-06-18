@@ -22,11 +22,10 @@ public Action Timer_GetResults(Handle timer, int userid) {
                 CreateTimer(0.5, Timer_VoteFail, 3);
             }
         }
+    } else if (activeIssue == 6 && option1 >= 1) {
+        VotePass();
+        CreateTimer(0.5, Timer_DoStartTimeout, teamOnly);
     }
-    else if(activeIssue == 6 && option1 >= 1) {
-            VotePass();
-            CreateTimer(0.5, Timer_DoStartTimeout, teamOnly);
-        }
 
     return Plugin_Handled;
 }
