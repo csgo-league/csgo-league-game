@@ -15,6 +15,7 @@ ConVar g_CVSiteURL;
 ConVar g_CVUsername;
 ConVar g_CVEmbedColour;
 ConVar g_CVEmbedAvatar;
+char g_FormattedTeamNames[MatchTeam_Count][128];
 
 ArrayList ga_sWinningPlayers;
 
@@ -86,11 +87,9 @@ public void SendReport() {
 	if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
 	} else if (iWinners == CS_TEAM_T) {
-    	GetTeamName(CS_TEAM_T, teamName, sizeof(teamName));
-		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName, iTScore, iCTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_T)], iTScore, iCTScore);
 	} else {
-	    GetTeamName(CS_TEAM_CT, teamName, sizeof(teamName));
-		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName, iCTScore, iTScore);
+		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", g_FormattedTeamNames[Get5_CSTeamToMatchTeam(CS_TEAM_CT)], iCTScore, iTScore);
     }
 
 	json_object_set_new(jContentAuthor, "name", json_string(sWinTitle));
