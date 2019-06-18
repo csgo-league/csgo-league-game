@@ -32,6 +32,8 @@ public void OnPluginStart() {
 	g_CVUsername = CreateConVar("league_discord_results_username", "League Results", "Username to use for webhook", FCVAR_PROTECTED);
 	g_CVEmbedColour = CreateConVar("league_discord_results_embed_color", "16741688", "Color to use for webhook (Must be decimal value)", FCVAR_PROTECTED);
 	g_CVEmbedAvatar = CreateConVar("league_discord_results_embed_avatar", "https://avatars1.githubusercontent.com/u/51230829", "Avatar to use for webhook", FCVAR_PROTECTED);
+
+    AutoExecConfig(true, "league_discord_results");
 }
 
 public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Score, int team2Score, int mapNumber) {
