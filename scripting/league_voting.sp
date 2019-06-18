@@ -12,8 +12,6 @@ public Plugin myinfo = {
 	url = "https://github.com/csgo-league"
 };
 
-ConVar g_WarmupCfgCvar;
-bool g_InExtendedPause = false;
 bool g_bIsOvertime = false;
 
 char steamid[64];
@@ -62,7 +60,10 @@ ConVar g_hMaxroundsOT = null;
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
 
-    for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
+    for (int i = 0; i < MAXPLAYERS + 1; i++) {
+        alreadyVoted[i] = false;
+    }
+    
     AddCommandListener(Listener_Vote, "vote");
     AddCommandListener(Listener_Callvote, "callvote");
     AddCommandListener(Listener_Listissues, "listissues");
@@ -72,10 +73,8 @@ public void OnPluginStart() {
     g_hMaxroundsOT = FindConVar("mp_overtime_maxrounds");
 
     g_hVoteDuration.AddChangeHook(OnConVarChange_voteDuration);
-	g_hMaxrounds.AddChangeHook(OnConVarChange_checkSurrender);
+    g_hMaxrounds.AddChangeHook(OnConVarChange_checkSurrender);
     g_hMaxroundsOT.AddChangeHook(OnConVarChange_checkSurrender);
-
-    g_WarmupCfgCvar = CreateConVar("get5_warmup_cfg", "get5/warmup.cfg", "Config file to exec in warmup periods");
 
     HookEvent("player_connect_full", Event_PlayerConnect); 
     HookEvent("round_start", Event_RoundStart);
