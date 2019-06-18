@@ -79,8 +79,8 @@ public void Get5_OnSeriesInit() {
     g_ForceMatchIDCvar.IntValue = 0;
     Format(queryBuffer, sizeof(queryBuffer), "INSERT INTO `matches` \
             (matchid, series_type, team1_name, team2_name, start_time) VALUES \
-            (%d, '%s', '%s', '%s', NOW())",
-           g_MatchID, seriesTypeSz, team1NameSz, team2NameSz);
+            (%d, '%s', '%s', '%s', %i)",
+           g_MatchID, seriesTypeSz, team1NameSz, team2NameSz, GetTime());
     LogDebug(queryBuffer);
     db.Query(SQLErrorCheckCallback, queryBuffer);
 
@@ -90,8 +90,8 @@ public void Get5_OnSeriesInit() {
 
     Format(queryBuffer, sizeof(queryBuffer), "INSERT INTO `matches` \
             (series_type, team1_name, team2_name, start_time) VALUES \
-            ('%s', '%s', '%s', NOW())",
-           seriesTypeSz, team1NameSz, team2NameSz);
+            ('%s', '%s', '%s', %i)",
+           seriesTypeSz, team1NameSz, team2NameSz, GetTime());
     LogDebug(queryBuffer);
     t.AddQuery(queryBuffer);
 
@@ -139,8 +139,8 @@ public void Get5_OnGoingLive(int mapNumber) {
 
   Format(queryBuffer, sizeof(queryBuffer), "INSERT IGNORE INTO `matches_maps` \
         (matchid, mapnumber, mapname, start_time) VALUES \
-        (%d, %d, '%s', NOW())",
-         g_MatchID, mapNumber, mapNameSz);
+        (%d, %d, '%s', %i)",
+         g_MatchID, mapNumber, mapNameSz, GetTime());
   LogDebug(queryBuffer);
 
   db.Query(SQLErrorCheckCallback, queryBuffer);
@@ -185,9 +185,9 @@ public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Sco
   char winnerString[64];
   GetTeamString(mapWinner, winnerString, sizeof(winnerString));
   Format(queryBuffer, sizeof(queryBuffer),
-         "UPDATE `matches_maps` SET winner = '%s', end_time = NOW() \
+         "UPDATE `matches_maps` SET winner = '%s', end_time = %i \
         WHERE matchid = %d and mapnumber = %d",
-         winnerString, g_MatchID, mapNumber);
+         winnerString, g_MatchID, mapNumber, GetTime());
   LogDebug(queryBuffer);
   db.Query(SQLErrorCheckCallback, queryBuffer);
 
@@ -282,9 +282,9 @@ public void Get5_OnSeriesResult(MatchTeam seriesWinner, int team1MapScore, int t
   GetTeamString(seriesWinner, winnerString, sizeof(winnerString));
 
   Format(queryBuffer, sizeof(queryBuffer), "UPDATE `matches` \
-        SET winner = '%s', team1_score = %d, team2_score = %d, end_time = NOW() \
+        SET winner = '%s', team1_score = %d, team2_score = %d, end_time = %i \
         WHERE matchid = %d",
-         winnerString, team1MapScore, team2MapScore, g_MatchID);
+         winnerString, team1MapScore, team2MapScore, g_MatchID, GetTime());
   LogDebug(queryBuffer);
   db.Query(SQLErrorCheckCallback, queryBuffer);
 }
