@@ -4,6 +4,7 @@
 #include <get5>
 #include <restorecvars>
 
+
 public Plugin myinfo = {
 	name = "[League] Voting",
 	author = "PandahChan",
@@ -16,14 +17,41 @@ ConVar g_WarmupCfgCvar;
 bool g_InExtendedPause = false;
 bool g_bIsOvertime = false;
 
-#include "league/util.sp"
+/* Server Voting Variables */
+int teamVoteID = -1;
+int voteType = -1;
+int voteCaller = -1;
+char displayString[512];
+char detailsString[512];
+char otherTeamString[512];
+char passString[512];
+char passDetailsString[512];
+char backupToLoad[512];
+bool isTeamOnly = false;
+bool soloOnly = false;
+bool isVoteActive = false;
+bool:alreadyVoted[MAXPLAYERS + 1];
+bool:canSurrender = true;
+Handle voteTimeout = null;
+ConVar g_hVoteDuration = null;
+ConVar g_hMaxrounds = null;
+ConVar g_hMaxroundsOT = null;
+
+#include "functions/listeners/listissues.sp"
+#include "functions/listeners/callvote.sp"
 
 public void OnPluginStart() {
     LoadTranslations("get5.phrases");
-    AddCommandListener(Listener_Vote, "vote");
+    // AddCommandListener(Listener_Vote, "vote");
     AddCommandListener(Listener_Callvote, "callvote");
     AddCommandListener(Listener_Listissues, "listissues");
+    g_hVoteDuration = FindConVar("sv_vote_timer_duration");
+    g_hMaxrounds = FindConVar("mp_maxrounds");
+    g_hMaxroundsOT = FindConVar("mp_overtime_maxrounds");
 
+    g_hVoteDuration.AddChangeHook(OnConVarChange_voteDuration);
+	g_hMaxrounds.AddChangeHook(OnConVarChange_checkSurrender);
+    g_hMaxroundsOT.AddChangeHook(OnConVarChange_checkSurrender);
 
     g_WarmupCfgCvar = CreateConVar("get5_warmup_cfg", "get5/warmup.cfg", "Config file to exec in warmup periods");
 
