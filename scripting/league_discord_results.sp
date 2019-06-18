@@ -21,7 +21,7 @@ ArrayList ga_sWinningPlayers;
 
 public Plugin myinfo = {
 	name = "[League] Match Result",
-	author = "The Doggy, B3none",
+	author = "The Doggy, B3none, PandahChan",
 	description = "Post the final score in Discord via Webhook",
 	version = "1.0.0",
 	url = "https://github.com/csgo-league"
@@ -121,9 +121,11 @@ public void SendReport() {
 			len += Format(sDescription[len], sizeof(sDescription) - len, "%s\n", sName);
 		}
 	}
+	
 
 	len += Format(sDescription[len], sizeof(sDescription) - len, "\n[View more](%s/matches/%i)", sSiteURL, g_iMatchID);
 	json_object_set_new(jContent, "description", json_string(sDescription));
+	ga_sWinningPlayers.Clear();
 
 	json_array_append_new(jEmbeds, jContent);
 	json_object_set_new(jRequest, "username", json_string(sUserName));

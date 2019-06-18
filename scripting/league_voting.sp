@@ -98,8 +98,6 @@ public void Event_PlayerConnect(Event event, const char[] name, bool dontBroadca
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
     GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
-    PrintToChatAll("steamid %s", steamid);
-    PrintToChatAll("Team %s", Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
     ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
 }  
 
