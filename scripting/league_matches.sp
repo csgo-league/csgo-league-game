@@ -21,7 +21,7 @@ public Plugin myinfo = {
   name = "[League] Matches",
   author = "splewis, B3none",
   description = "Records match stats collected by get5 to MySQL",
-  version = "1.0.1",
+  version = "1.1.0",
   url = "https://github.com/csgo-league"
 };
 
