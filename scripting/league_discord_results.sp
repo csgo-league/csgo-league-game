@@ -98,7 +98,7 @@ public void SendReport() {
     }
 
 	json_object_set_new(jContentAuthor, "name", json_string(sWinTitle));
-	Format(sBuffer, sizeof sBuffer, "%s/matches/%i", sSiteURL, g_iMatchID);
+	Format(sBuffer, sizeof sBuffer, "%s/match/%i", sSiteURL, g_iMatchID);
 	json_object_set_new(jContentAuthor, "url", json_string(sBuffer));
 	json_object_set_new(jContentAuthor, "icon_url", json_string(sAvatarURL));
 	json_object_set_new(jContent, "author", jContentAuthor);
@@ -123,7 +123,7 @@ public void SendReport() {
 	}
 	
 
-	len += Format(sDescription[len], sizeof(sDescription) - len, "\n[View more](%s/matches/%i)", sSiteURL, g_iMatchID);
+	len += Format(sDescription[len], sizeof(sDescription) - len, "\n[View more](%s/match/%i)", sSiteURL, g_iMatchID);
 	json_object_set_new(jContent, "description", json_string(sDescription));
 	ga_sWinningPlayers.Clear();
 

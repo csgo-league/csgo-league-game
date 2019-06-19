@@ -168,7 +168,7 @@ native int Get5_IncreasePlayerStat(int client, const char[] statName, int amount
 #define STAT_KILLS "kills"
 #define STAT_DEATHS "deaths"
 #define STAT_ASSISTS "assists"
-#define STAT_SCORE "score"
+#define STAT_SCORE "playerscore"
 #define STAT_FLASHBANG_ASSISTS "flashbang_assists"
 #define STAT_TEAMKILLS "teamkills"
 #define STAT_SUICIDES "suicides"
