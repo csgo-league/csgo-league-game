@@ -76,7 +76,7 @@ public void OnPluginStart() {
     g_hMaxrounds.AddChangeHook(OnConVarChange_checkSurrender);
     g_hMaxroundsOT.AddChangeHook(OnConVarChange_checkSurrender);
 
-    HookEvent("player_connect_full", Event_PlayerConnect); 
+    HookEvent("player_connect_full", Event_PlayerConnect, EventHookMode_Post); 
     HookEvent("round_start", Event_RoundStart);
     HookEventEx("round_end", Event_RoundEnd);
 }
@@ -96,7 +96,9 @@ public void Event_PlayerConnect(Event event, const char[] name, bool dontBroadca
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
     GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
-    ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+    if (IsClientInGame(client) && !IsFakeClient(client) && !IsClientSourceTV(client)) {
+            ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+    }
 }  
 
 public void OnMapStart(){
