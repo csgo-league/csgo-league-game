@@ -222,7 +222,7 @@ public void AddPlayerStats(KeyValues kv, MatchTeam team) {
       int flashbang_assists = kv.GetNum(STAT_FLASHBANG_ASSISTS);
       int assists = kv.GetNum(STAT_ASSISTS);
       int teamkills = kv.GetNum(STAT_TEAMKILLS);
-      int score = kv.GetNum(STAT_SCORE);
+      int playerscore = kv.GetNum(STAT_PLAYERSCORE);
       int damage = kv.GetNum(STAT_DAMAGE);
       int headshot_kills = kv.GetNum(STAT_HEADSHOT_KILLS);
       int roundsplayed = kv.GetNum(STAT_ROUNDSPLAYED);
@@ -250,7 +250,7 @@ public void AddPlayerStats(KeyValues kv, MatchTeam team) {
       Format(queryBuffer, sizeof(queryBuffer), "REPLACE INTO `matches_players` \
                 (matchid, mapnumber, steam, team, \
                 rounds_played, name, kills, deaths, flashbang_assists, \
-                assists, score, teamkills, headshot_kills, damage, \
+                assists, playerscore, teamkills, headshot_kills, damage, \
                 bomb_plants, bomb_defuses, \
                 v1, v2, v3, v4, v5, \
                 2k, 3k, 4k, 5k, \
@@ -264,7 +264,7 @@ public void AddPlayerStats(KeyValues kv, MatchTeam team) {
                 %d, %d, %d, %d, \
                 %d, %d, %d, %d)",
              g_MatchID, mapNumber, authSz, teamString, roundsplayed, nameSz, kills, deaths,
-             flashbang_assists, assists, score, teamkills, headshot_kills, damage, plants, defuses, v1, v2,
+             flashbang_assists, assists, playerscore, teamkills, headshot_kills, damage, plants, defuses, v1, v2,
              v3, v4, v5, k2, k3, k4, k5, firstkill_t, firstkill_ct, firstdeath_t, firstdeath_ct);
 
       LogDebug(queryBuffer);

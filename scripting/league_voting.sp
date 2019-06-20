@@ -95,11 +95,20 @@ public void OnClientDisconnect(int client) {
 public void Event_PlayerConnect(Event event, const char[] name, bool dontBroadcast) 
 {
     int client = GetClientOfUserId(event.GetInt("userid"));
-    GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
-    if (IsClientInGame(client) && !IsFakeClient(client) && !IsClientSourceTV(client)) {
-            ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+
+    if (client != 0 && IsClientInGame(client) && !IsFakeClient(client)) {
+        CreateTimer(0.5, AssignTeamOnConnect, client);
     }
 }  
+
+public Action AssignTeamOnConnect(Handle timer, int client) {
+    if (IsClientInGame(client)) {
+        GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
+        ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
+        CS_RespawnPlayer(client);
+    }
+    return Plugin_Continue;
+}
 
 public void OnMapStart(){
     GameRules_SetProp("m_bIsQueuedMatchmaking", 1);
