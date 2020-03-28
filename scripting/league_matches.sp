@@ -187,7 +187,7 @@ public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Sco
   Format(queryBuffer, sizeof(queryBuffer),
          "UPDATE `matches_maps` SET winner = '%s', end_time = %i \
         WHERE matchid = %d and mapnumber = %d",
-         winnerString, g_MatchID, mapNumber, GetTime());
+         winnerString, GetTime(), g_MatchID, mapNumber);
   LogDebug(queryBuffer);
   db.Query(SQLErrorCheckCallback, queryBuffer);
 
@@ -285,7 +285,7 @@ public void Get5_OnSeriesResult(MatchTeam seriesWinner, int team1MapScore, int t
   Format(queryBuffer, sizeof(queryBuffer), "UPDATE `matches` \
         SET winner = '%s', team1_score = %d, team2_score = %d, end_time = %i \
         WHERE matchid = %d",
-         winnerString, team1MapScore, team2MapScore, g_MatchID, GetTime());
+         winnerString, team1MapScore, team2MapScore, GetTime(), g_MatchID);
   LogDebug(queryBuffer);
   db.Query(SQLErrorCheckCallback, queryBuffer);
 }
