@@ -110,7 +110,7 @@ public Action AssignTeamOnConnect(Handle timer, int client) {
     return Plugin_Continue;
 }
 
-public void OnMapStart(){
+public void OnMapStart() {
     GameRules_SetProp("m_bIsQueuedMatchmaking", 1);
     canSurrender = false;
     for (int i = 0; i < MAXPLAYERS + 1; i++) alreadyVoted[i] = false;
