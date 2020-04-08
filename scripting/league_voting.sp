@@ -105,7 +105,10 @@ public Action AssignTeamOnConnect(Handle timer, int client) {
     if (IsClientInGame(client)) {
         GetClientAuthId(client, AuthId_SteamID64, steamid, sizeof(steamid));
         ChangeClientTeam(client, Get5_MatchTeamToCSTeam(Get5_GetPlayerTeam(steamid)));
-        CS_RespawnPlayer(client);
+	
+	if (IsWarmup()) {
+	    CS_RespawnPlayer(client);
+	}
     }
     return Plugin_Continue;
 }
@@ -198,4 +201,8 @@ stock bool IsSurrenderAvailable() {
     } else {
         return false;
     }
+}
+
+stock bool IsWarmup() {
+    return GameRules_GetProp("m_bWarmupPeriod") == 1;
 }
