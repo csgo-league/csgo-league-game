@@ -8,7 +8,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-int g_iMatchID;
+int g_iMatchID = -1;
 
 ConVar g_CVDiscordWebhook;
 ConVar g_CVSiteURL;
@@ -64,7 +64,10 @@ public void SendReport() {
 	int iCTScore = CS_GetTeamScore(CS_TEAM_CT);
 	int iWinners = 0;
 	bool bDraw = false;
-
+	char matchid[64];
+	Get5_GetMatchID(matchid, sizeof(matchid));
+	g_iMatchID = StringToInt(matchid);
+	
 	if (iTScore > iCTScore) {
 	    iWinners = CS_TEAM_T;
 	} else if (iCTScore > iTScore) {
