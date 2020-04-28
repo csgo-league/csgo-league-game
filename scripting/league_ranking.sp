@@ -156,7 +156,6 @@ public void OnConfigsExecuted() {
 	g_PointsLoseTk = g_cvarPointsLoseTk.IntValue;
 	g_PointsLoseSuicide = g_cvarPointsLoseSuicide.IntValue;
 	g_DaysToNotShowOnRank = g_cvarDaysToNotShowOnRank.IntValue;
-	g_bGatherStats = g_cvarGatherStats.BoolValue;
 	g_bChatTriggers = g_cvarChatTriggers.BoolValue;
 	g_PointsMvpCt = g_cvarPointsMvpCt.IntValue;
 	g_PointsMvpTr = g_cvarPointsMvpTr.IntValue;
@@ -496,9 +495,21 @@ public int GetWeaponNum(char[] weaponname) {
 }
 
 public Action Event_VipEscaped(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -514,9 +525,21 @@ public Action Event_VipEscaped(Handle event, const char[] name, bool dontBroadca
 }
 
 public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	int killer = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -532,9 +555,21 @@ public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcas
 }
 
 public Action Event_HostageRescued(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -549,9 +584,21 @@ public Action Event_HostageRescued(Handle event, const char[] name, bool dontBro
 }
 
 public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!IsClientInGame(client)) {
@@ -572,9 +619,21 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 }
 
 public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int i;
 	int Winner = GetEventInt(event, "winner");
@@ -612,9 +671,21 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 }
 
 public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	firstblood = false;
 
@@ -628,9 +699,21 @@ public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast
 }
 
 public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -647,9 +730,21 @@ public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -664,9 +759,21 @@ public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action Event_BombExploded(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = g_C4PlantedBy;
 
@@ -685,9 +792,21 @@ public Action Event_BombExploded(Handle event, const char[] name, bool dontBroad
 }
 
 public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -695,11 +814,18 @@ public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadca
 }
 
 public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
 
-	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
 	{
 		return;
 	}
@@ -710,11 +836,18 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
-
-	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
 	{
 		return;
 	}
@@ -883,11 +1016,18 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 }
 
 public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
 
-	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
 	{
 		return;
 	}
@@ -918,9 +1058,21 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 }
 
 public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
+	
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return;
+	}	
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
@@ -955,11 +1107,18 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 }
 
 public void SavePlayer(int client) {
-	if (!g_bEnabled || !g_bGatherStats || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
 
-	if (Get5_GetGameState() == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision)
+	Get5State matchState = Get5_GetGameState();
+	
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
 	{
 		return;
 	}
@@ -1249,16 +1408,6 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	g_aPointsOnDisconnect[client] = LeagueRanking_GetPoints(client);
 }
 
-public void OnGameFrame() {
-	Get5State currentState = Get5_GetGameState();
-
-	if (currentState == Get5State_None || Get5State_Warmup || Get5State_KnifeRound || Get5State_WaitingForKnifeRoundDecision) {
-		g_bGatherStats = false;
-	} else {
-		g_bGatherStats = true;
-	}
-}
-
 public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroadcast) {
 	if (CS_GetTeamScore(CT) > CS_GetTeamScore(TR)) {
 		for (int i = 1; i <= MaxClients; i++) {
@@ -1341,7 +1490,6 @@ void CreateCvars()
     g_cvarPointsNS = CreateConVar("league_ranking_points_ns", "1", "How many additional points a player got for a no scope kill?", _, true, 0.0);
     g_cvarNSAllSnipers = CreateConVar("league_ranking_points_ns_allsnipers", "0", "0: ssg08 and awp only, 1: ssg08, awp, g3sg1, scar20", _, true, 0.0, true, 1.0);
     g_cvarFfa = CreateConVar("league_ranking_ffa", "0", "Free-For-All (FFA) mode? 1 = true 0 = false", _, true, 0.0, true, 1.0);
-    g_cvarGatherStats = CreateConVar("league_ranking_gather_stats", "1", "Gather Statistics (a.k.a count points)? (turning this off won't disallow to see the stats already gathered) 1 = true 0 = false", _, true, 0.0, true, 1.0);
     g_cvarDaysToNotShowOnRank = CreateConVar("league_ranking_days_to_not_show_on_rank", "0", "Days inactive to not be shown on rank? X = days 0 = off", _, true, 0.0);
     g_cvarSQLTable = CreateConVar("league_ranking_sql_table", "rankme", "The name of the table that will be used. (Max: 100)");
     g_cvarChatTriggers = CreateConVar("league_ranking_chat_triggers", "1", "Enable (non-command) chat triggers. (e.g: rank, statsme, top) Recommended to be set to 0 when running with EventScripts for avoiding double responses. 1 = true 0 = false", _, true, 0.0, true, 1.0);
@@ -1410,7 +1558,6 @@ void AddCvarListeners()
 	g_cvarPointsLoseTk.AddChangeHook(OnConVarChanged);
 	g_cvarPointsLoseSuicide.AddChangeHook(OnConVarChanged);
 	g_cvarFfa.AddChangeHook(OnConVarChanged);
-	g_cvarGatherStats.AddChangeHook(OnConVarChanged);
 	g_cvarDaysToNotShowOnRank.AddChangeHook(OnConVarChanged);
 	g_cvarSQLTable.AddChangeHook(OnConVarChanged_SQLTable);
 	g_cvarChatTriggers.AddChangeHook(OnConVarChanged);
@@ -1519,8 +1666,6 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 	} else if (convar == g_cvarDaysToNotShowOnRank) {
 		g_DaysToNotShowOnRank = g_cvarDaysToNotShowOnRank.IntValue;
 		g_bQueryPlayerCount = true;
-	} else if (convar == g_cvarGatherStats) {
-		g_bGatherStats = g_cvarGatherStats.BoolValue;
 	} else if (convar == g_cvarChatTriggers) {
 		g_bChatTriggers = g_cvarChatTriggers.BoolValue;
 	} else if (convar == g_cvarPointsMvpCt) {
