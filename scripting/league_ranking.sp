@@ -87,7 +87,7 @@ public void OnConVarChanged_SQLTable(Handle convar, const char[] oldValue, const
 }
 
 public void DB_Connect(bool firstload) {
-    // Needs to connect if it hasn't connected yet
+	// Needs to connect if it hasn't connected yet
 	if (firstload) {
 		g_cvarSQLTable.GetString(g_sSQLTable, sizeof(g_sSQLTable));
 		char sError[256];
@@ -108,6 +108,7 @@ public void DB_Connect(bool firstload) {
 
 public void OnConfigsExecuted() {
 	DB_Connect(g_hStatsDb == null);
+		
 	int AutoPurge = g_cvarAutopurge.IntValue;
 	char sQuery[1000];
 	if (AutoPurge > 0) {
@@ -171,13 +172,8 @@ public void OnConfigsExecuted() {
 	g_PointsMin = g_cvarPointsMin.IntValue;
 	g_bPointsMinEnabled = g_cvarPointsMin.BoolValue;
 	g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
-	g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
-	g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
 	g_bAnnounceDisconnect = g_cvarAnnounceDisconnect.BoolValue;
 	g_bAnnounceTopConnect = g_cvarAnnounceTopConnect.BoolValue;
-	g_AnnounceTopPosConnect = g_cvarAnnounceTopPosConnect.BoolValue;
-	g_bAnnounceTopConnectChat = g_cvarAnnounceTopConnectChat.BoolValue;
-	g_bAnnounceTopConnectHint = g_cvarAnnounceTopConnectHint.BoolValue;
 
 	if (g_bRankBots) {
 		Format(sQuery, sizeof(sQuery), "SELECT * FROM `%s` WHERE kills >= '%d'", g_sSQLTable, g_MinimalKills);
@@ -273,7 +269,7 @@ public int Native_GivePoint(Handle plugin, int numParams) {
 
 	char[] Reason = new char[len + 1];
 	GetNativeString(3, Reason, len + 1);
-	g_aStats[iClient][SCORE] += iPoints;
+	g_aStats[iClient].SCORE += iPoints;
 }
 
 public int Native_GetRank(Handle plugin, int numParams) {
@@ -363,16 +359,13 @@ void CallRankCallback(int client, int rank, Function callback, any data, Handle 
 
 public int Native_GetPoints(Handle plugin, int numParams) {
 	int client = GetNativeCell(1);
-	return g_aStats[client][SCORE];
+	return g_aStats[client].SCORE;
 }
 
 public int Native_GetStats(Handle plugin, int numParams) {
 	int client = GetNativeCell(1);
 	int array[20];
-	for (int i = 0; i < 20; i++) {
-		array[i] = g_aStats[client][i];
-	}
-
+	g_aStats[client].GetData(array);
 	SetNativeArray(2, array, 20);
 }
 
@@ -384,20 +377,14 @@ public int Native_IsPlayerLoaded(Handle plugin, int numParams) {
 public int Native_GetWeaponStats(Handle plugin, int numParams) {
 	int client = GetNativeCell(1);
 	int array[41];
-	for (int i = 0; i < 42; i++) {
-		array[i] = g_aWeapons[client][i];
-	}
-
+	g_aWeapons[client].GetData(array);
 	SetNativeArray(2, array, 41);
 }
 
 public int Native_GetHitbox(Handle plugin, int numParams) {
 	int client = GetNativeCell(1);
 	int array[8];
-	for (int i = 0; i < 8; i++) {
-		array[i] = g_aHitBox[client][i];
-	}
-
+	g_aHitBox[client].GetData(array);
 	SetNativeArray(2, array, 8);
 }
 
@@ -450,19 +437,21 @@ public void OnPluginEnd() {
 			}
 
 			char weapons_query[2000] = "";
+			int weapon_array[42];
+			g_aWeapons[client].GetData(weapon_array);
 			for (int i = 0; i < 42; i++) {
-				Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], g_aWeapons[client][i]);
+				Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], weapon_array[i]);
 			}
 
 			char query[4000];
 			char query2[4000];
 
-			Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK],
-                g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query,
-                g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
+			Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client].SCORE, g_aStats[client].KILLS, g_aStats[client].DEATHS, g_aStats[client].ASSISTS, g_aStats[client].SUICIDES, g_aStats[client].TK,
+                g_aStats[client].SHOTS, g_aStats[client].HITS, g_aStats[client].HEADSHOTS, g_aStats[client].ROUNDS_TR, g_aStats[client].ROUNDS_CT, weapons_query,
+                g_aHitBox[client].HEAD, g_aHitBox[client].CHEST, g_aHitBox[client].STOMACH, g_aHitBox[client].LEFT_ARM, g_aHitBox[client].RIGHT_ARM, g_aHitBox[client].LEFT_LEG, g_aHitBox[client].RIGHT_LEG, g_aClientSteam[client]);
 
-			Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN],
-                g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - connectTime[client], g_aClientSteam[client]);
+			Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client].C4_PLANTED, g_aStats[client].C4_EXPLODED, g_aStats[client].C4_DEFUSED, g_aStats[client].CT_WIN, g_aStats[client].TR_WIN,
+                g_aStats[client].HOSTAGES_RESCUED, g_aStats[client].VIP_KILLED, g_aStats[client].VIP_ESCAPED, g_aStats[client].VIP_PLAYED, g_aStats[client].MVP, g_aStats[client].DAMAGE, g_aStats[client].MATCH_WIN, g_aStats[client].MATCH_DRAW, g_aStats[client].MATCH_LOSE, g_aStats[client].FB, g_aStats[client].NS, g_aStats[client].NSD, GetTime(), g_aStats[client].CONNECTED + GetTime() - connectTime[client], g_aClientSteam[client]);
 
 			LogMessage(query);
 			LogMessage(query2);
@@ -511,17 +500,19 @@ public Action Event_VipEscaped(Handle event, const char[] name, bool dontBroadca
 		return;
 	}	
 
+	isMatchLive();
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == CT) {
-			g_aStats[i][SCORE] += g_PointsVipEscapedTeam;
+			g_aStats[i].SCORE += g_PointsVipEscapedTeam;
 		}
 	}
 
-	g_aStats[client][VIP_PLAYED]++;
-	g_aStats[client][VIP_ESCAPED]++;
-	g_aStats[client][SCORE] += g_PointsVipEscapedPlayer;
+	g_aStats[client].VIP_PLAYED++;
+	g_aStats[client].VIP_ESCAPED++;
+	g_aStats[client].SCORE += g_PointsVipEscapedPlayer;
 }
 
 public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcast) {
@@ -541,17 +532,20 @@ public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcas
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	int killer = GetClientOfUserId(GetEventInt(event, "attacker"));
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == TR) {
-			g_aStats[i][SCORE] += g_PointsVipKilledTeam;
+			g_aStats[i].SCORE += g_PointsVipKilledTeam;
 		}
 	}
-	g_aStats[client][VIP_PLAYED]++;
-	g_aStats[killer][VIP_KILLED]++;
-	g_aStats[killer][SCORE] += g_PointsVipKilledPlayer;
+	g_aStats[client].VIP_PLAYED++;
+	g_aStats[killer].VIP_KILLED++;
+	g_aStats[killer].SCORE += g_PointsVipKilledPlayer;
 }
 
 public Action Event_HostageRescued(Handle event, const char[] name, bool dontBroadcast) {
@@ -571,16 +565,19 @@ public Action Event_HostageRescued(Handle event, const char[] name, bool dontBro
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == CT) {
-			g_aStats[i][SCORE] += g_PointsHostageRescTeam;
+			g_aStats[i].SCORE += g_PointsHostageRescTeam;
 		}
 	}
 
-	g_aStats[client][HOSTAGES_RESCUED]++;
-	g_aStats[client][SCORE] += g_PointsHostageRescPlayer;
+	g_aStats[client].HOSTAGES_RESCUED++;
+	g_aStats[client].SCORE += g_PointsHostageRescPlayer;
 }
 
 public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast) {
@@ -600,6 +597,9 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!IsClientInGame(client)) {
 		return;
@@ -609,13 +609,13 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 
 	if (((team == 2 && g_PointsMvpTr > 0) || (team == 3 && g_PointsMvpCt > 0)) && client != 0 && (g_bRankBots && !IsFakeClient(client))) {
 		if (team == 2) {
-			g_aStats[client][SCORE] += g_PointsMvpTr;
+			g_aStats[client].SCORE += g_PointsMvpTr;
 		} else {
-			g_aStats[client][SCORE] += g_PointsMvpCt;
+			g_aStats[client].SCORE += g_PointsMvpCt;
 		}
 	}
 
-	g_aStats[client][MVP]++;
+	g_aStats[client].MVP++;
 }
 
 public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
@@ -635,32 +635,35 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int i;
 	int Winner = GetEventInt(event, "winner");
 	for (i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && (g_bRankBots || !IsFakeClient(i))) {
 			if (Winner == TR) {
 				if (GetClientTeam(i) == TR) {
-					g_aStats[i][TR_WIN]++;
+					g_aStats[i].TR_WIN++;
 
 					if (g_PointsRoundWin[TR] > 0) {
-						g_aStats[i][SCORE] += g_PointsRoundWin[TR];
+						g_aStats[i].SCORE += g_PointsRoundWin[TR];
 					}
 				} else if (GetClientTeam(i) == CT) {
 					if (g_PointsRoundLose[CT] > 0) {
-						g_aStats[i][SCORE] -= g_PointsRoundLose[CT];
+						g_aStats[i].SCORE -= g_PointsRoundLose[CT];
 					}
 				}
 			} else if (Winner == CT) {
 				if (GetClientTeam(i) == CT) {
-					g_aStats[i][CT_WIN]++;
+					g_aStats[i].CT_WIN++;
 
 					if (g_PointsRoundWin[CT] > 0) {
-						g_aStats[i][SCORE] += g_PointsRoundWin[CT];
+						g_aStats[i].SCORE += g_PointsRoundWin[CT];
 					}
 				} else if (GetClientTeam(i) == TR) {
 					if (g_PointsRoundLose[TR] > 0) {
-						g_aStats[i][SCORE] -= g_PointsRoundLose[TR];
+						g_aStats[i].SCORE -= g_PointsRoundLose[TR];
 					}
 				}
 			}
@@ -687,13 +690,16 @@ public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	firstblood = false;
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == TR) {
-			g_aStats[i][ROUNDS_TR]++;
+			g_aStats[i].ROUNDS_TR++;
 		} else if (IsClientInGame(i) && GetClientTeam(i) == CT) {
-			g_aStats[i][ROUNDS_CT]++;
+			g_aStats[i].ROUNDS_CT++;
 		}
 	}
 }
@@ -715,18 +721,21 @@ public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadc
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	g_C4PlantedBy = client;
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == TR) {
-			g_aStats[i][SCORE] += g_PointsBombPlantedTeam;
+			g_aStats[i].SCORE += g_PointsBombPlantedTeam;
 		}
 	}
 
-	g_aStats[client][C4_PLANTED]++;
-	g_aStats[client][SCORE] += g_PointsBombPlantedPlayer;
+	g_aStats[client].C4_PLANTED++;
+	g_aStats[client].SCORE += g_PointsBombPlantedPlayer;
 }
 
 public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadcast) {
@@ -746,16 +755,19 @@ public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadc
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == CT) {
-			g_aStats[i][SCORE] += g_PointsBombDefusedTeam;
+			g_aStats[i].SCORE += g_PointsBombDefusedTeam;
 		}
 	}
 
-	g_aStats[client][C4_DEFUSED]++;
-	g_aStats[client][SCORE] += g_PointsBombDefusedPlayer;
+	g_aStats[client].C4_DEFUSED++;
+	g_aStats[client].SCORE += g_PointsBombDefusedPlayer;
 }
 
 public Action Event_BombExploded(Handle event, const char[] name, bool dontBroadcast) {
@@ -775,6 +787,9 @@ public Action Event_BombExploded(Handle event, const char[] name, bool dontBroad
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = g_C4PlantedBy;
 
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
@@ -783,12 +798,12 @@ public Action Event_BombExploded(Handle event, const char[] name, bool dontBroad
 
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i) && GetClientTeam(i) == TR) {
-			g_aStats[i][SCORE] += g_PointsBombExplodeTeam;
+			g_aStats[i].SCORE += g_PointsBombExplodeTeam;
 		}
 	}
 
-	g_aStats[client][C4_EXPLODED]++;
-	g_aStats[client][SCORE] += g_PointsBombExplodePlayer;
+	g_aStats[client].C4_EXPLODED++;
+	g_aStats[client].SCORE += g_PointsBombExplodePlayer;
 }
 
 public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadcast) {
@@ -808,9 +823,12 @@ public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadca
 		return;
 	}	
 
+	if (!isMatchLive())
+		return;
+
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	g_aStats[client][SCORE] += g_PointsBombPickup;
+	g_aStats[client].SCORE += g_PointsBombPickup;
 }
 
 public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadcast) {
@@ -818,39 +836,23 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 		return;
 	}
 
-	Get5State matchState = Get5_GetGameState();
-	
-	if (matchState == Get5State_None
-		|| matchState == Get5State_PreVeto
-		|| matchState == Get5State_Veto
-		|| matchState == Get5State_Warmup
-		|| matchState == Get5State_KnifeRound
-		|| matchState == Get5State_WaitingForKnifeRoundDecision)
-	{
+	if (!isMatchLive()) {
 		return;
-	}
+  }
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
-	g_aStats[client][SCORE] -= g_PointsBombDropped;
+	g_aStats[client].SCORE -= g_PointsBombDropped;
 }
 
 public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
 	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
 		return;
 	}
-	
-	Get5State matchState = Get5_GetGameState();
-	
-	if (matchState == Get5State_None
-		|| matchState == Get5State_PreVeto
-		|| matchState == Get5State_Veto
-		|| matchState == Get5State_Warmup
-		|| matchState == Get5State_KnifeRound
-		|| matchState == Get5State_WaitingForKnifeRoundDecision)
-	{
+
+  if (!isMatchLive()) {
 		return;
-	}
+  }
 
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -865,23 +867,23 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 	}
 
 	if (victim == attacker || attacker == 0) {
-		g_aStats[victim][SUICIDES]++;
-		g_aStats[victim][SCORE] -= g_PointsLoseSuicide;
+		g_aStats[victim].SUICIDES++;
+		g_aStats[victim].SCORE -= g_PointsLoseSuicide;
 
 		if (g_bPointsMinEnabled) {
-			if (g_aStats[victim][SCORE] < g_PointsMin) {
-				g_aStats[victim][SCORE] = g_PointsMin;
+			if (g_aStats[victim].SCORE < g_PointsMin) {
+				g_aStats[victim].SCORE = g_PointsMin;
 			}
 		}
 
 	} else if (!g_bFfa && (GetClientTeam(victim) == GetClientTeam(attacker))) {
 		if (attacker < MaxClients) {
-			g_aStats[attacker][TK]++;
-			g_aStats[attacker][SCORE] -= g_PointsLoseTk;
+			g_aStats[attacker].TK++;
+			g_aStats[attacker].SCORE -= g_PointsLoseTk;
 
 			if (g_bPointsMinEnabled) {
-				if (g_aStats[victim][SCORE] < g_PointsMin) {
-					g_aStats[victim][SCORE] = g_PointsMin;
+				if (g_aStats[victim].SCORE < g_PointsMin) {
+					g_aStats[victim].SCORE = g_PointsMin;
 				}
 			}
 		}
@@ -917,16 +919,16 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 
 		int score_dif;
 		if (attacker < MaxClients) {
-			score_dif = g_aStats[victim][SCORE] - g_aStats[attacker][SCORE];
+			score_dif = g_aStats[victim].SCORE - g_aStats[attacker].SCORE;
 		}
 
 		if (score_dif < 0 || attacker >= MaxClients) {
 			score_dif = g_PointsKill[team];
 		} else {
 			if (g_PointsKillBonusDif[team] == 0) {
-				score_dif = g_PointsKill[team] + ((g_aStats[victim][SCORE] - g_aStats[attacker][SCORE]) * g_PointsKillBonus[team]);
+				score_dif = g_PointsKill[team] + ((g_aStats[victim].SCORE - g_aStats[attacker].SCORE) * g_PointsKillBonus[team]);
 			} else {
-				score_dif = g_PointsKill[team] + (((g_aStats[victim][SCORE] - g_aStats[attacker][SCORE]) / g_PointsKillBonusDif[team]) * g_PointsKillBonus[team]);
+				score_dif = g_PointsKill[team] + (((g_aStats[victim].SCORE - g_aStats[attacker].SCORE) / g_PointsKillBonusDif[team]) * g_PointsKillBonus[team]);
 			}
 		}
 
@@ -937,61 +939,188 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		}
 
 		if (headshot && attacker < MaxClients) {
-			g_aStats[attacker][HEADSHOTS]++;
+			g_aStats[attacker].HEADSHOTS++;
 		}
 
-		g_aStats[victim][DEATHS]++;
+		g_aStats[victim].DEATHS++;
 
 		if (attacker < MaxClients) {
-			g_aStats[attacker][KILLS]++;
+			g_aStats[attacker].KILLS++;
 		}
 
 		if (g_bPointsLoseRoundCeil) {
-			g_aStats[victim][SCORE] -= RoundToCeil(score_dif * g_fPercentPointsLose);
+			g_aStats[victim].SCORE -= RoundToCeil(score_dif * g_fPercentPointsLose);
 
 			if (g_bPointsMinEnabled) {
-				if (g_aStats[victim][SCORE] < g_PointsMin) {
-					g_aStats[victim][SCORE] = g_PointsMin;
+				if (g_aStats[victim].SCORE < g_PointsMin) {
+					g_aStats[victim].SCORE = g_PointsMin;
 				}
 			}
 		} else {
-			g_aStats[victim][SCORE] -= RoundToFloor(score_dif * g_fPercentPointsLose);
+			g_aStats[victim].SCORE -= RoundToFloor(score_dif * g_fPercentPointsLose);
 
 			if (g_bPointsMinEnabled) {
-				if (g_aStats[victim][SCORE] < g_PointsMin) {
-					g_aStats[victim][SCORE] = g_PointsMin;
+				if (g_aStats[victim].SCORE < g_PointsMin) {
+					g_aStats[victim].SCORE = g_PointsMin;
 				}
 			}
 		}
 
-		if (attacker < MaxClients) {
-			g_aStats[attacker][SCORE] += score_dif;
-
-			if (GetWeaponNum(weapon) < 42) {
-				g_aWeapons[attacker][GetWeaponNum(weapon)]++;
+		if (attacker < MAXPLAYERS) {
+			g_aStats[attacker].SCORE += score_dif;
+			int num = GetWeaponNum(weapon); 
+			if (num < 42) {
+				switch(num) {
+					case 0: {
+						g_aWeapons[attacker].KNIFE++;
+					}
+					case 1: {
+						g_aWeapons[attacker].GLOCK++;
+					}
+					case 2: {
+						g_aWeapons[attacker].HKP2000++;
+					}
+					case 3: {
+						g_aWeapons[attacker].USP_SILENCER++;
+					}
+					case 4: {
+						g_aWeapons[attacker].P250++;
+					}
+					case 5: {
+						g_aWeapons[attacker].DEAGLE++;
+					}
+					case 6: {
+						g_aWeapons[attacker].ELITE++;
+					}
+					case 7: {
+						g_aWeapons[attacker].FIVESEVEN++;
+					}
+					case 8: {
+						g_aWeapons[attacker].TEC9++;
+					}
+					case 9: {
+						g_aWeapons[attacker].CZ75A++;
+					}
+					case 10: {
+						g_aWeapons[attacker].REVOLVER++;
+					}
+					case 11: {
+						g_aWeapons[attacker].NOVA++;
+					}
+					case 12: {
+						g_aWeapons[attacker].XM1014++;
+					}
+					case 13: {
+						g_aWeapons[attacker].MAG7++;
+					}
+					case 14: {
+						g_aWeapons[attacker].SAWEDOFF++;
+					}
+					case 15: {
+						g_aWeapons[attacker].BIZON++;
+					}
+					case 16: {
+						g_aWeapons[attacker].MAC10++;
+					}
+					case 17: {
+						g_aWeapons[attacker].MP9++;
+					}
+					case 18: {
+						g_aWeapons[attacker].MP7++;
+					}
+					case 19: {
+						g_aWeapons[attacker].UMP45++;
+					}
+					case 20: {
+						g_aWeapons[attacker].P90++;
+					}
+					case 21: {
+						g_aWeapons[attacker].GALILAR++;
+					}
+					case 22: {
+						g_aWeapons[attacker].AK47++;
+					}
+					case 23: {
+						g_aWeapons[attacker].SCAR20++;
+					}
+					case 24: {
+						g_aWeapons[attacker].FAMAS++;
+					}
+					case 25: {
+						g_aWeapons[attacker].M4A1++;
+					}
+					case 26: {
+						g_aWeapons[attacker].M4A1_SILENCER++;
+					}
+					case 27: {
+						g_aWeapons[attacker].AUG++;
+					}
+					case 28: {
+						g_aWeapons[attacker].SSG08++;
+					}
+					case 29: {
+						g_aWeapons[attacker].SG556++;
+					}
+					case 30: {
+						g_aWeapons[attacker].AWP++;
+					}
+					case 31: {
+						g_aWeapons[attacker].G3SG1++;
+					}
+					case 32: {
+						g_aWeapons[attacker].M249++;
+					}
+					case 33: {
+						g_aWeapons[attacker].NEGEV++;
+					}
+					case 34: {
+						g_aWeapons[attacker].HEGRENADE++;
+					}
+					case 35: {
+						g_aWeapons[attacker].FLASHBANG++;
+					}
+					case 36: {
+						g_aWeapons[attacker].SMOKEGRENADE++;
+					}
+					case 37: {
+						g_aWeapons[attacker].INFERNO++;
+					}
+					case 38: {
+						g_aWeapons[attacker].DECOY++;
+					}
+					case 39: {
+						g_aWeapons[attacker].TASER++;
+					}
+					case 40: {
+						g_aWeapons[attacker].MP5SD++;
+					}
+					case 41: {
+						g_aWeapons[attacker].BREACHCHARGE++;
+					}
+				}
 			}
 		}
 
 		if (headshot && attacker < MaxClients) {
-			g_aStats[attacker][SCORE] += g_PointsHs;
+			g_aStats[attacker].SCORE += g_PointsHs;
 		}
 
 		if (!firstblood && attacker < MaxClients) {
-			g_aStats[attacker][SCORE] += g_PointsFb;
+			g_aStats[attacker].SCORE += g_PointsFb;
 
-			g_aStats[attacker][FB] ++;
+			g_aStats[attacker].FB++;
 		}
 
 		if (attacker < MaxClients && ((StrContains(weapon, "awp") != -1 || StrContains(weapon, "ssg08") != -1) || (g_bNSAllSnipers && (StrContains(weapon, "g3sg1") != -1 || StrContains(weapon, "scar20") != -1))) && (GetEntProp(attacker, Prop_Data, "m_iFOV") <= 0 || GetEntProp(attacker, Prop_Data, "m_iFOV") == GetEntProp(attacker, Prop_Data, "m_iDefaultFOV"))) {
-			g_aStats[attacker][SCORE]+= g_PointsNS;
-			g_aStats[attacker][NS]++;
+			g_aStats[attacker].SCORE+= g_PointsNS;
+			g_aStats[attacker].NS++;
 
 			float fNSD = Math_UnitsToMeters(Entity_GetDistance(victim, attacker));
 
 			// stats are int, so we change it from m to cm
 			int iNSD = RoundToFloor(fNSD * 100);
-			if (iNSD > g_aStats[attacker][NSD]) {
-				g_aStats[attacker][NSD] = iNSD;
+			if (iNSD > g_aStats[attacker].NSD) {
+				g_aStats[attacker].NSD = iNSD;
 			}
 		}
 	}
@@ -1001,13 +1130,13 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 		if (GetClientTeam(victim) == GetClientTeam(assist))	{
 			return;
 		} else {
-			g_aStats[assist][SCORE]+= g_PointsAssistKill;
-			g_aStats[assist][ASSISTS]++;
+			g_aStats[assist].SCORE+= g_PointsAssistKill;
+			g_aStats[assist].ASSISTS++;
 		}
 	}
 
 	if (attacker < MaxClients) {
-		if (g_aStats[attacker][KILLS] == 50) {
+		if (g_aStats[attacker].KILLS == 50) {
 			g_TotalPlayers++;
 		}
 	}
@@ -1020,17 +1149,9 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 		return;
 	}
 
-	Get5State matchState = Get5_GetGameState();
-	
-	if (matchState == Get5State_None
-		|| matchState == Get5State_PreVeto
-		|| matchState == Get5State_Veto
-		|| matchState == Get5State_Warmup
-		|| matchState == Get5State_KnifeRound
-		|| matchState == Get5State_WaitingForKnifeRoundDecision)
-	{
+  if (!isMatchLive()) {
 		return;
-	}
+  }
 
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -1049,11 +1170,40 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 			hitgroup = 1;
 		}
 
-		g_aStats[attacker][HITS]++;
-		g_aHitBox[attacker][hitgroup]++;
+		g_aStats[attacker].HITS++;
+		switch(hitgroup) {
+			case 1:
+			{
+				g_aHitBox[attacker].HEAD++;
+			}
+			case 2:
+			{
+				g_aHitBox[attacker].CHEST++;
+			}
+			case 3:
+			{
+				g_aHitBox[attacker].STOMACH++;
+			}
+			case 4:
+			{
+				g_aHitBox[attacker].LEFT_ARM++;
+			}
+			case 5:
+			{
+				g_aHitBox[attacker].RIGHT_ARM++;
+			}
+			case 6:
+			{
+				g_aHitBox[attacker].LEFT_LEG++;
+			}
+			case 7:
+			{
+				g_aHitBox[attacker].RIGHT_LEG++;
+			}
+		}
 
 		int damage = GetEventInt(event, "dmg_health");
-		g_aStats[attacker][DAMAGE] += damage;
+		g_aStats[attacker].DAMAGE += damage;
 	}
 }
 
@@ -1073,6 +1223,9 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 	{
 		return;
 	}	
+
+	if (!isMatchLive())
+		return;
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
@@ -1103,7 +1256,7 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 		return;
 	}
 
-	g_aStats[client][SHOTS]++;
+	g_aStats[client].SHOTS++;
 }
 
 public void SavePlayer(int client) {
@@ -1111,17 +1264,9 @@ public void SavePlayer(int client) {
 		return;
 	}
 
-	Get5State matchState = Get5_GetGameState();
-	
-	if (matchState == Get5State_None
-		|| matchState == Get5State_PreVeto
-		|| matchState == Get5State_Veto
-		|| matchState == Get5State_Warmup
-		|| matchState == Get5State_KnifeRound
-		|| matchState == Get5State_WaitingForKnifeRoundDecision)
-	{
+  if (!isMatchLive()) {
 		return;
-	}
+  }
 
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
 		return;
@@ -1132,16 +1277,18 @@ public void SavePlayer(int client) {
 	}
 
 	char weapons_query[1000] = "";
+	int weapon_array[42];
+	g_aWeapons[client].GetData(weapon_array);
 	for (int i = 0; i < 42; i++) {
-		Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], g_aWeapons[client][i]);
+		Format(weapons_query, sizeof(weapons_query), "%s,%s='%d'", weapons_query, g_sWeaponsNamesGame[i], weapon_array[i]);
 	}
 
 	char query[4000];
 	char query2[4000];
 
-	Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client][SCORE], g_aStats[client][KILLS], g_aStats[client][DEATHS], g_aStats[client][ASSISTS], g_aStats[client][SUICIDES], g_aStats[client][TK], g_aStats[client][SHOTS], g_aStats[client][HITS], g_aStats[client][HEADSHOTS], g_aStats[client][ROUNDS_TR], g_aStats[client][ROUNDS_CT], weapons_query, g_aHitBox[client][1], g_aHitBox[client][2], g_aHitBox[client][3], g_aHitBox[client][4], g_aHitBox[client][5], g_aHitBox[client][6], g_aHitBox[client][7], g_aClientSteam[client]);
+	Format(query, sizeof(query), g_sSqlSave, g_sSQLTable, g_aStats[client].SCORE, g_aStats[client].KILLS, g_aStats[client].DEATHS, g_aStats[client].ASSISTS, g_aStats[client].SUICIDES, g_aStats[client].TK, g_aStats[client].SHOTS, g_aStats[client].HITS, g_aStats[client].HEADSHOTS, g_aStats[client].ROUNDS_TR, g_aStats[client].ROUNDS_CT, weapons_query, g_aHitBox[client].HEAD, g_aHitBox[client].CHEST, g_aHitBox[client].STOMACH, g_aHitBox[client].LEFT_ARM, g_aHitBox[client].RIGHT_ARM, g_aHitBox[client].LEFT_LEG, g_aHitBox[client].RIGHT_LEG, g_aClientSteam[client]);
 
-	Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client][C4_PLANTED], g_aStats[client][C4_EXPLODED], g_aStats[client][C4_DEFUSED], g_aStats[client][CT_WIN], g_aStats[client][TR_WIN], g_aStats[client][HOSTAGES_RESCUED], g_aStats[client][VIP_KILLED], g_aStats[client][VIP_ESCAPED], g_aStats[client][VIP_PLAYED], g_aStats[client][MVP], g_aStats[client][DAMAGE], g_aStats[client][MATCH_WIN], g_aStats[client][MATCH_DRAW], g_aStats[client][MATCH_LOSE], g_aStats[client][FB], g_aStats[client][NS], g_aStats[client][NSD], GetTime(), g_aStats[client][CONNECTED] + GetTime() - connectTime[client], g_aClientSteam[client]);
+	Format(query2, sizeof(query2), g_sSqlSave2, g_sSQLTable, g_aStats[client].C4_PLANTED, g_aStats[client].C4_EXPLODED, g_aStats[client].C4_DEFUSED, g_aStats[client].CT_WIN, g_aStats[client].TR_WIN, g_aStats[client].HOSTAGES_RESCUED, g_aStats[client].VIP_KILLED, g_aStats[client].VIP_ESCAPED, g_aStats[client].VIP_PLAYED, g_aStats[client].MVP, g_aStats[client].DAMAGE, g_aStats[client].MATCH_WIN, g_aStats[client].MATCH_DRAW, g_aStats[client].MATCH_LOSE, g_aStats[client].FB, g_aStats[client].NS, g_aStats[client].NSD, GetTime(), g_aStats[client].CONNECTED + GetTime() - connectTime[client], g_aClientSteam[client]);
 
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query, client, DBPrio_High);
 	SQL_TQuery(g_hStatsDb, SQL_SaveCallback, query2, client, DBPrio_High);
@@ -1183,15 +1330,13 @@ public void OnClientPutInServer(int client) {
 
 public void LoadPlayer(int client) {
 	OnDB[client] = false;
-	for (int i = 0; i <= 19; i++) {
-		g_aStats[client][i] = 0;
-	}
 
-	g_aStats[client][SCORE] = g_PointsStart;
+	g_aStats[client].Reset();
+	g_aStats[client].SCORE = g_PointsStart;
 
-	for (int i = 0; i < 42; i++) {
-		g_aWeapons[client][i] = 0;
-	}
+	g_aWeapons[client].Reset();
+
+	g_aHitBox[client].Reset();
 
 	char auth[32];
 	GetClientAuthId(client, AuthId_SteamID64, auth, sizeof(auth));
@@ -1232,37 +1377,89 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 		// Player info from Score - LastConnect
-		for (int i = 0; i < 13; i++) {
-			g_aStats[client][i] = SQL_FetchInt(hndl, 2 + i);
-		}
+		g_aStats[client].SCORE = SQL_FetchInt(hndl, 2);
+		g_aStats[client].KILLS = SQL_FetchInt(hndl, 3);
+		g_aStats[client].DEATHS = SQL_FetchInt(hndl, 4);
+		g_aStats[client].ASSISTS = SQL_FetchInt(hndl, 5);
+		g_aStats[client].SUICIDES = SQL_FetchInt(hndl, 6);
+		g_aStats[client].TK = SQL_FetchInt(hndl, 7);
+		g_aStats[client].SHOTS = SQL_FetchInt(hndl, 8);
+		g_aStats[client].HITS = SQL_FetchInt(hndl, 9);
+		g_aStats[client].HEADSHOTS = SQL_FetchInt(hndl, 10);
+		g_aStats[client].CONNECTED = SQL_FetchInt(hndl, 11);
+		g_aStats[client].ROUNDS_TR = SQL_FetchInt(hndl, 12);
+		g_aStats[client].ROUNDS_CT = SQL_FetchInt(hndl, 13);
 
 		// 41 Weapons
-		for (int i = 0; i < 41; i++) {
-			g_aWeapons[client][i] = SQL_FetchInt(hndl, 15 + i);
-		}
+		g_aWeapons[client].KNIFE = SQL_FetchInt(hndl, 15);
+		g_aWeapons[client].GLOCK = SQL_FetchInt(hndl, 16);
+		g_aWeapons[client].HKP2000 = SQL_FetchInt(hndl, 17);
+		g_aWeapons[client].USP_SILENCER = SQL_FetchInt(hndl, 18);
+		g_aWeapons[client].P250 = SQL_FetchInt(hndl, 19);
+		g_aWeapons[client].DEAGLE = SQL_FetchInt(hndl, 20);
+		g_aWeapons[client].ELITE = SQL_FetchInt(hndl, 21);
+		g_aWeapons[client].FIVESEVEN = SQL_FetchInt(hndl, 22);
+		g_aWeapons[client].TEC9 = SQL_FetchInt(hndl, 23);
+		g_aWeapons[client].CZ75A = SQL_FetchInt(hndl, 24);
+		g_aWeapons[client].REVOLVER = SQL_FetchInt(hndl, 25);
+		g_aWeapons[client].NOVA = SQL_FetchInt(hndl, 26);
+		g_aWeapons[client].XM1014 = SQL_FetchInt(hndl, 27);
+		g_aWeapons[client].MAG7 = SQL_FetchInt(hndl, 28);
+		g_aWeapons[client].SAWEDOFF = SQL_FetchInt(hndl, 29);
+		g_aWeapons[client].BIZON = SQL_FetchInt(hndl, 30);
+		g_aWeapons[client].MAC10 = SQL_FetchInt(hndl, 31);
+		g_aWeapons[client].MP9 = SQL_FetchInt(hndl, 32);
+		g_aWeapons[client].MP7 = SQL_FetchInt(hndl, 33);
+		g_aWeapons[client].UMP45 = SQL_FetchInt(hndl, 34);
+		g_aWeapons[client].P90 = SQL_FetchInt(hndl, 35);
+		g_aWeapons[client].GALILAR = SQL_FetchInt(hndl, 36);
+		g_aWeapons[client].AK47 = SQL_FetchInt(hndl, 37);
+		g_aWeapons[client].SCAR20 = SQL_FetchInt(hndl, 38);
+		g_aWeapons[client].FAMAS = SQL_FetchInt(hndl, 39);
+		g_aWeapons[client].M4A1 = SQL_FetchInt(hndl, 40);
+		g_aWeapons[client].M4A1_SILENCER = SQL_FetchInt(hndl, 41);
+		g_aWeapons[client].AUG = SQL_FetchInt(hndl, 42);
+		g_aWeapons[client].SSG08 = SQL_FetchInt(hndl, 43);
+		g_aWeapons[client].SG556 = SQL_FetchInt(hndl, 44);
+		g_aWeapons[client].AWP = SQL_FetchInt(hndl, 45);
+		g_aWeapons[client].G3SG1 = SQL_FetchInt(hndl, 46);
+		g_aWeapons[client].M249 = SQL_FetchInt(hndl, 47);
+		g_aWeapons[client].NEGEV = SQL_FetchInt(hndl, 48);
+		g_aWeapons[client].HEGRENADE = SQL_FetchInt(hndl, 49);
+		g_aWeapons[client].FLASHBANG = SQL_FetchInt(hndl, 50);
+		g_aWeapons[client].SMOKEGRENADE = SQL_FetchInt(hndl, 51);
+		g_aWeapons[client].INFERNO = SQL_FetchInt(hndl, 52);
+		g_aWeapons[client].DECOY = SQL_FetchInt(hndl, 53);
+		g_aWeapons[client].TASER = SQL_FetchInt(hndl, 54);
+		g_aWeapons[client].MP5SD = SQL_FetchInt(hndl, 55);
+		g_aWeapons[client].BREACHCHARGE = SQL_FetchInt(hndl, 56);
 
 		// 8 Hitboxes
-		for (int i = 0; i < 8; i++) {
-			g_aHitBox[client][i] = SQL_FetchInt(hndl, 57 + i);
-		}
+		g_aHitBox[client].HEAD = SQL_FetchInt(hndl, 57);
+		g_aHitBox[client].CHEST = SQL_FetchInt(hndl, 58);
+		g_aHitBox[client].STOMACH = SQL_FetchInt(hndl, 59);
+		g_aHitBox[client].LEFT_ARM = SQL_FetchInt(hndl, 60);
+		g_aHitBox[client].RIGHT_ARM = SQL_FetchInt(hndl, 61);
+		g_aHitBox[client].LEFT_LEG = SQL_FetchInt(hndl, 62);
+		g_aHitBox[client].RIGHT_LEG = SQL_FetchInt(hndl, 63);
 
-		g_aStats[client][C4_PLANTED] = SQL_FetchInt(hndl, 64);
-		g_aStats[client][C4_EXPLODED] = SQL_FetchInt(hndl, 65);
-		g_aStats[client][C4_DEFUSED] = SQL_FetchInt(hndl, 66);
-		g_aStats[client][CT_WIN] = SQL_FetchInt(hndl, 67);
-		g_aStats[client][TR_WIN] = SQL_FetchInt(hndl, 68);
-		g_aStats[client][HOSTAGES_RESCUED] = SQL_FetchInt(hndl, 69);
-		g_aStats[client][VIP_KILLED] = SQL_FetchInt(hndl, 70);
-		g_aStats[client][VIP_ESCAPED] = SQL_FetchInt(hndl, 71);
-		g_aStats[client][VIP_PLAYED] = SQL_FetchInt(hndl, 72);
-		g_aStats[client][MVP] = SQL_FetchInt(hndl, 73);
-		g_aStats[client][DAMAGE] = SQL_FetchInt(hndl, 74);
-		g_aStats[client][MATCH_WIN] = SQL_FetchInt(hndl, 75);
-		g_aStats[client][MATCH_DRAW] = SQL_FetchInt(hndl, 76);
-		g_aStats[client][MATCH_LOSE] = SQL_FetchInt(hndl, 77);
-		g_aStats[client][FB] = SQL_FetchInt(hndl, 78);
-		g_aStats[client][NS] = SQL_FetchInt(hndl, 79);
-		g_aStats[client][NSD] = SQL_FetchInt(hndl, 80);
+		g_aStats[client].C4_PLANTED = SQL_FetchInt(hndl, 64);
+		g_aStats[client].C4_EXPLODED = SQL_FetchInt(hndl, 65);
+		g_aStats[client].C4_DEFUSED = SQL_FetchInt(hndl, 66);
+		g_aStats[client].CT_WIN = SQL_FetchInt(hndl, 67);
+		g_aStats[client].TR_WIN = SQL_FetchInt(hndl, 68);
+		g_aStats[client].HOSTAGES_RESCUED = SQL_FetchInt(hndl, 69);
+		g_aStats[client].VIP_KILLED = SQL_FetchInt(hndl, 70);
+		g_aStats[client].VIP_ESCAPED = SQL_FetchInt(hndl, 71);
+		g_aStats[client].VIP_PLAYED = SQL_FetchInt(hndl, 72);
+		g_aStats[client].MVP = SQL_FetchInt(hndl, 73);
+		g_aStats[client].DAMAGE = SQL_FetchInt(hndl, 74);
+		g_aStats[client].MATCH_WIN = SQL_FetchInt(hndl, 75);
+		g_aStats[client].MATCH_DRAW = SQL_FetchInt(hndl, 76);
+		g_aStats[client].MATCH_LOSE = SQL_FetchInt(hndl, 77);
+		g_aStats[client].FB = SQL_FetchInt(hndl, 78);
+		g_aStats[client].NS = SQL_FetchInt(hndl, 79);
+		g_aStats[client].NSD = SQL_FetchInt(hndl, 80);
 	} else {
 		char query[10000];
 
@@ -1413,30 +1610,30 @@ public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroa
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
 				if (GetClientTeam(i) == TR) {
-					g_aStats[i][MATCH_LOSE]++;
-					g_aStats[i][SCORE] -= g_PointsMatchLose;
+					g_aStats[i].MATCH_LOSE++;
+					g_aStats[i].SCORE -= g_PointsMatchLose;
 				} else if (GetClientTeam(i) == CT) {
-					g_aStats[i][MATCH_WIN]++;
-					g_aStats[i][SCORE] += g_PointsMatchWin;
+					g_aStats[i].MATCH_WIN++;
+					g_aStats[i].SCORE += g_PointsMatchWin;
 				}
 			}
 		}
 	} else if (CS_GetTeamScore(CT) == CS_GetTeamScore(TR)) {
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i) && (GetClientTeam(i) == TR || GetClientTeam(i) == CT)) {
-				g_aStats[i][MATCH_DRAW]++;
-				g_aStats[i][SCORE] += g_PointsMatchDraw;
+				g_aStats[i].MATCH_DRAW++;
+				g_aStats[i].SCORE += g_PointsMatchDraw;
 			}
 		}
 	} else if (CS_GetTeamScore(CT) < CS_GetTeamScore(TR)) {
 		for (int i = 1; i <= MaxClients; i++) {
 			if (IsClientInGame(i)) {
 				if (GetClientTeam(i) == TR) {
-					g_aStats[i][MATCH_WIN]++;
-					g_aStats[i][SCORE] += g_PointsMatchWin;
+					g_aStats[i].MATCH_WIN++;
+					g_aStats[i].SCORE += g_PointsMatchWin;
 				} else if (GetClientTeam(i) == CT) {
-					g_aStats[i][MATCH_LOSE]++;
-					g_aStats[i][SCORE] -= g_PointsMatchLose;
+					g_aStats[i].MATCH_LOSE++;
+					g_aStats[i].SCORE -= g_PointsMatchLose;
 				}
 			}
 		}
@@ -1678,20 +1875,10 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		g_PointsBombDropped = g_cvarPointsBombDropped.IntValue;
 	} else if (convar == g_cvarAnnounceConnect) {
 		g_bAnnounceConnect = g_cvarAnnounceConnect.BoolValue;
-	} else if (convar == g_cvarAnnounceConnectChat) {
-		g_bAnnounceConnectChat = g_cvarAnnounceConnectChat.BoolValue;
-	} else if (convar == g_cvarAnnounceConnectHint) {
-		g_bAnnounceConnectHint = g_cvarAnnounceConnectHint.BoolValue;
 	} else if (convar == g_cvarAnnounceDisconnect) {
 		g_bAnnounceDisconnect = g_cvarAnnounceDisconnect.BoolValue;
 	} else if (convar == g_cvarAnnounceTopConnect) {
 		g_bAnnounceTopConnect = g_cvarAnnounceTopConnect.BoolValue;
-	} else if (convar == g_cvarAnnounceTopPosConnect) {
-		g_AnnounceTopPosConnect = g_cvarAnnounceTopPosConnect.IntValue;
-	} else if (convar == g_cvarAnnounceTopConnectChat) {
-		g_bAnnounceTopConnectChat = g_cvarAnnounceTopConnectChat.BoolValue;
-	} else if (convar == g_cvarAnnounceTopConnectHint) {
-		g_bAnnounceTopConnectHint = g_cvarAnnounceTopConnectHint.BoolValue;
 	} else if (convar == g_cvarPointsAssistKill) {
 		g_PointsAssistKill = g_cvarPointsAssistKill.IntValue;
 	} else if (convar == g_cvarPointsMin) {
@@ -1719,4 +1906,21 @@ public void OnConVarChanged(Handle convar, const char[] oldValue, const char[] n
 		MakeSelectQuery(query, sizeof(query));
 		SQL_TQuery(g_hStatsDb, SQL_GetPlayersCallback, query);
 	}
+}
+
+bool isMatchLive()
+{
+	Get5State matchState = Get5_GetGameState();
+
+	if (matchState == Get5State_None
+		|| matchState == Get5State_PreVeto
+		|| matchState == Get5State_Veto
+		|| matchState == Get5State_Warmup
+		|| matchState == Get5State_KnifeRound
+		|| matchState == Get5State_WaitingForKnifeRoundDecision)
+	{
+		return false;
+	}
+
+	return true;	
 }

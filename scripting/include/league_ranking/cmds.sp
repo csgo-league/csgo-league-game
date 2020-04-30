@@ -1,6 +1,10 @@
 // from smlib
 #define GAMEUNITS_TO_METERS	0.01905
 
+STATS_NAMES g_aStats[MAXPLAYERS + 1];
+WEAPONS_ENUM g_aWeapons[MAXPLAYERS + 1];
+HITBOXES g_aHitBox[MAXPLAYERS + 1];
+
 stock int Array_FindHighestValue(any[] array, int size, int start = 0) {
 	if (start < 0) {
 	    start = 0;
@@ -264,8 +268,8 @@ public Action CMD_Rank(int client, int args) {
 		return Plugin_Handled;
 	}
 
-	if (g_aStats[client][KILLS] < g_MinimalKills) {
-		CPrintToChat(client,"%s %T",MSG,"NotRanked",client,g_aStats[client][KILLS],g_MinimalKills);
+	if (g_aStats[client].KILLS < g_MinimalKills) {
+		CPrintToChat(client,"%s %T",MSG,"NotRanked",client,g_aStats[client].KILLS,g_MinimalKills);
 		return Plugin_Handled;
 	}
 
@@ -299,8 +303,8 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 	char Name_receive[MAX_NAME_LENGTH];
 	char Auth_receive[64];
 
-	int ikills = g_aStats[client][KILLS];
-	int ideaths = g_aStats[client][DEATHS];
+	int ikills = g_aStats[client].KILLS;
+	int ideaths = g_aStats[client].DEATHS;
 
 	int deaths;
 	if (ideaths == 0) {
@@ -324,7 +328,7 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 				for (int j = 1; j <= MaxClients;j++) {
 					if (IsClientInGame(j)) {
 						if (client == j) {
-							CPrintToChat(j,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+							CPrintToChat(j,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client].SCORE,g_aStats[client].KILLS,g_aStats[client].DEATHS,g_aStats[client].ASSISTS,kills/deaths,g_aStats[client].TK,g_aStats[client].MVP);
                         }
 
 						if (g_fRankAllTimer > 0.0) {
@@ -333,7 +337,7 @@ public void SQL_RankCallback(Handle owner, Handle hndl, const char[] error, any 
 					}
 				}
 			} else {
-				CPrintToChat(client,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client][SCORE],g_aStats[client][KILLS],g_aStats[client][DEATHS],g_aStats[client][ASSISTS],kills/deaths,g_aStats[client][TK],g_aStats[client][MVP]);
+				CPrintToChat(client,"%s %T",MSG,"IsRankedAt",client,name,i,g_TotalPlayers,g_aStats[client].SCORE,g_aStats[client].KILLS,g_aStats[client].DEATHS,g_aStats[client].ASSISTS,kills/deaths,g_aStats[client].TK,g_aStats[client].MVP);
 			}
 
 			break;
