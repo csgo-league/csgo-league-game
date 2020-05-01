@@ -25,7 +25,7 @@ static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `
 
 public Plugin myinfo = {
 	name = "[League] Ranking",
-	author = "B3none, Kento, PandahChan",
+	author = "B3none, Kento, PandahChan, TheBO$$",
 	description = "League ranking plugin.",
 	version = "1.1.0",
 	url = "https://github.com/csgo-league"
