@@ -697,7 +697,7 @@ stock void DelayFunction(float delay, VoidFunction f) {
 public Action _DelayFunctionCallback(Handle timer, DataPack data) {
   data.Reset();
   Function func = data.ReadFunction();
-  Call_StartFunction(INVALID_HANDLE, func);
+  Call_StartFunction(null, func);
   Call_Finish();
   delete data;
 }
