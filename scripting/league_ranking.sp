@@ -3,14 +3,13 @@
 
 #include <sourcemod>
 #include <adminmenu>
-#include <geoip>
 #include <sdktools>
 #include <cstrike>
 #include <clientprefs>
-#include <league_ranking/rankme>
-#include <league_ranking/colours.sp>
-#include <league_ranking/globals.sp>
-#include <league_ranking/cmds.sp>
+#include <rankme>
+#include <colours.sp>
+#include <globals.sp>
+#include <cmds.sp>
 #include <get5>
 
 #pragma semicolon 1
@@ -1384,32 +1383,7 @@ public Action RankConnectCallback(int client, int rank, any data) {
 	}
 
 	g_aPointsOnConnect[client] = LeagueRanking_GetPoints(client);
-
 	g_aRankOnConnect[client] = rank;
-
-	char sClientName[MAX_NAME_LENGTH];
-	GetClientName(client,sClientName,sizeof(sClientName));
-
-	char s_Country[32];
-	char s_ip[32];
-	GetClientIP(client, s_ip, 32);
-	Format(s_Country, sizeof(s_Country), "Unknown");
-	GeoipCountry(s_ip, s_Country, sizeof(s_Country));
-
-	if (s_Country[0] == 0) {
-		Format(s_Country, sizeof(s_Country), "Unknown", s_Country);
-	} else if (StrContains(s_Country, "United", false) != -1 ||
-        StrContains(s_Country, "Republic", false) != -1 ||
-        StrContains(s_Country, "Federation", false) != -1 ||
-        StrContains(s_Country, "Island", false) != -1 ||
-        StrContains(s_Country, "Netherlands", false) != -1 ||
-        StrContains(s_Country, "Isle", false) != -1 ||
-        StrContains(s_Country, "Bahamas", false) != -1 ||
-        StrContains(s_Country, "Maldives", false) != -1 ||
-        StrContains(s_Country, "Philippines", false) != -1 ||
-        StrContains(s_Country, "Vatican", false) != -1 ) {
-        Format(s_Country, sizeof(s_Country), "The %s", s_Country);
-    }
 }
 
 public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast) {
