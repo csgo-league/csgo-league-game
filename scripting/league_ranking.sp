@@ -7,9 +7,9 @@
 #include <cstrike>
 #include <clientprefs>
 #include <rankme>
-#include <colours.sp>
-#include <globals.sp>
-#include <cmds.sp>
+#include <league_ranking/colours.sp>
+#include <league_ranking/globals.sp>
+#include <league_ranking/commands.sp>
 #include <get5>
 
 #pragma semicolon 1
