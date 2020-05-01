@@ -1,9 +1,181 @@
 // from smlib
 #define GAMEUNITS_TO_METERS	0.01905
 
-STATS_NAMES g_aStats[MAXPLAYERS + 1];
-WEAPONS_ENUM g_aWeapons[MAXPLAYERS + 1];
-HITBOXES g_aHitBox[MAXPLAYERS + 1];
+static const char g_sSqlRemoveDuplicateMySQL[] = "delete from `%s` USING `%s`, `%s` as vtable WHERE (`%s`.id>vtable.id) AND (`%s`.steam=vtable.steam);";
+
+#define SQL_ResetStatsData \
+"UPDATE `%s` SET \
+		`score` = %i, \
+		`kills` = 0, \
+		`deaths`= 0, \
+		`assists`= 0, \
+		`suicides`= 0, \
+		`tk`= 0, \
+		`shots`= 0, \
+		`hits`= 0, \
+		`headshots`= 0, \
+		`connected`= 0, \
+		`rounds_tr` = 0, \
+		`rounds_ct` = 0, \
+		`c4_planted`= 0, \
+		`c4_exploded`= 0, \
+		`c4_defused`= 0, \
+		`ct_win`= 0, \
+		`tr_win`= 0, \
+		`hostages_rescued`= 0, \
+		`vip_killed` = 0, \
+		`vip_escaped` = 0, \
+		`vip_played` = 0, \
+		`mvp`= 0, \
+		`damage`= 0, \
+		`match_win`= 0, \
+		`match_draw`= 0, \
+		`match_lose`= 0, \
+		`first_blood`= 0, \
+		`no_scope`= 0, \
+		`no_scope_dis`= 0, \
+		`lastconnect`= 0, \
+		`head`= 0, \
+		`chest`= 0, \
+		`stomach`= 0, \
+		`left_arm`= 0, \
+		`right_arm`= 0, \
+		`left_leg`= 0, \
+		`right_leg`= 0 \
+WHERE \
+		`steam` = '%s';"
+
+#define SQL_ResetWeaponsData \
+"UPDATE `%s` SET \
+		`knife` = 0, \
+		`glock` = 0, \
+		`hkp2000`= 0, \
+		`usp_silencer`= 0, \
+		`p250`= 0, \
+		`deagle`= 0, \
+		`elite`= 0, \
+		`fiveseven`= 0, \
+		`tec9`= 0, \
+		`cz75a`= 0, \
+		`revolver` = 0, \
+		`nova` = 0, \
+		`xm1014`= 0, \
+		`mag7`= 0, \
+		`sawedoff`= 0, \
+		`bizon`= 0, \
+		`mac10`= 0, \
+		`mp9`= 0, \
+		`mp7` = 0, \
+		`ump45` = 0, \
+		`p90` = 0, \
+		`galilar`= 0, \
+		`ak47`= 0, \
+		`scar20`= 0, \
+		`famas`= 0, \
+		`m4a1`= 0, \
+		`m4a1_silencer`= 0, \
+		`aug`= 0, \
+		`ssg08`= 0, \
+		`sg556`= 0, \
+		`awp`= 0, \
+		`g3sg1`= 0, \
+		`m249`= 0, \
+		`negev`= 0, \
+		`hegrenade`= 0, \
+		`flashbang`= 0, \
+		`smokegrenade`= 0, \
+		`inferno`= 0, \
+		`decoy`= 0, \
+		`taser`= 0, \
+		`mp5sd`= 0, \
+		`breachcharge`= 0 \
+WHERE \
+		`steam` = '%s';"
+
+#define SQL_ResetStatsDataAll \
+"UPDATE `%s` SET \
+		`score` = %i, \
+		`kills` = 0, \
+		`deaths`= 0, \
+		`assists`= 0, \
+		`suicides`= 0, \
+		`tk`= 0, \
+		`shots`= 0, \
+		`hits`= 0, \
+		`headshots`= 0, \
+		`connected`= 0, \
+		`rounds_tr` = 0, \
+		`rounds_ct` = 0, \
+		`c4_planted`= 0, \
+		`c4_exploded`= 0, \
+		`c4_defused`= 0, \
+		`ct_win`= 0, \
+		`tr_win`= 0, \
+		`hostages_rescued`= 0, \
+		`vip_killed` = 0, \
+		`vip_escaped` = 0, \
+		`vip_played` = 0, \
+		`mvp`= 0, \
+		`damage`= 0, \
+		`match_win`= 0, \
+		`match_draw`= 0, \
+		`match_lose`= 0, \
+		`first_blood`= 0, \
+		`no_scope`= 0, \
+		`no_scope_dis`= 0, \
+		`lastconnect`= 0, \
+		`head`= 0, \
+		`chest`= 0, \
+		`stomach`= 0, \
+		`left_arm`= 0, \
+		`right_arm`= 0, \
+		`left_leg`= 0, \
+		`right_leg`= 0;"
+
+#define SQL_ResetWeaponsDataAll \
+"UPDATE `%s` SET \
+		`knife` = 0, \
+		`glock` = 0, \
+		`hkp2000`= 0, \
+		`usp_silencer`= 0, \
+		`p250`= 0, \
+		`deagle`= 0, \
+		`elite`= 0, \
+		`fiveseven`= 0, \
+		`tec9`= 0, \
+		`cz75a`= 0, \
+		`revolver` = 0, \
+		`nova` = 0, \
+		`xm1014`= 0, \
+		`mag7`= 0, \
+		`sawedoff`= 0, \
+		`bizon`= 0, \
+		`mac10`= 0, \
+		`mp9`= 0, \
+		`mp7` = 0, \
+		`ump45` = 0, \
+		`p90` = 0, \
+		`galilar`= 0, \
+		`ak47`= 0, \
+		`scar20`= 0, \
+		`famas`= 0, \
+		`m4a1`= 0, \
+		`m4a1_silencer`= 0, \
+		`aug`= 0, \
+		`ssg08`= 0, \
+		`sg556`= 0, \
+		`awp`= 0, \
+		`g3sg1`= 0, \
+		`m249`= 0, \
+		`negev`= 0, \
+		`hegrenade`= 0, \
+		`flashbang`= 0, \
+		`smokegrenade`= 0, \
+		`inferno`= 0, \
+		`decoy`= 0, \
+		`taser`= 0, \
+		`mp5sd`= 0, \
+		`breachcharge`= 0;"
 
 stock int Array_FindHighestValue(any[] array, int size, int start = 0) {
 	if (start < 0) {
@@ -60,10 +232,14 @@ public Action Command_ResetRank(int client, int args) {
 	//ReplaceString(arg1,sizeof(arg1)," ","");
 	//ReplaceString(arg1,sizeof(arg1),"\"","");
 	char query[2000];
+	char query2[2000];
+	FormatEx(query, sizeof(query), SQL_ResetStatsData, g_sSQLTable, g_PointsStart, sEscapeArg1);
+	FormatEx(query2, sizeof(query2), SQL_ResetWeaponsData, g_sSQLTable, sEscapeArg1);
+	SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
+	SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query2);
 
-	Format(query,sizeof(query),"DELETE FROM `%s` WHERE steam='%s'",g_sSQLTable,sEscapeArg1);
-	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
 	LogAction(client,-1,"[League] Rank has been reset (%s)",arg1);
+
 	char auth[64];
 	for (int i = 1; i <= MaxClients; i++) {
 		if (IsClientInGame(i)) {
@@ -84,8 +260,11 @@ public Action Command_ResetRankAll(int client, int args) {
     }
 
 	char query[2000];
-	Format(query,sizeof(query),"DELETE FROM `%s` WHERE 1=1",g_sSQLTable);
-	SQL_TQuery(g_hStatsDb,SQL_NothingCallback,query);
+	char query2[2000];
+	FormatEx(query, sizeof(query), SQL_ResetStatsDataAll, g_sSQLTable, g_PointsStart);
+	FormatEx(query2, sizeof(query2), SQL_ResetWeaponsDataAll, g_sSQLTable);
+	SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
+	SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query2);
 
 	LogAction(client,-1,"[League] All rank data has been reset");
 
