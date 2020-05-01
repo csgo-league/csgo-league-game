@@ -484,11 +484,7 @@ public int GetWeaponNum(char[] weaponname) {
 }
 
 public Action Event_VipEscaped(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-	
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -528,14 +524,9 @@ public Action Event_VipKilled(Handle event, const char[] name, bool dontBroadcas
 }
 
 public Action Event_HostageRescued(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}	
-
-	if (!isMatchLive())
-	{
-		return;
-	}
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -550,11 +541,7 @@ public Action Event_HostageRescued(Handle event, const char[] name, bool dontBro
 }
 
 public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-	
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -577,11 +564,7 @@ public Action Event_RoundMVP(Handle event, const char[] name, bool dontBroadcast
 }
 
 public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -621,11 +604,7 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
 }
 
 public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -641,11 +620,7 @@ public void Event_RoundStart(Handle event, const char[] name, bool dontBroadcast
 }
 
 public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -664,11 +639,7 @@ public Action Event_BombPlanted(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -685,11 +656,7 @@ public Action Event_BombDefused(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action Event_BombExploded(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -710,11 +677,7 @@ public Action Event_BombExploded(Handle event, const char[] name, bool dontBroad
 }
 
 public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-	
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -724,13 +687,9 @@ public Action Event_BombPickup(Handle event, const char[] name, bool dontBroadca
 }
 
 public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
-
-	if (!isMatchLive()) {
-		return;
-  	}
 
 	int client = GetClientOfUserId(GetEventInt(event, "userid"));
 
@@ -738,11 +697,7 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 }
 
 public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -1037,13 +992,9 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 }
 
 public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
-
-  if (!isMatchLive()) {
-		return;
-  }
 
 	int victim = GetClientOfUserId(GetEventInt(event, "userid"));
 	int attacker = GetClientOfUserId(GetEventInt(event, "attacker"));
@@ -1100,11 +1051,7 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 }
 
 public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcast) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
-		return;
-	}
-	
-	if (!isMatchLive()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
 
@@ -1141,13 +1088,9 @@ public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcas
 }
 
 public void SavePlayer(int client) {
-	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers()) {
+	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
-
-  if (!isMatchLive()) {
-		return;
-  }
 
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
 		return;
@@ -1424,7 +1367,7 @@ stock void MakeSelectQuery(char[] sQuery, int strsize) {
 public Action LeagueRanking_OnPlayerLoaded(int client) {
 	if (!g_bAnnounceConnect && !g_bAnnounceTopConnect) {
 		return Plugin_Handled;
-    }
+	}
 
 	if (!g_bRankBots && (!IsValidClient(client) || IsFakeClient(client))) {
 		return Plugin_Handled;
