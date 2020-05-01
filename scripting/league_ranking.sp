@@ -16,7 +16,7 @@
 #pragma newdecls required
 
 // SQL Queries
-static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
+//static const char g_sSqlInsert[] = "INSERT INTO `%s` VALUES (null,'%s','%d','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');";
 static const char g_sSqlSave[] = "UPDATE `%s` SET score = '%i', kills = '%i', deaths='%i', assists='%i',suicides='%i',tk='%i',shots='%i',hits='%i',headshots='%i', rounds_tr = '%i', rounds_ct = '%i'%s,head='%i',chest='%i', stomach='%i',left_arm='%i',right_arm='%i',left_leg='%i',right_leg='%i' WHERE steam = '%s';";
 static const char g_sSqlSave2[] = "UPDATE `%s` SET c4_planted='%i',c4_exploded='%i',c4_defused='%i',ct_win='%i',tr_win='%i', hostages_rescued='%i',vip_killed = '%d',vip_escaped = '%d',vip_played = '%d', mvp='%i', damage='%i', match_win='%i', match_draw='%i', match_lose='%i', first_blood='%i', no_scope='%i', no_scope_dis='%i', lastconnect='%i', connected='%i' WHERE steam = '%s';";
 static const char g_sSqlRetrieveClient[] = "SELECT * FROM `%s` WHERE steam='%s';";
@@ -1187,7 +1187,7 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
         return;
     }
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl) && SQL_FetchInt(hndl, 2)) {
 		// Player info from Score - LastConnect
 		g_aStats[client].SCORE = SQL_FetchInt(hndl, 2);
 		g_aStats[client].KILLS = SQL_FetchInt(hndl, 3);
@@ -1273,14 +1273,17 @@ public void SQL_LoadPlayerCallback(Handle owner, Handle hndl, const char[] error
 		g_aStats[client].NS = SQL_FetchInt(hndl, 79);
 		g_aStats[client].NSD = SQL_FetchInt(hndl, 80);
 	} else {
-		char query[10000];
+		char query[2000];
+		char query2[2000];
 
-		Format(query, sizeof(query), g_sSqlInsert, g_sSQLTable, g_aClientSteam[client], g_PointsStart);
-		SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query, _, DBPrio_High);
+		FormatEx(query, sizeof(query), SQL_ResetStatsData, g_sSQLTable, g_PointsStart, g_aClientSteam[client]);
+		FormatEx(query2, sizeof(query2), SQL_ResetWeaponsData, g_sSQLTable, g_aClientSteam[client]);
+
+		SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query);
+		SQL_TQuery(g_hStatsDb, SQL_NothingCallback, query2);
 
 		if (DEBUGGING) {
 			PrintToServer(query);
-
 			LogError("%s", query);
 		}
 	}
