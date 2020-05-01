@@ -48,7 +48,7 @@ stock void Entity_GetAbsOrigin(int entity, float vec[3]) {
 	GetEntPropVector(entity, Prop_Send, "m_vecOrigin", vec);
 }
 
-public Action CMD_ResetRank(int client, int args) {
+public Action Command_ResetRank(int client, int args) {
 	if (!g_bEnabled || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
     }
@@ -78,7 +78,7 @@ public Action CMD_ResetRank(int client, int args) {
 	return Plugin_Handled;
 }
 
-public Action CMD_ResetRankAll(int client, int args) {
+public Action Command_ResetRankAll(int client, int args) {
 	if (!g_bEnabled || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
     }
@@ -98,7 +98,17 @@ public Action CMD_ResetRankAll(int client, int args) {
 	return Plugin_Handled;
 }
 
-public Action CMD_Purge(int client, int args) {
+public Action Command_Duplicate(int client, int args) {
+	char sQuery[512];
+
+	FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
+
+	SQL_TQuery(g_hStatsDb, SQL_DuplicateCallback, sQuery, client);
+
+	return Plugin_Handled;
+}
+
+public Action Command_Purge(int client, int args) {
 	if (!g_bEnabled || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
     }
@@ -135,7 +145,7 @@ public void SQL_GetPlayersCallback(Handle owner, Handle hndl, const char[] error
 	g_TotalPlayers = SQL_GetRowCount(hndl);
 }
 
-public Action CMD_Top(int client, int args) {
+public Action Command_Top(int client, int args) {
 	if (!g_bEnabled || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
     }
@@ -263,7 +273,7 @@ public int MenuHandler_DoNothing(Menu menu, MenuAction action, int param1, int p
 	}
 }
 
-public Action CMD_Rank(int client, int args) {
+public Action Command_Rank(int client, int args) {
 	if (!g_bEnabled || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
 	}
@@ -356,7 +366,7 @@ public int PanelNoHandle(Menu menu, MenuAction action, int param1, int param2) {
 
 }
 
-public Action CMD_ResetOwnRank(int client, int args) {
+public Action Command_ResetOwnRank(int client, int args) {
 	if (!g_bEnabled || !g_bResetOwnRank || client == 0 || !IsClientInGame(client)) {
 		return Plugin_Handled;
     }

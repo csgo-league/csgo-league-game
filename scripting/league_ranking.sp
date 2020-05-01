@@ -56,14 +56,14 @@ public void OnPluginStart() {
 	HookEventEx("cs_win_panel_match", Event_WinPanelMatch);
 
 	// Admin commands
-	RegAdminCmd("sm_resetrank", CMD_ResetRank, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of a player");
-	RegAdminCmd("sm_league_ranking_remove_duplicate", CMD_Duplicate, ADMFLAG_ROOT, "LeagueRanking: Removes the duplicated rows on the database");
-	RegAdminCmd("sm_rankpurge", CMD_Purge, ADMFLAG_ROOT, "LeagueRanking: Purges from the rank players that didn't connected for X days");
-	RegAdminCmd("sm_resetrank_all", CMD_ResetRankAll, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of all players");
+	RegAdminCmd("sm_resetrank", Command_ResetRank, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of a player");
+	RegAdminCmd("sm_league_ranking_remove_duplicate", Command_Duplicate, ADMFLAG_ROOT, "LeagueRanking: Removes the duplicated rows on the database");
+	RegAdminCmd("sm_rankpurge", Command_Purge, ADMFLAG_ROOT, "LeagueRanking: Purges from the rank players that didn't connected for X days");
+	RegAdminCmd("sm_resetrank_all", Command_ResetRankAll, ADMFLAG_ROOT, "LeagueRanking: Resets the rank of all players");
 
 	// Player commands
-	RegConsoleCmd("sm_rank", CMD_Rank, "LeagueRanking: Shows your rank");
-	RegConsoleCmd("sm_top", CMD_Top, "LeagueRanking: Shows the TOP");
+	RegConsoleCmd("sm_rank", Command_Rank, "LeagueRanking: Shows your rank");
+	RegConsoleCmd("sm_top", Command_Top, "LeagueRanking: Shows the TOP");
 
 	// Load league.ranking.cfg
 	AutoExecConfig(true, "league_ranking");
@@ -217,16 +217,6 @@ public void SQL_BuildRankCache(Handle owner, Handle hndl, const char[] error, an
 	} else {
 		LogMessage("[LeagueRanking] No more rank");
 	}
-}
-
-public Action CMD_Duplicate(int client, int args) {
-	char sQuery[512];
-
-	FormatEx(sQuery, sizeof(sQuery), g_sSqlRemoveDuplicateMySQL, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable, g_sSQLTable);
-
-	SQL_TQuery(g_hStatsDb, SQL_DuplicateCallback, sQuery, client);
-
-	return Plugin_Handled;
 }
 
 public void SQL_DuplicateCallback(Handle owner, Handle hndl, const char[] error, any client) {
@@ -401,7 +391,7 @@ public Action OnSayText(int client, const char[] command, int argc) {
 
 	// Process the text
 	if (StrEqual(cpMessage, "rank", false)) {
-		CMD_Rank(client, 0);
+		Command_Rank(client, 0);
 	} else if (StrContains(sWords[0], "top", false) == 0) {
 		if (strcmp(cpMessage, "top") == 0) {
 			ShowTOP(client, 0);
