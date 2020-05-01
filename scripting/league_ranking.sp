@@ -38,9 +38,9 @@ public void OnPluginStart() {
 	AddCvarListeners();
 
 	// Events
-	HookEventEx("player_death", EventPlayerDeath);
-	HookEventEx("player_hurt", EventPlayerHurt);
-	HookEventEx("weapon_fire", EventWeaponFire);
+	HookEventEx("player_death", Event_PlayerDeath);
+	HookEventEx("player_hurt", Event_PlayerHurt);
+	HookEventEx("weapon_fire", Event_WeaponFire);
 	HookEventEx("bomb_planted", Event_BombPlanted);
 	HookEventEx("bomb_defused", Event_BombDefused);
 	HookEventEx("bomb_exploded", Event_BombExploded);
@@ -685,7 +685,7 @@ public Action Event_BombDropped(Handle event, const char[] name, bool dontBroadc
 	g_aStats[client].SCORE -= g_PointsBombDropped;
 }
 
-public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
+public Action Event_PlayerDeath(Handle event, const char [] name, bool dontBroadcast) {
 	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
@@ -980,7 +980,7 @@ public Action EventPlayerDeath(Handle event, const char [] name, bool dontBroadc
 	firstblood = true;
 }
 
-public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadcast) {
+public Action Event_PlayerHurt(Handle event, const char [] name, bool dontBroadcast) {
 	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
@@ -1039,7 +1039,7 @@ public Action EventPlayerHurt(Handle event, const char [] name, bool dontBroadca
 	}
 }
 
-public Action EventWeaponFire(Handle event, const char[] name, bool dontBroadcast) {
+public Action Event_WeaponFire(Handle event, const char[] name, bool dontBroadcast) {
 	if (!g_bEnabled || g_MinimumPlayers > GetCurrentPlayers() || !isMatchLive()) {
 		return;
 	}
