@@ -1406,6 +1406,7 @@ public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroa
 					g_aStats[i].MATCH_WIN++;
 					g_aStats[i].SCORE += g_PointsMatchWin;
 				}
+				SavePlayer(i);
 			}
 		}
 	} else if (CS_GetTeamScore(CT) == CS_GetTeamScore(TR)) {
@@ -1413,6 +1414,7 @@ public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroa
 			if (IsClientInGame(i) && (GetClientTeam(i) == TR || GetClientTeam(i) == CT)) {
 				g_aStats[i].MATCH_DRAW++;
 				g_aStats[i].SCORE += g_PointsMatchDraw;
+				SavePlayer(i);
 			}
 		}
 	} else if (CS_GetTeamScore(CT) < CS_GetTeamScore(TR)) {
@@ -1425,6 +1427,7 @@ public Action Event_WinPanelMatch(Handle event, const char[] name, bool dontBroa
 					g_aStats[i].MATCH_LOSE++;
 					g_aStats[i].SCORE -= g_PointsMatchLose;
 				}
+				SavePlayer(i);
 			}
 		}
 	}
