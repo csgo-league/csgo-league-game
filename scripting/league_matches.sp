@@ -75,12 +75,25 @@ public void Get5_OnSeriesInit() {
   LogDebug("Setting up series stats, get5_mysql_force_matchid = %d", g_ForceMatchIDCvar.IntValue);
 
   if (g_ForceMatchIDCvar.IntValue > 0) {
+    char server_port[10];
+    char server_ip[16];
+
+    Handle cvar_port = FindConVar("hostport");
+    GetConVarString(cvar_port, server_port, sizeof(server_port));
+    CloseHandle(cvar_port);
+
+    Handle cvar_ip = FindConVar("ip");
+    GetConVarString(cvar_ip, server_ip, sizeof(server_ip));
+    CloseHandle(cvar_ip);
+
     SetMatchID(g_ForceMatchIDCvar.IntValue);
+
     g_ForceMatchIDCvar.IntValue = 0;
+
     Format(queryBuffer, sizeof(queryBuffer), "INSERT INTO `matches` \
-            (matchid, series_type, team1_name, team2_name, start_time) VALUES \
-            (%d, '%s', '%s', '%s', %i)",
-           g_MatchID, seriesTypeSz, team1NameSz, team2NameSz, GetTime());
+            (matchid, series_type, team1_name, team2_name, start_time, server_ip, server_port) VALUES \
+            (%d, '%s', '%s', '%s', %i, '%s', %s)",
+           g_MatchID, seriesTypeSz, team1NameSz, team2NameSz, GetTime(), server_ip, server_port);
     LogDebug(queryBuffer);
     db.Query(SQLErrorCheckCallback, queryBuffer);
 
