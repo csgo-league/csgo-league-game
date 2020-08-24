@@ -15,6 +15,8 @@ enum Get5State {
   Get5State_PostGame,                      // postgame screen + waiting for GOTV to finish broadcast
 };
 
+#define MATCHTEAM_COUNT 4
+
 enum MatchTeam {
   MatchTeam_Team1,
   MatchTeam_Team2,
@@ -165,10 +167,10 @@ native int Get5_IncreasePlayerStat(int client, const char[] statName, int amount
 
 // Player stats (under map section, then team section, then player's steam64)
 #define STAT_NAME "name"
+#define STAT_PLAYERSCORE "playerscore"
 #define STAT_KILLS "kills"
 #define STAT_DEATHS "deaths"
 #define STAT_ASSISTS "assists"
-#define STAT_PLAYERSCORE "playerscore"
 #define STAT_FLASHBANG_ASSISTS "flashbang_assists"
 #define STAT_TEAMKILLS "teamkills"
 #define STAT_SUICIDES "suicides"
