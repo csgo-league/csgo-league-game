@@ -17,7 +17,6 @@ stock bool LoadMatchConfig(const char[] config, bool restoreBackup = false) {
     return false;
   }
 
-  ResetReadyStatus();
   LOOP_TEAMS(team) {
     g_TeamSeriesScores[team] = 0;
     g_TeamReadyForUnpause[team] = false;
@@ -264,8 +263,6 @@ public void WriteMatchToKv(KeyValues kv) {
   kv.SetNum("bo2_series", g_BO2Match);
   kv.SetNum("skip_veto", g_SkipVeto);
   kv.SetNum("players_per_team", g_PlayersPerTeam);
-  kv.SetNum("min_players_to_ready", g_MinPlayersToReady);
-  kv.SetNum("min_spectators_to_ready", g_MinSpectatorsToReady);
   kv.SetString("match_title", g_MatchTitle);
 
   kv.SetNum("favored_percentage_team1", g_FavoredTeamPercentage);
@@ -333,9 +330,6 @@ static bool LoadMatchFromKv(KeyValues kv) {
   g_InScrimMode = kv.GetNum("scrim") != 0;
   kv.GetString("match_title", g_MatchTitle, sizeof(g_MatchTitle), CONFIG_MATCHTITLE_DEFAULT);
   g_PlayersPerTeam = kv.GetNum("players_per_team", CONFIG_PLAYERSPERTEAM_DEFAULT);
-  g_MinPlayersToReady = kv.GetNum("min_players_to_ready", CONFIG_MINPLAYERSTOREADY_DEFAULT);
-  g_MinSpectatorsToReady =
-      kv.GetNum("min_spectators_to_ready", CONFIG_MINSPECTATORSTOREADY_DEFAULT);
   g_SkipVeto = kv.GetNum("skip_veto", CONFIG_SKIPVETO_DEFAULT) != 0;
 
   // bo2_series and maps_to_win are deprecated. They are used if provided, but otherwise
@@ -443,10 +437,6 @@ static bool LoadMatchFromJson(JSON_Object json) {
 
   g_PlayersPerTeam =
       json_object_get_int_safe(json, "players_per_team", CONFIG_PLAYERSPERTEAM_DEFAULT);
-  g_MinPlayersToReady =
-      json_object_get_int_safe(json, "min_players_to_ready", CONFIG_MINPLAYERSTOREADY_DEFAULT);
-  g_MinSpectatorsToReady = json_object_get_int_safe(json, "min_spectators_to_ready",
-                                                    CONFIG_MINSPECTATORSTOREADY_DEFAULT);
   g_SkipVeto = json_object_get_bool_safe(json, "skip_veto", CONFIG_SKIPVETO_DEFAULT);
 
   // bo2_series and maps_to_win are deprecated. They are used if provided, but otherwise

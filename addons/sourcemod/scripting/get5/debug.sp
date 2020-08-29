@@ -102,8 +102,6 @@ static void AddGlobalStateInfo(File f) {
 
   f.WriteLine("g_MatchTitle = %s", g_MatchTitle);
   f.WriteLine("g_PlayersPerTeam = %d", g_PlayersPerTeam);
-  f.WriteLine("g_MinPlayersToReady = %d", g_MinPlayersToReady);
-  f.WriteLine("g_MinSpectatorsToReady = %d", g_MinSpectatorsToReady);
   f.WriteLine("g_SkipVeto = %d", g_SkipVeto);
   f.WriteLine("g_MatchSideType = %d", g_MatchSideType);
   f.WriteLine("g_InScrimMode = %d", g_InScrimMode);
@@ -130,7 +128,6 @@ static void AddGlobalStateInfo(File f) {
     CSTeamString(g_TeamSide[team], buffer, sizeof(buffer));
     f.WriteLine("g_TeamSide = %s (%d)", buffer, g_TeamSide[team]);
     f.WriteLine("g_TeamSeriesScores = %d", g_TeamSeriesScores[team]);
-    f.WriteLine("g_TeamReadyOverride = %d", g_TeamReadyOverride[team]);
     f.WriteLine("g_TeamStartingSide = %d", g_TeamStartingSide[team]);
     f.WriteLine("g_TeamPauseTimeUsed = %d", g_TeamPauseTimeUsed[team]);
     f.WriteLine("g_TeamPausesUsed = %d", g_TeamPausesUsed[team]);

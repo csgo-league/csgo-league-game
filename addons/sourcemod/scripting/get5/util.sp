@@ -181,25 +181,8 @@ stock bool InFreezeTime() {
 }
 
 stock void EnsurePausedWarmup() {
-  if (!InWarmup()) {
-    StartWarmup();
-  }
-
-  ServerCommand("mp_warmup_pausetimer 1");
-  ServerCommand("mp_do_warmup_period 1");
-  ServerCommand("mp_warmup_pausetimer 1");
-}
-
-stock void StartWarmup(bool indefiniteWarmup = true, int warmupTime = 60) {
-  ServerCommand("mp_do_warmup_period 1");
-  ServerCommand("mp_warmuptime %d", warmupTime);
+  ServerCommand("mp_warmuptime %d", g_TeamTimeToStartCvar.IntValue - g_ReadyTimeWaitingUsed);
   ServerCommand("mp_warmup_start");
-
-  // For some reason it needs to get sent twice. Ask Valve.
-  if (indefiniteWarmup) {
-    ServerCommand("mp_warmup_pausetimer 1");
-    ServerCommand("mp_warmup_pausetimer 1");
-  }
 }
 
 stock void EndWarmup(int time = 0) {
@@ -280,12 +263,7 @@ stock void SetTeamInfo(int csTeam, const char[] name, const char[] flag = "",
   char taggedName[MAX_CVAR_LENGTH];
   if ((g_GameState == Get5State_Warmup || g_GameState == Get5State_PreVeto) &&
       !g_DoingBackupRestoreNow) {
-    MatchTeam matchTeam = CSTeamToMatchTeam(csTeam);
-    if (IsTeamReady(matchTeam)) {
-      Format(taggedName, sizeof(taggedName), "%T %s", "ReadyTag", LANG_SERVER, name);
-    } else {
-      Format(taggedName, sizeof(taggedName), "%T %s", "NotReadyTag", LANG_SERVER, name);
-    }
+    Format(taggedName, sizeof(taggedName), "%s", LANG_SERVER, name);
   } else {
     strcopy(taggedName, sizeof(taggedName), name);
   }

@@ -9,8 +9,6 @@ public Action Command_Get5AdminMenu(int client, int args) {
   menu.AddItem("get5_scrim", "Create a scrim", EnabledIf(g_GameState == Get5State_None));
   menu.AddItem("get5_creatematch", "Create match with current players",
                EnabledIf(g_GameState == Get5State_None));
-  menu.AddItem("get5_forceready", "Force-ready all players",
-               EnabledIf(g_GameState == Get5State_Warmup || g_GameState == Get5State_PreVeto));
   menu.AddItem("get5_endmatch", "End match", EnabledIf(g_GameState != Get5State_None));
   menu.AddItem("ringer", "Add scrim ringer",
                EnabledIf(g_InScrimMode && g_GameState != Get5State_None));

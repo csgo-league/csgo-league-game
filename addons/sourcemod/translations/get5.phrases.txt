@@ -1,5 +1,9 @@
 "Phrases"
 {
+    "NotAllPlayersConnected"
+    {
+        "en"            "{DARK_RED}Match Failed! (Not all players connected)."
+    }
     "ReadyToVetoInfoMessage"
     {
         "en"            "Type {GREEN}!ready {NORMAL}when your team is ready to veto."
