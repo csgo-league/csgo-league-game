@@ -26,7 +26,7 @@ stock bool LoadMatchConfig(const char[] config, bool restoreBackup = false) {
     ClearArray(GetTeamAuths(team));
   }
 
-  g_ReadyTimeWaitingUsed = 0;
+  g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
   g_ForceWinnerSignal = false;
   g_ForcedWinner = MatchTeam_TeamNone;
 

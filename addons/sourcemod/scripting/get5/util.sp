@@ -181,7 +181,7 @@ stock bool InFreezeTime() {
 }
 
 stock void EnsurePausedWarmup() {
-  ServerCommand("mp_warmuptime %d", g_TeamTimeToStartCvar.IntValue - g_ReadyTimeWaitingUsed);
+  ServerCommand("mp_warmuptime %d", g_WarmupTimeLeft);
   ServerCommand("mp_warmup_start");
 }
 

@@ -30,9 +30,6 @@
 #undef REQUIRE_EXTENSIONS
 #include <SteamWorks>
 
-#define CHECK_READY_TIMER_INTERVAL 1.0
-#define INFO_MESSAGE_TIMER_INTERVAL 29.0
-
 #define DEBUG_CVAR "get5_debug"
 #define MATCH_ID_LENGTH 64
 #define MAX_CVAR_LENGTH 128
@@ -76,7 +73,6 @@ ConVar g_SetHostnameCvar;
 ConVar g_StatsPathFormatCvar;
 ConVar g_StopCommandEnabledCvar;
 ConVar g_TeamTimeToKnifeDecisionCvar;
-ConVar g_TeamTimeToStartCvar;
 ConVar g_TimeFormatCvar;
 ConVar g_VetoConfirmationTimeCvar;
 ConVar g_VetoCountdownCvar;
@@ -162,7 +158,7 @@ bool g_TeamGivenStopCommand[MATCHTEAM_COUNT];
 bool g_InExtendedPause;
 int g_TeamPauseTimeUsed[MATCHTEAM_COUNT];
 int g_TeamPausesUsed[MATCHTEAM_COUNT];
-int g_ReadyTimeWaitingUsed = 0;
+int g_WarmupTimeLeft = 300;
 char g_DefaultTeamColors[][] = {
     TEAM1_COLOR, TEAM2_COLOR, "{NORMAL}", "{NORMAL}",
 };
@@ -255,7 +251,7 @@ public void OnPluginStart() {
   g_BackupSystemEnabledCvar =
       CreateConVar("get5_backup_system_enabled", "1", "Whether the get5 backup system is enabled");
   g_DamagePrintCvar =
-      CreateConVar("get5_print_damage", "0", "Whether damage reports are printed on round end.");
+      CreateConVar("get5_print_damage", "1", "Whether damage reports are printed on round end.");
   g_DamagePrintFormat = CreateConVar(
       "get5_damageprint_format",
       "--> ({DMG_TO} dmg / {HITS_TO} hits) to ({DMG_FROM} dmg / {HITS_FROM} hits) from {NAME} ({HEALTH} HP)",
@@ -269,7 +265,7 @@ public void OnPluginStart() {
       CreateConVar("get5_display_gotv_veto", "0",
                    "Whether to wait for map vetos to be printed to GOTV before changing map");
   g_EndMatchOnEmptyServerCvar = CreateConVar(
-      "get5_end_match_on_empty_server", "0",
+      "get5_end_match_on_empty_server", "1",
       "Whether to end the match if all players disconnect before ending. No winner is set if this happens.");
   g_EventLogFormatCvar =
       CreateConVar("get5_event_log_format", "",
@@ -278,7 +274,7 @@ public void OnPluginStart() {
       CreateConVar("get5_fixed_pause_time", "0",
                    "If set to non-zero, this will be the fixed length of any pause");
   g_KickClientImmunity = CreateConVar(
-      "get5_kick_immunity", "1",
+      "get5_kick_immunity", "0",
       "Whether or not admins with the changemap flag will be immune to kicks from \"get5_kick_when_no_match_loaded\". Set to \"0\" to disable");
   g_KickClientsWithNoMatchCvar =
       CreateConVar("get5_kick_when_no_match_loaded", "1",
@@ -315,12 +311,9 @@ public void OnPluginStart() {
   g_StopCommandEnabledCvar =
       CreateConVar("get5_stop_command_enabled", "1",
                    "Whether clients can use the !stop command to restore to the last round");
-  g_TeamTimeToStartCvar = CreateConVar(
-      "get5_time_to_start", "0",
-      "Time (in seconds) teams have to ready up before forfeiting the match, 0=unlimited");
   g_RemainingMatchPlayers = CreateConVar("get5_remaining_match_players_not_connected", "0");
   g_TeamTimeToKnifeDecisionCvar = CreateConVar(
-      "get5_time_to_make_knife_decision", "60",
+      "get5_time_to_make_knife_decision", "30",
       "Time (in seconds) a team has to make a !stay/!swap decision after winning knife round, 0=unlimited");
   g_TimeFormatCvar = CreateConVar(
       "get5_time_format", "%Y-%m-%d_%H",
@@ -435,6 +428,7 @@ public void OnPluginStart() {
     g_TeamAuths[i] = new ArrayList(AUTH_LENGTH);
   }
   g_PlayerNames = new StringMap();
+  g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
 
   /** Create forwards **/
   g_OnBackupRestore = CreateGlobalForward("Get5_OnBackupRestore", ET_Ignore);
@@ -459,7 +453,7 @@ public void OnPluginStart() {
       CreateGlobalForward("Get5_OnSeriesResult", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 
   /** Start any repeating timers **/
-  CreateTimer(CHECK_READY_TIMER_INTERVAL, Timer_CheckReady, _, TIMER_REPEAT);
+  CreateTimer(1.0, Timer_WarmupLeft, _, TIMER_REPEAT);
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
@@ -574,7 +568,7 @@ public void OnMapStart() {
     g_TeamReadyForUnpause[team] = false;
     g_TeamPauseTimeUsed[team] = 0;
     g_TeamPausesUsed[team] = 0;
-    g_ReadyTimeWaitingUsed = 0;
+    g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
   }
 
   if (g_WaitingForRoundBackup) {
@@ -602,7 +596,7 @@ public void OnConfigsExecuted() {
   }
 }
 
-public Action Timer_CheckReady(Handle timer) {
+public Action Timer_WarmupLeft(Handle timer) {
   if (g_GameState == Get5State_None) {
     return Plugin_Continue;
   }
@@ -620,9 +614,11 @@ public Action Timer_CheckReady(Handle timer) {
       return Plugin_Continue;
     }
 
-    if (g_TeamTimeToStartCvar.IntValue > 0) {
-      g_ReadyTimeWaitingUsed++;
+    if (g_WarmupTimeLeft == 0) {
+      return Plugin_Stop;
     }
+
+    g_WarmupTimeLeft--;
   }
 
   return Plugin_Continue;

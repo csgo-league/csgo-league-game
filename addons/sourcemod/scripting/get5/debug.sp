@@ -112,7 +112,7 @@ static void AddGlobalStateInfo(File f) {
   f.WriteLine("g_WaitingForRoundBackup = %d", g_WaitingForRoundBackup);
   f.WriteLine("g_SavedValveBackup = %d", g_SavedValveBackup);
   f.WriteLine("g_DoingBackupRestoreNow = %d", g_DoingBackupRestoreNow);
-  f.WriteLine("g_ReadyTimeWaitingUsed = %d", g_ReadyTimeWaitingUsed);
+  f.WriteLine("g_WarmupTimeLeft = %d", g_WarmupTimeLeft);
 
   LOOP_TEAMS(team) {
     GetTeamString(team, buffer, sizeof(buffer));
