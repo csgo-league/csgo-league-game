@@ -492,9 +492,17 @@ public void OnClientPutInServer(int client) {
   }
   CheckAutoLoadConfig();
   if (g_GameState <= Get5State_Warmup && g_GameState != Get5State_None) {
-    if (GetRealClientCount() <= 1) {
+    int connectedPlayers = GetRealClientCount();
+    if (connectedPlayers <= 1) {
       ExecCfg(g_WarmupCfgCvar);
       EnsurePausedWarmup();
+    }
+
+    if (connectedPlayers == g_PlayersPerTeam * 2) {
+      if (g_WarmupTimeLeft > 30) {
+        g_WarmupTimeLeft = 30;
+        ServerCommand("mp_warmuptime 30");
+      }
     }
   }
 
@@ -552,6 +560,7 @@ public Action Event_WarmupEnd(Event event, const char[] name, bool dontBroadcast
     }
     else {
       Get5_MessageToAll("%t", "NotAllPlayersConnected");
+      AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
       g_ForceWinnerSignal = true;
       ChangeState(Get5State_None);
       EndSeries();
@@ -561,6 +570,8 @@ public Action Event_WarmupEnd(Event event, const char[] name, bool dontBroadcast
 
 public void OnMapStart() {
   g_MapChangePending = false;
+  g_HasKnifeRoundStarted = false;
+  g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
   DeleteOldBackups();
 
   LOOP_TEAMS(team) {
@@ -568,7 +579,6 @@ public void OnMapStart() {
     g_TeamReadyForUnpause[team] = false;
     g_TeamPauseTimeUsed[team] = 0;
     g_TeamPausesUsed[team] = 0;
-    g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
   }
 
   if (g_WaitingForRoundBackup) {
