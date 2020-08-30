@@ -9,8 +9,7 @@
 #pragma newdecls required
 
 int g_iMatchID = -1;
-bool failedMatch = false;
-bool isMessageSent = false;
+bool g_bFailedMatch = false;
 
 ConVar g_CVDiscordWebhook;
 ConVar g_CVSiteURL;
@@ -40,38 +39,16 @@ public void OnPluginStart() {
 	AutoExecConfig(true, "league_discord_results");
 }
 
-public void OnPluginEnd()
-{
-	failedMatch = false;
-	isMessageSent = false;	
-}
-
-public void OnMapEnd()
-{
-	failedMatch = false;
-	isMessageSent = false;	
-}
-
-public void OnMapStart()
-{
-	failedMatch = false;
-	isMessageSent = false;	
-}
-
 public void Get5_OnGameStateChanged(Get5State oldState, Get5State newState)
 {
 	if (newState != Get5State_None) {
 		return;
 	}
 	else if (oldState > Get5State_None && oldState < Get5State_GoingLive) {
-
-		if (!isMessageSent) {
-			failedMatch = true;
-			SendReport();
-			isMessageSent = true;
-		}
+		g_bFailedMatch = true;
+		SendReport();
 	}
-	failedMatch = false;
+	g_bFailedMatch = false;
 }
 
 
@@ -80,10 +57,7 @@ public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Sco
 	if (GetGameTime() - fTime < 1.0) {
 		return;
 	}
-	if (!isMessageSent) {
-		SendReport();
-		isMessageSent = true;
-	}
+	SendReport();
 }
 
 public void SendReport() {
@@ -129,8 +103,8 @@ public void SendReport() {
 	GetConVarString(FindConVar("mp_teamname_1"), teamName1, sizeof(teamName1));
 	GetConVarString(FindConVar("mp_teamname_2"), teamName2, sizeof(teamName2));
 	
-	if (failedMatch) {
-		Format(sWinTitle, sizeof(sWinTitle), "Match was failed because not everyone readied up in 5 minutes");
+	if (g_bFailedMatch) {
+		Format(sWinTitle, sizeof(sWinTitle), "Match was failed (not all players join the server)");
 	}
 	else if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
