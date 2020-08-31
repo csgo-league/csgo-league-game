@@ -492,7 +492,7 @@ public void OnClientPutInServer(int client) {
   }
   CheckAutoLoadConfig();
   if (g_GameState <= Get5State_Warmup && g_GameState != Get5State_None) {
-    int connectedPlayers = GetRealClientCount();
+    int connectedPlayers = GetMatchClientCount();
     if (connectedPlayers <= 1) {
       ExecCfg(g_WarmupCfgCvar);
       EnsurePausedWarmup();
@@ -542,18 +542,18 @@ public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBr
   int client = GetClientOfUserId(event.GetInt("userid"));
   EventLogger_PlayerDisconnect(client);
 
-  // TODO: consider adding a forfeit if a full team disconnects.
   if (g_EndMatchOnEmptyServerCvar.BoolValue && g_GameState > Get5State_Warmup &&
-      g_GameState < Get5State_PostGame && GetRealClientCount() == 0 && !g_MapChangePending) {
-    g_TeamSeriesScores[MatchTeam_Team1] = 0;
-    g_TeamSeriesScores[MatchTeam_Team2] = 0;
+      g_GameState < Get5State_PostGame && (GetTeam1ClientCount() <= 1 || GetTeam2ClientCount() <= 1) && !g_MapChangePending) {
+    Get5_MessageToAll("%t", "CancelMatchFullTeamDisconnected");
+    AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
+    ChangeState(Get5State_None);
     EndSeries();
   }
 }
 
 public Action Event_WarmupEnd(Event event, const char[] name, bool dontBroadcast) {
   if (g_GameState == Get5State_Warmup) {
-    if (GetRealClientCount() >= (g_PlayersPerTeam * 2) - g_RemainingMatchPlayers.IntValue) {
+    if (GetMatchClientCount() >= (g_PlayersPerTeam * 2) - g_RemainingMatchPlayers.IntValue) {
       if (!g_HasKnifeRoundStarted) {
         StartGame(true);
       }
@@ -623,9 +623,9 @@ public Action Timer_WarmupLeft(Handle timer) {
       RestoreGet5Backup();
       return Plugin_Continue;
     }
-
+    LogError("g_WarmupTimeLeft = %d", g_WarmupTimeLeft);
     if (g_WarmupTimeLeft == 0) {
-      if (GetRealClientCount() == 0) {
+      if (GetMatchClientCount() == 0) {
         g_ForceWinnerSignal = true;
         ChangeState(Get5State_None);
         EndSeries();
