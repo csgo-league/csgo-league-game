@@ -625,6 +625,11 @@ public Action Timer_WarmupLeft(Handle timer) {
     }
 
     if (g_WarmupTimeLeft == 0) {
+      if (GetRealClientCount() == 0) {
+        g_ForceWinnerSignal = true;
+        ChangeState(Get5State_None);
+        EndSeries();
+      }
       return Plugin_Stop;
     }
 
