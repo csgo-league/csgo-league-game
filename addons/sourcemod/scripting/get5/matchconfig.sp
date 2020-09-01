@@ -96,9 +96,7 @@ stock bool LoadMatchConfig(const char[] config, bool restoreBackup = false) {
     g_MapPoolList.GetString(GetMapNumber(), mapName, sizeof(mapName));
     ChangeState(Get5State_Warmup);
 
-    char currentMap[PLATFORM_MAX_PATH];
-    GetCurrentMap(currentMap, sizeof(currentMap));
-    if (!StrEqual(mapName, currentMap) && !restoreBackup) {
+    if (!restoreBackup) {
       ChangeMap(mapName);
     }
   } else {
