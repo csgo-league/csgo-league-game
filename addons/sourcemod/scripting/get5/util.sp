@@ -85,7 +85,7 @@ stock bool IsValidClient(int client) {
 }
 
 stock bool IsPlayer(int client) {
-  return IsValidClient(client) && !IsFakeClient(client);
+  return IsValidClient(client) && !IsFakeClient(client) && !IsClientSourceTV(client);
 }
 
 stock bool IsAuthedPlayer(int client) {

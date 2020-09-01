@@ -451,9 +451,6 @@ public void OnPluginStart() {
   g_OnSeriesInit = CreateGlobalForward("Get5_OnSeriesInit", ET_Ignore);
   g_OnSeriesResult =
       CreateGlobalForward("Get5_OnSeriesResult", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
-
-  /** Start any repeating timers **/
-  CreateTimer(1.0, Timer_WarmupLeft, _, TIMER_REPEAT);
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
@@ -571,7 +568,6 @@ public Action Event_WarmupEnd(Event event, const char[] name, bool dontBroadcast
 public void OnMapStart() {
   g_MapChangePending = false;
   g_HasKnifeRoundStarted = false;
-  g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
   DeleteOldBackups();
 
   LOOP_TEAMS(team) {
@@ -587,6 +583,11 @@ public void OnMapStart() {
     SetMatchTeamCvars();
     ExecuteMatchConfigCvars();
     EnsurePausedWarmup();
+  }
+  /** Start any repeating timers **/
+  if (g_GameState == Get5State_Warmup) {
+    g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
+    CreateTimer(1.0, Timer_WarmupLeft, _, TIMER_REPEAT);
   }
 }
 
@@ -623,7 +624,7 @@ public Action Timer_WarmupLeft(Handle timer) {
       RestoreGet5Backup();
       return Plugin_Continue;
     }
-    LogError("g_WarmupTimeLeft = %d", g_WarmupTimeLeft);
+    
     if (g_WarmupTimeLeft == 0) {
       if (GetMatchClientCount() == 0) {
         g_ForceWinnerSignal = true;
