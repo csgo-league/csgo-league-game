@@ -414,6 +414,7 @@ public void OnPluginStart() {
   AddCommandListener(Command_Coach, "coach");
   AddCommandListener(Command_JoinTeam, "jointeam");
   AddCommandListener(Command_JoinGame, "joingame");
+  AddCommandListener(MapReserved, "map");
 
   /** Setup data structures **/
   g_MapPoolList = new ArrayList(PLATFORM_MAX_PATH);
