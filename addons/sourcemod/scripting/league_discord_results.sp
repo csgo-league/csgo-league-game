@@ -9,13 +9,13 @@
 #pragma newdecls required
 
 int g_iMatchID = -1;
+bool g_bFailedMatch = false;
 
 ConVar g_CVDiscordWebhook;
 ConVar g_CVSiteURL;
 ConVar g_CVUsername;
 ConVar g_CVEmbedColour;
 ConVar g_CVEmbedAvatar;
-char g_FormattedTeamNames[MatchTeam_Count][128];
 
 ArrayList ga_sWinningPlayers;
 
@@ -28,23 +28,35 @@ public Plugin myinfo = {
 };
 
 public void OnPluginStart() {
-    ga_sWinningPlayers = new ArrayList(64);
+	ga_sWinningPlayers = new ArrayList(64);
 
 	g_CVDiscordWebhook = CreateConVar("sm_discord_webhook", "", "Discord web hook endpoint", FCVAR_PROTECTED);
 	g_CVSiteURL = CreateConVar("league_discord_results_site_url", "", "Website url for viewing scores", FCVAR_PROTECTED);
 	g_CVUsername = CreateConVar("league_discord_results_username", "League Results", "Username to use for webhook", FCVAR_PROTECTED);
 	g_CVEmbedColour = CreateConVar("league_discord_results_embed_color", "16741688", "Color to use for webhook (Must be decimal value)", FCVAR_PROTECTED);
-	g_CVEmbedAvatar = CreateConVar("league_discord_results_embed_avatar", "https://avatars1.githubusercontent.com/u/51230829", "Avatar to use for webhook", FCVAR_PROTECTED);
+	g_CVEmbedAvatar = CreateConVar("league_discord_results_embed_avatar", "https://avatars1.githubusercontent.com/u/51230829", "Avatar to use for webhook", FCVAR_PROTECTED);	
 
-    AutoExecConfig(true, "league_discord_results");
+	AutoExecConfig(true, "league_discord_results");
 }
+
+public void Get5_OnGameStateChanged(Get5State oldState, Get5State newState)
+{
+	if (newState != Get5State_None) {
+		return;
+	}
+	else if (oldState > Get5State_None && oldState < Get5State_GoingLive) {
+		g_bFailedMatch = true;
+		SendReport();
+	}
+	g_bFailedMatch = false;
+}
+
 
 public void Get5_OnMapResult(const char[] map, MatchTeam mapWinner, int team1Score, int team2Score, int mapNumber) {
 	static float fTime;
 	if (GetGameTime() - fTime < 1.0) {
-	    return;
+		return;
 	}
-
 	SendReport();
 }
 
@@ -91,12 +103,16 @@ public void SendReport() {
 	GetConVarString(FindConVar("mp_teamname_1"), teamName1, sizeof(teamName1));
 	GetConVarString(FindConVar("mp_teamname_2"), teamName2, sizeof(teamName2));
 	
-
-	if (bDraw) {
+	if (g_bFailedMatch) {
+		Format(sWinTitle, sizeof(sWinTitle), "Match was failed (not all players join the server)");
+	}
+	else if (bDraw) {
 		Format(sWinTitle, sizeof(sWinTitle), "Match was a draw at %i:%i!", iTScore, iCTScore);
-	} else if (iWinners == CS_TEAM_T) {
+	}
+	else if (iWinners == CS_TEAM_T) {
 		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName1, iTScore, iCTScore);
-	} else {
+	} 
+	else {
 		Format(sWinTitle, sizeof(sWinTitle), "%s just won %i:%i!", teamName2, iCTScore, iTScore);
     }
 
