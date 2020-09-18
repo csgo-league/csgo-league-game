@@ -2,7 +2,7 @@
 {
     "CancelMatchFullTeamDisconnected"
     {
-        "end            "{DARK_RED}Match Cancelled! (Full team disconnected)."
+        "en"            "{DARK_RED}Match Cancelled! (Full team disconnected)."
     }
     "NotAllPlayersConnected"
     {
