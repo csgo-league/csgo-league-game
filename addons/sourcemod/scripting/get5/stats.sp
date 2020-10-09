@@ -124,6 +124,8 @@ public void Stats_RoundEnd(int csTeamWinner) {
         char name[MAX_NAME_LENGTH];
         GetClientName(i, name, sizeof(name));
         g_StatsKv.SetString(STAT_NAME, name);
+        g_StatsKv.SetNum(STAT_PLAYERSCORE, CS_GetClientContributionScore(i));
+
         GoBackFromPlayer();
       }
     }
