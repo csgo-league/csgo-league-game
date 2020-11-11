@@ -7,11 +7,8 @@ public Action StartGoingLive(Handle timer) {
 
   // Force kill the warmup if we (still) need to.
   Get5_MessageToAll("%t", "MatchBeginInSecondsInfoMessage", g_LiveCountdownTimeCvar.IntValue);
-  if (InWarmup()) {
-    EndWarmup(g_LiveCountdownTimeCvar.IntValue);
-  } else {
-    RestartGame(g_LiveCountdownTimeCvar.IntValue);
-  }
+
+  RestartGame(g_LiveCountdownTimeCvar.IntValue);
 
   // Always disable sv_cheats!
   ServerCommand("sv_cheats 0");

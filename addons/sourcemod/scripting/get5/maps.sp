@@ -14,6 +14,7 @@ public Action Timer_DelayedChangeMap(Handle timer, Handle pack) {
   ResetPack(pack);
   ReadPackString(pack, map, sizeof(map));
   CloseHandle(pack);
+  ChangeState(Get5State_Warmup);
   ServerCommand("changelevel %s", map);
 
   return Plugin_Handled;

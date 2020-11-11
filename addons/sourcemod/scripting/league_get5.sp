@@ -73,11 +73,12 @@ ConVar g_SetHostnameCvar;
 ConVar g_StatsPathFormatCvar;
 ConVar g_StopCommandEnabledCvar;
 ConVar g_TeamTimeToKnifeDecisionCvar;
+ConVar g_TeamTimeToStartCvar;
 ConVar g_TimeFormatCvar;
 ConVar g_VetoConfirmationTimeCvar;
 ConVar g_VetoCountdownCvar;
 ConVar g_WarmupCfgCvar;
-ConVar g_RemainingMatchPlayers;
+ConVar g_UnconnectedPlayersRemaining;
 
 // Autoset convars (not meant for users to set)
 ConVar g_GameStateCvar;
@@ -86,13 +87,6 @@ ConVar g_VersionCvar;
 
 // Hooked cvars built into csgo
 ConVar g_CoachingEnabledCvar;
-
-/** LOL **/
-bool g_bVoteStart = false;
-int g_iVoteCts = 0;
-int g_iVoteTs = 0;
-bool g_bPlayerCanVote[MAXPLAYERS + 1] = {true, ...};
-Handle g_bSideVoteTimer = null;
 
 /** Series config game-state **/
 int g_MapsToWin = 1;  // Maps needed to win the series.
@@ -118,6 +112,7 @@ ArrayList g_CvarNames = null;
 ArrayList g_CvarValues = null;
 bool g_InScrimMode = false;
 bool g_HasKnifeRoundStarted = false;
+bool g_IsMapOver = false;
 
 /** Other state **/
 Get5State g_GameState = Get5State_None;
@@ -158,7 +153,7 @@ bool g_TeamGivenStopCommand[MATCHTEAM_COUNT];
 bool g_InExtendedPause;
 int g_TeamPauseTimeUsed[MATCHTEAM_COUNT];
 int g_TeamPausesUsed[MATCHTEAM_COUNT];
-int g_WarmupTimeLeft = 300;
+int g_WarmupTimeLeft;
 char g_DefaultTeamColors[][] = {
     TEAM1_COLOR, TEAM2_COLOR, "{NORMAL}", "{NORMAL}",
 };
@@ -311,7 +306,11 @@ public void OnPluginStart() {
   g_StopCommandEnabledCvar =
       CreateConVar("get5_stop_command_enabled", "1",
                    "Whether clients can use the !stop command to restore to the last round");
-  g_RemainingMatchPlayers = CreateConVar("get5_remaining_match_players_not_connected", "0");
+  g_TeamTimeToStartCvar = CreateConVar(
+      "get5_time_to_start", "0",
+      "Time (in seconds) teams have to ready up before forfeiting the match, 0=unlimited");
+  g_UnconnectedPlayersRemaining = CreateConVar("get5_remaining_not_connected_players_to_start", "0",
+      "Number of remaining players are not connected to start the match on the warmup end, set to 0 to disable");
   g_TeamTimeToKnifeDecisionCvar = CreateConVar(
       "get5_time_to_make_knife_decision", "30",
       "Time (in seconds) a team has to make a !stay/!swap decision after winning knife round, 0=unlimited");
@@ -349,8 +348,12 @@ public void OnPluginStart() {
   AddAliasedCommand("unpause", Command_Unpause, "Unpauses the game");
   AddAliasedCommand("coach", Command_SmCoach, "Marks a client as a coach for their team");
   AddAliasedCommand("stop", Command_Stop, "Elects to stop the game to reload a backup file");
-  AddAliasedCommand("ct", Command_VoteCt, "Vote for Counter-Terrorist team.");
-  AddAliasedCommand("t", Command_VoteT, "Voted for the terrorist team");
+  AddAliasedCommand("stay", Command_Stay,
+                    "Elects to stay on the current team after winning a knife round");
+  AddAliasedCommand("swap", Command_Swap,
+                    "Elects to swap the current teams after winning a knife round");
+  AddAliasedCommand("t", Command_T, "Elects to start on T side after winning a knife round");
+  AddAliasedCommand("ct", Command_Ct, "Elects to start on CT side after winning a knife round");
 
   /** Admin/server commands **/
   RegAdminCmd(
@@ -406,7 +409,6 @@ public void OnPluginStart() {
   HookEvent("player_connect_full", Event_PlayerConnectFull);
   HookEvent("player_disconnect", Event_PlayerDisconnect);
   HookEvent("player_team", Event_OnPlayerTeam, EventHookMode_Pre);
-  HookEvent("round_announce_match_start", Event_WarmupEnd);
 
   Stats_PluginStart();
   Stats_InitSeries();
@@ -429,7 +431,6 @@ public void OnPluginStart() {
     g_TeamAuths[i] = new ArrayList(AUTH_LENGTH);
   }
   g_PlayerNames = new StringMap();
-  g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
 
   /** Create forwards **/
   g_OnBackupRestore = CreateGlobalForward("Get5_OnBackupRestore", ET_Ignore);
@@ -492,15 +493,12 @@ public void OnClientPutInServer(int client) {
   if (g_GameState <= Get5State_Warmup && g_GameState != Get5State_None) {
     int connectedPlayers = GetMatchClientCount();
     if (connectedPlayers <= 1) {
-      ExecCfg(g_WarmupCfgCvar);
       EnsurePausedWarmup();
     }
 
-    if (connectedPlayers == g_PlayersPerTeam * 2) {
-      if (g_WarmupTimeLeft > 30) {
-        g_WarmupTimeLeft = 30;
-        ServerCommand("mp_warmuptime 30");
-      }
+    if (connectedPlayers == g_PlayersPerTeam * 2 && g_WarmupTimeLeft > 45) {
+        g_WarmupTimeLeft = 45;
+        EndWarmup(45);
     }
   }
 
@@ -540,35 +538,19 @@ public Action Event_PlayerDisconnect(Event event, const char[] name, bool dontBr
   int client = GetClientOfUserId(event.GetInt("userid"));
   EventLogger_PlayerDisconnect(client);
 
-  if (g_EndMatchOnEmptyServerCvar.BoolValue && g_GameState > Get5State_Warmup &&
-      g_GameState < Get5State_PostGame && (GetTeam1ClientCount() <= 1 || GetTeam2ClientCount() <= 1) && !g_MapChangePending) {
+  if (g_EndMatchOnEmptyServerCvar.BoolValue && g_GameState > Get5State_Warmup && !g_IsMapOver &&
+      g_GameState < Get5State_PostGame && (GetTeam1ClientCount() <= 1 || GetTeam2ClientCount() <= 1)) {
     Get5_MessageToAll("%t", "CancelMatchFullTeamDisconnected");
-    AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
     ChangeState(Get5State_None);
+    AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
     EndSeries();
-  }
-}
-
-public Action Event_WarmupEnd(Event event, const char[] name, bool dontBroadcast) {
-  if (g_GameState == Get5State_Warmup) {
-    if (GetMatchClientCount() >= (g_PlayersPerTeam * 2) - g_RemainingMatchPlayers.IntValue) {
-      if (!g_HasKnifeRoundStarted) {
-        StartGame(true);
-      }
-    }
-    else {
-      Get5_MessageToAll("%t", "NotAllPlayersConnected");
-      AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
-      g_ForceWinnerSignal = true;
-      ChangeState(Get5State_None);
-      EndSeries();
-    }
   }
 }
 
 public void OnMapStart() {
   g_MapChangePending = false;
   g_HasKnifeRoundStarted = false;
+  g_IsMapOver = false;
   DeleteOldBackups();
 
   LOOP_TEAMS(team) {
@@ -587,8 +569,14 @@ public void OnMapStart() {
   }
   /** Start any repeating timers **/
   if (g_GameState == Get5State_Warmup) {
-    g_WarmupTimeLeft = GetConVarInt(FindConVar("mp_warmuptime"));
-    CreateTimer(1.0, Timer_WarmupLeft, _, TIMER_REPEAT);
+
+    if (g_TeamTimeToStartCvar.IntValue < 60) {
+      g_TeamTimeToStartCvar.SetInt(60);
+    }
+
+    g_WarmupTimeLeft = g_TeamTimeToStartCvar.IntValue;
+    StartWarmup();
+    CreateTimer(1.0, Timer_WaitingForConnectPlayers, _, TIMER_REPEAT);
   }
 }
 
@@ -608,7 +596,7 @@ public void OnConfigsExecuted() {
   }
 }
 
-public Action Timer_WarmupLeft(Handle timer) {
+public Action Timer_WaitingForConnectPlayers(Handle timer) {
   if (g_GameState == Get5State_None) {
     return Plugin_Continue;
   }
@@ -617,7 +605,7 @@ public Action Timer_WarmupLeft(Handle timer) {
   CheckTeamNameStatus(MatchTeam_Team2);
 
   // Handle ready checks for warmup, provided we are not waiting for a map change
-  if (g_GameState == Get5State_Warmup && !g_MapChangePending) {
+  if (g_GameState == Get5State_Warmup) {
     // We don't wait for spectators when restoring backups
     if (g_WaitingForRoundBackup) {
       LogDebug("Timer_CheckReady: restoring from backup");
@@ -632,9 +620,23 @@ public Action Timer_WarmupLeft(Handle timer) {
         ChangeState(Get5State_None);
         EndSeries();
       }
+      else if (GetMatchClientCount() >= (g_PlayersPerTeam * 2) - g_UnconnectedPlayersRemaining.IntValue) {
+        if (!g_HasKnifeRoundStarted) {
+          StartGame(true);
+        }
+      }
+      else {
+        Get5_MessageToAll("%t", "NotAllPlayersConnected");
+        AcceptEntityInput(CreateEntityByName("game_end"), "EndGame");
+        g_ForceWinnerSignal = true;
+        ChangeState(Get5State_None);
+        EndSeries();
+      }
+
+      g_WarmupTimeLeft = g_TeamTimeToStartCvar.IntValue;
       return Plugin_Stop;
     }
-
+    
     g_WarmupTimeLeft--;
   }
 
@@ -827,6 +829,7 @@ public Action Timer_ReplenishMoney(Handle timer, int client) {
 public Action Event_MatchOver(Event event, const char[] name, bool dontBroadcast) {
   LogDebug("Event_MatchOver");
   if (g_GameState == Get5State_Live) {
+    g_IsMapOver = true;
     // Figure out who won
     int t1score = CS_GetTeamScore(MatchTeamToCSTeam(MatchTeam_Team1));
     int t2score = CS_GetTeamScore(MatchTeamToCSTeam(MatchTeam_Team2));
@@ -969,6 +972,7 @@ public void KickClientsOnEnd() {
 }
 
 public void EndSeries() {
+  g_IsMapOver = false;
   DelayFunction(10.0, KickClientsOnEnd);
   StopRecording();
 
@@ -1084,9 +1088,6 @@ public Action Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 
     g_KnifeWinnerTeam = CSTeamToMatchTeam(winningCSTeam);
     Get5_MessageToAll("%t", "WaitingForEnemySwapInfoMessage",g_FormattedTeamNames[g_KnifeWinnerTeam]);
-    Get5_MessageToTeam(g_KnifeWinnerTeam, "%t", "VoteMessage");
-    g_bVoteStart = true;
-    g_bSideVoteTimer = CreateTimer(15.0, Timer_VoteSide);
 
     if (g_TeamTimeToKnifeDecisionCvar.FloatValue > 0)
       CreateTimer(g_TeamTimeToKnifeDecisionCvar.FloatValue, Timer_ForceKnifeDecision);
@@ -1205,8 +1206,8 @@ public void StartGame(bool knifeRound) {
 public Action Timer_PostKnife(Handle timer) {
   if (g_KnifeChangedCvars != null) {
     RestoreCvars(g_KnifeChangedCvars, true);
-    
   }
+
   ExecCfg(g_WarmupCfgCvar);
   EnsurePausedWarmup();
 }
