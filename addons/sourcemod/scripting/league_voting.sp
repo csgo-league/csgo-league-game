@@ -6,7 +6,7 @@
 
 public Plugin myinfo = {
 	name = "[League] Voting",
-	author = "PandahChan",
+	author = "PandahChan, TheBoss, B3none",
 	description = "League voting plugin.",
 	version = "1.1.0",
 	url = "https://github.com/csgo-league"
@@ -34,6 +34,7 @@ Handle voteTimeout = null;
 ConVar g_hVoteDuration = null;
 ConVar g_hMaxrounds = null;
 ConVar g_hMaxroundsOT = null;
+ConVar g_bVoteOT = null;
 
 #include "functions/listeners/listissues.sp"
 #include "functions/listeners/callvote.sp"
@@ -71,6 +72,7 @@ public void OnPluginStart() {
     g_hVoteDuration = FindConVar("sv_vote_timer_duration");
     g_hMaxrounds = FindConVar("mp_maxrounds");
     g_hMaxroundsOT = FindConVar("mp_overtime_maxrounds");
+    g_bVoteOT = CreateConVar("league_vote_ot", "1", "allow overtime voting");
 
     g_hVoteDuration.AddChangeHook(OnConVarChange_voteDuration);
     g_hMaxrounds.AddChangeHook(OnConVarChange_checkSurrender);
@@ -180,7 +182,7 @@ public Action Event_RoundEnd(Handle event, const char[] name, bool dontBroadcast
         g_bIsOvertime = true;
     }
     
-    if (g_bIsOvertime && state == Get5State_Live) {
+    if (g_bIsOvertime && state == Get5State_Live && g_bVoteOT.BoolValue) {
         CreateTimer(0.1, Timer_PreOT);
     }
 }
